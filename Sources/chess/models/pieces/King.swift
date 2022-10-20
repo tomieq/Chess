@@ -8,7 +8,7 @@
 import Foundation
 
 class King: ChessPiece, MovableChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ address: String) {
+    convenience init?(_ color: ChessPieceColor, _ address: ChessPieceAddress) {
         self.init(.king, color, address)
     }
 

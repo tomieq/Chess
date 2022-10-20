@@ -18,24 +18,26 @@ struct ChessPieceAddress {
         self.row = row
         self.column = column
     }
+}
 
-    init?(_ textAddress: String) {
-        guard textAddress.count == 2,
-              let firstLetter = textAddress.first,
+extension ChessPieceAddress: Equatable {}
+
+extension ChessPieceAddress: ExpressibleByStringLiteral {
+    init(stringLiteral value: String) {
+        guard value.count == 2,
+              let firstLetter = value.first,
               let column = BoardColumn(firstLetter),
-              let lastLetter = textAddress.last,
+              let lastLetter = value.last,
               let row = Int("\(lastLetter)") else {
-            print("Invalid text address(\(textAddress)) while creating ChessPieceAddress")
-            return nil
+            print("Invalid text address(\(value)) while creating ChessPieceAddress")
+            fatalError()
         }
         self.column = column
         self.row = row
     }
 }
 
-extension ChessPieceAddress: Equatable {}
-
-extension ChessPieceAddress{
+extension ChessPieceAddress {
     func move(_ direction: MoveDirection) -> ChessPieceAddress? {
         switch direction {
         case .right:
@@ -47,5 +49,11 @@ extension ChessPieceAddress{
         case .down:
             return ChessPieceAddress(self.column, self.row - 1)
         }
+    }
+}
+
+extension ChessPieceAddress: CustomStringConvertible {
+    var description: String {
+        "\(self.column.letter)\(self.row)"
     }
 }

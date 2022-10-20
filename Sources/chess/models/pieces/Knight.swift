@@ -1,6 +1,6 @@
 //
 //  Knight.swift
-//  
+//
 //
 //  Created by Tomasz on 20/10/2022.
 //
@@ -8,7 +8,7 @@
 import Foundation
 
 class Knight: ChessPiece, MovableChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ address: String) {
+    convenience init?(_ color: ChessPieceColor, _ address: ChessPieceAddress) {
         self.init(.knight, color, address)
     }
 
@@ -21,7 +21,7 @@ class Knight: ChessPiece, MovableChessPiece {
             self.address.move(.up)?.move(.up)?.move(.right),
             self.address.move(.up)?.move(.up)?.move(.left),
             self.address.move(.down)?.move(.down)?.move(.right),
-            self.address.move(.down)?.move(.down)?.move(.left),
+            self.address.move(.down)?.move(.down)?.move(.left)
         ].compactMap { $0 }
     }
 }

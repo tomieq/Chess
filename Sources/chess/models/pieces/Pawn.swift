@@ -8,7 +8,7 @@
 import Foundation
 
 class Pawn: ChessPiece, MovableChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ address: String) {
+    convenience init?(_ color: ChessPieceColor, _ address: ChessPieceAddress) {
         self.init(.pawn, color, address)
     }
 

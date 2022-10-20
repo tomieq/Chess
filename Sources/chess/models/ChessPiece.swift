@@ -29,12 +29,4 @@ class ChessPiece {
     convenience init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ column: BoardColumn, _ row: Int) {
         self.init(type, color, ChessPieceAddress(column, row))
     }
-
-    convenience init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ textAddress: String) {
-        guard let address = ChessPieceAddress(textAddress) else {
-            print("Invalid text address(\(textAddress)) while creating ChessPiece")
-            return nil
-        }
-        self.init(type, color, address)
-    }
 }
