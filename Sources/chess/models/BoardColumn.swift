@@ -18,6 +18,12 @@ enum BoardColumn: Int, Equatable, CaseIterable {
     case h
 }
 
+extension BoardColumn: Comparable {
+    static func < (lhs: BoardColumn, rhs: BoardColumn) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}
+
 extension BoardColumn {
     var toRight: BoardColumn? {
         BoardColumn(rawValue: self.rawValue + 1)
