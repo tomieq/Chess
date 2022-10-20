@@ -23,6 +23,12 @@ class GameState {
         self.pieces.append(piece)
     }
 
+    func addPieces(_ pieces: GamePiece?...) {
+        for piece in pieces {
+            self.addPiece(piece)
+        }
+    }
+
     func getPiece(_ address: ChessPieceAddress) -> GamePiece? {
         self.pieces.first{ $0.address == address }
     }

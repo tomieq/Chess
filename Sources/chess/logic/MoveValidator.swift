@@ -26,7 +26,7 @@ class MoveValidator {
         let prefilteredMoves = self.filterAddressesTakenByOwnArmy(piece: piece, basicMoves: piece.basicMoves)
         switch piece.type {
         case .king:
-            let validator = KingMoveValidator(gameState: self.gameState, kingColor: piece.color)
+            let validator = KingMoveValidator(gameState: self.gameState, king: piece)
             return validator.possibleMoves(prefilteredMoves: prefilteredMoves)
         default:
             break

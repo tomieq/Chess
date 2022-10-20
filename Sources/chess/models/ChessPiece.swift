@@ -14,7 +14,12 @@ protocol MovableChessPiece {
 class ChessPiece {
     let type: ChessPieceType
     let color: ChessPieceColor
-    var address: ChessPieceAddress
+    var address: ChessPieceAddress {
+        didSet {
+            self.moveCounter += 1
+        }
+    }
+    var moveCounter = 0
 
     init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ address: ChessPieceAddress?) {
         guard let position = address else {
