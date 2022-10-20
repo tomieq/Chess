@@ -8,11 +8,10 @@
 import Foundation
 
 class King: ChessPiece, MovableChessPiece {
-    
     convenience init?(_ color: ChessPieceColor, _ address: String) {
         self.init(.king, color, address)
     }
-    
+
     var basicMoves: [ChessPieceAddress] {
         [self.address.move(.right),
          self.address.move(.left),
