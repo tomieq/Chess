@@ -13,13 +13,6 @@ class King: ChessPiece, MovableChessPiece {
     }
 
     var basicMoves: [ChessPieceAddress] {
-        [self.address.move(.right),
-         self.address.move(.left),
-         self.address.move(.up),
-         self.address.move(.down),
-         self.address.move(.up)?.move(.left),
-         self.address.move(.up)?.move(.right),
-         self.address.move(.down)?.move(.left),
-         self.address.move(.down)?.move(.right)].compactMap { $0 }
+        self.address.neighbours
     }
 }

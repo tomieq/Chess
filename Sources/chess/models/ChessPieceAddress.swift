@@ -134,3 +134,18 @@ extension ChessPieceAddress {
         return horizontalDistance == verticalDistance
     }
 }
+
+extension ChessPieceAddress {
+    var neighbours: [ChessPieceAddress] {
+        [
+            self.move(.right),
+            self.move(.left),
+            self.move(.up),
+            self.move(.down),
+            self.move(.up)?.move(.left),
+            self.move(.up)?.move(.right),
+            self.move(.down)?.move(.left),
+            self.move(.down)?.move(.right)
+        ].compactMap { $0 }
+    }
+}
