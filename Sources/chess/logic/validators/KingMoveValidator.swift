@@ -35,33 +35,30 @@ class KingMoveValidator {
     }
 
     private func addCastlingMoves(prefilteredMoves: [ChessPieceAddress]) -> [ChessPieceAddress] {
+        guard let king = self.king as? King, king.canCastle else {
+            return prefilteredMoves
+        }
         var moves = prefilteredMoves
-        if self.king.moveCounter == 0 {
-            switch self.king.color {
-            case .white:
-                if self.king.address == "e1" {
-                    if let rook = self.gameState.getPiece("h1"), self.isRookReadyForCastling(rook) {
-                        moves.append("g1")
-                    }
-                    if let rook = self.gameState.getPiece("a1"), self.isRookReadyForCastling(rook) {
-                        moves.append("c1")
-                    }
+        switch self.king.color {
+        case .white:
+            if self.king.address == "e1" {
+                if let rook = self.gameState.getPiece("h1") as? Rook, rook.canCastle {
+                    moves.append("g1")
                 }
-            case .black:
-                if self.king.address == "e8" {
-                    if let rook = self.gameState.getPiece("h8"), self.isRookReadyForCastling(rook) {
-                        moves.append("g8")
-                    }
-                    if let rook = self.gameState.getPiece("a8"), self.isRookReadyForCastling(rook) {
-                        moves.append("c8")
-                    }
+                if let rook = self.gameState.getPiece("a1") as? Rook, rook.canCastle {
+                    moves.append("c1")
+                }
+            }
+        case .black:
+            if self.king.address == "e8" {
+                if let rook = self.gameState.getPiece("h8") as? Rook, rook.canCastle {
+                    moves.append("g8")
+                }
+                if let rook = self.gameState.getPiece("a8") as? Rook, rook.canCastle {
+                    moves.append("c8")
                 }
             }
         }
         return moves
-    }
-
-    private func isRookReadyForCastling(_ rook: ChessPiece) -> Bool {
-        rook.moveCounter == 0 && rook.color == self.king.color
     }
 }

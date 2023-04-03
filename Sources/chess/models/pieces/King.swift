@@ -15,4 +15,8 @@ class King: ChessPiece, MovableChessPiece {
     var basicMoves: [ChessPieceAddress] {
         self.address.neighbours
     }
+
+    var canCastle: Bool {
+        self.moveCounter == 0
+    }
 }

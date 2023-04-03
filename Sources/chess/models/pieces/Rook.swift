@@ -30,4 +30,8 @@ class Rook: ChessPiece, MovableChessPiece {
         }
         return moves.compactMap { $0 }
     }
+
+    var canCastle: Bool {
+        self.moveCounter == 0
+    }
 }

@@ -19,6 +19,7 @@ class ChessPiece {
             self.moveCounter += 1
         }
     }
+
     var moveCounter = 0
 
     init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ address: ChessPieceAddress?) {
