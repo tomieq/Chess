@@ -1,6 +1,6 @@
 //
 //  MoveCalculator+King.swift
-//  
+//
 //
 //  Created by Tomasz on 04/04/2023.
 //
@@ -19,7 +19,7 @@ extension MoveCalculator {
         passive.append(contentsOf: self.castlingMoves(for: king))
         return PossibleMoves(passive: passive, agressive: agresive)
     }
-    
+
     // returns possible castling moves
     func castlingMoves(for king: King) -> [BoardSquare] {
         guard king.canCastle else {

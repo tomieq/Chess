@@ -34,6 +34,23 @@ extension ChessPieceType {
         }
     }
 
+    var enLetter: String {
+        switch self {
+        case .king:
+            return "K"
+        case .queen:
+            return "Q"
+        case .rook:
+            return "R"
+        case .bishop:
+            return "B"
+        case .knight:
+            return "N"
+        case .pawn:
+            return "_"
+        }
+    }
+
     var plName: String {
         switch self {
         case .king:
@@ -49,5 +66,15 @@ extension ChessPieceType {
         case .pawn:
             return "Pion"
         }
+    }
+}
+
+extension ChessPieceType {
+    static func make(pl letter: String) -> ChessPieceType? {
+        Self.allCases.first{ $0.plName.first == letter.first }
+    }
+
+    static func make(en letter: String) -> ChessPieceType? {
+        Self.allCases.first{ $0.enLetter.first == letter.first }
     }
 }

@@ -1,6 +1,6 @@
 //
 //  MoveCalculator.swift
-//  
+//
 //
 //  Created by Tomasz on 04/04/2023.
 //
@@ -13,7 +13,7 @@ class MoveCalculator {
     init(gameState: ChessBoard) {
         self.gameState = gameState
     }
-    
+
     func possibleMoves(from address: BoardSquare) -> PossibleMoves? {
         guard let piece = self.gameState.getPiece(address) else {
             print("Could not find a piece at address \(address)")
@@ -27,14 +27,14 @@ class MoveCalculator {
         }
         return nil
     }
-    
+
     func isFieldOccupiedByOwnArmy(piece: ChessPiece, address: BoardSquare) -> Bool {
         guard let colorOnAddress = self.gameState.getPiece(address)?.color else {
             return false
         }
         return colorOnAddress == piece.color
     }
-    
+
     func isFieldOccupiedByEnemyArmy(piece: ChessPiece, address: BoardSquare) -> Bool {
         guard let colorOnAddress = self.gameState.getPiece(address)?.color else {
             return false

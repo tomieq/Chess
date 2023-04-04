@@ -1,6 +1,6 @@
 //
 //  PossibleMoves.swift
-//  
+//
 //
 //  Created by Tomasz on 04/04/2023.
 //

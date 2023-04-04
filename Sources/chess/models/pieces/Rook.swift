@@ -34,7 +34,7 @@ class Rook: ChessPiece, MovableChessPiece {
     var canCastle: Bool {
         self.moveCounter == 0 && self.isAtStartingPosition
     }
-    
+
     var isAtStartingPosition: Bool {
         switch self.color {
         case .white:

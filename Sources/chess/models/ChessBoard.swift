@@ -32,7 +32,16 @@ class ChessBoard {
     func getPiece(_ square: BoardSquare) -> GamePiece? {
         self.pieces.first{ $0.square == square }
     }
-    
+
+    func addPieces(_ color: ChessPieceColor, _ txt: String) {
+        let parts = txt.components(separatedBy: .whitespaces)
+        for part in parts {
+            if part.count == 2 {
+                self.addPiece(Pawn(color, BoardSquare(stringLiteral: part)))
+            }
+        }
+    }
+
     func isFieldFree(_ square: BoardSquare) -> Bool {
         !self.pieces.contains{ $0.square == square }
     }
