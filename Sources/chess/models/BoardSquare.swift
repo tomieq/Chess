@@ -1,5 +1,5 @@
 //
-//  ChessPieceAddress.swift
+//  BoardSquare.swift
 //
 //
 //  Created by Tomasz on 11/09/2022.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ChessPieceAddress {
+struct BoardSquare {
     let column: BoardColumn
     let row: Int
 
@@ -20,9 +20,10 @@ struct ChessPieceAddress {
     }
 }
 
-extension ChessPieceAddress: Equatable {}
+extension BoardSquare: Equatable {}
+extension BoardSquare: Hashable {}
 
-extension ChessPieceAddress: ExpressibleByStringLiteral {
+extension BoardSquare: ExpressibleByStringLiteral {
     init(stringLiteral value: String) {
         guard value.count == 2,
               let firstLetter = value.first,
@@ -37,35 +38,35 @@ extension ChessPieceAddress: ExpressibleByStringLiteral {
     }
 }
 
-extension ChessPieceAddress: CustomStringConvertible {
+extension BoardSquare: CustomStringConvertible {
     var description: String {
         "\(self.column.letter)\(self.row)"
     }
 }
 
-extension ChessPieceAddress {
-    func move(_ direction: MoveDirection) -> ChessPieceAddress? {
+extension BoardSquare {
+    func move(_ direction: MoveDirection) -> BoardSquare? {
         switch direction {
         case .right:
-            return ChessPieceAddress(self.column.toRight, self.row)
+            return BoardSquare(self.column.toRight, self.row)
         case .left:
-            return ChessPieceAddress(self.column.toLeft, self.row)
+            return BoardSquare(self.column.toLeft, self.row)
         case .up:
-            return ChessPieceAddress(self.column, self.row + 1)
+            return BoardSquare(self.column, self.row + 1)
         case .down:
-            return ChessPieceAddress(self.column, self.row - 1)
+            return BoardSquare(self.column, self.row - 1)
         }
     }
 }
 
-extension ChessPieceAddress {
-    func path(to destination: ChessPieceAddress) -> [ChessPieceAddress] {
-        var addresses: [ChessPieceAddress?] = [self]
+extension BoardSquare {
+    func path(to destination: BoardSquare) -> [BoardSquare] {
+        var addresses: [BoardSquare?] = [self]
         if self.row == destination.row {
             // horizontal
             if self.column < destination.column {
                 // to the right
-                var toRight: ChessPieceAddress? = self
+                var toRight: BoardSquare? = self
                 while toRight.notNil, toRight!.column < destination.column {
                     toRight = toRight?.move(.right)
                     addresses.append(toRight)
@@ -73,7 +74,7 @@ extension ChessPieceAddress {
             }
             if self.column > destination.column {
                 // to the left
-                var toLeft: ChessPieceAddress? = self
+                var toLeft: BoardSquare? = self
                 while toLeft.notNil, toLeft!.column > destination.column {
                     toLeft = toLeft?.move(.left)
                     addresses.append(toLeft)
@@ -84,7 +85,7 @@ extension ChessPieceAddress {
             // vertival
             if self.row < destination.row {
                 // to up
-                var toUp: ChessPieceAddress? = self
+                var toUp: BoardSquare? = self
                 while toUp.notNil, toUp!.row < destination.row {
                     toUp = toUp?.move(.up)
                     addresses.append(toUp)
@@ -92,7 +93,7 @@ extension ChessPieceAddress {
             }
             if self.row > destination.row {
                 // to down
-                var toDown: ChessPieceAddress? = self
+                var toDown: BoardSquare? = self
                 while toDown.notNil, toDown!.row > destination.row {
                     toDown = toDown?.move(.down)
                     addresses.append(toDown)
@@ -116,7 +117,7 @@ extension ChessPieceAddress {
                 horizontalDirection = .right
             }
 
-            var next: ChessPieceAddress? = self
+            var next: BoardSquare? = self
             while next.notNil, next! != destination {
                 next = next?.move(verticalDirection)?.move(horizontalDirection)
                 addresses.append(next)
@@ -125,7 +126,7 @@ extension ChessPieceAddress {
         return addresses.compactMap{ $0 }
     }
 
-    func isDiagonal(to destination: ChessPieceAddress) -> Bool {
+    func isDiagonal(to destination: BoardSquare) -> Bool {
         guard self != destination else {
             return false
         }
@@ -135,8 +136,8 @@ extension ChessPieceAddress {
     }
 }
 
-extension ChessPieceAddress {
-    var neighbours: [ChessPieceAddress] {
+extension BoardSquare {
+    var neighbours: [BoardSquare] {
         [
             self.move(.right),
             self.move(.left),

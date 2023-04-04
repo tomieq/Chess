@@ -32,6 +32,15 @@ class Rook: ChessPiece, MovableChessPiece {
     }
 
     var canCastle: Bool {
-        self.moveCounter == 0
+        self.moveCounter == 0 && self.isAtStartingField
+    }
+    
+    var isAtStartingField: Bool {
+        switch self.color {
+        case .white:
+            return ["a1", "h1"].contains(self.address)
+        case .black:
+            return ["a8", "h8"].contains(self.address)
+        }
     }
 }
