@@ -8,16 +8,16 @@
 import Foundation
 
 class Rook: ChessPiece, MovableChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ address: ChessPieceAddress) {
-        self.init(.rook, color, address)
+    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
+        self.init(.rook, color, square)
     }
 
-    var basicMoves: [ChessPieceAddress] {
-        var moves: [ChessPieceAddress?] = []
-        var toLeft: ChessPieceAddress? = self.address
-        var toRight: ChessPieceAddress? = self.address
-        var toUp: ChessPieceAddress? = self.address
-        var toDown: ChessPieceAddress? = self.address
+    var basicMoves: [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        var toLeft: BoardSquare? = self.square
+        var toRight: BoardSquare? = self.square
+        var toUp: BoardSquare? = self.square
+        var toDown: BoardSquare? = self.square
         for _ in 1..<8 {
             toLeft = toLeft?.move(.left)
             toRight = toRight?.move(.right)
@@ -32,15 +32,15 @@ class Rook: ChessPiece, MovableChessPiece {
     }
 
     var canCastle: Bool {
-        self.moveCounter == 0 && self.isAtStartingField
+        self.moveCounter == 0 && self.isAtStartingPosition
     }
     
-    var isAtStartingField: Bool {
+    var isAtStartingPosition: Bool {
         switch self.color {
         case .white:
-            return ["a1", "h1"].contains(self.address)
+            return ["a1", "h1"].contains(self.square)
         case .black:
-            return ["a8", "h8"].contains(self.address)
+            return ["a8", "h8"].contains(self.square)
         }
     }
 }

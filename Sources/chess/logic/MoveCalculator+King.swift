@@ -21,11 +21,11 @@ extension MoveCalculator {
     }
     
     // returns possible castling moves
-    func castlingMoves(for king: King) -> [ChessPieceAddress] {
+    func castlingMoves(for king: King) -> [BoardSquare] {
         guard king.canCastle else {
             return []
         }
-        var moves: [ChessPieceAddress] = []
+        var moves: [BoardSquare] = []
         switch king.color {
         case .white:
             if let rook = self.gameState.getPiece("h1") as? Rook, rook.canCastle {
@@ -46,10 +46,10 @@ extension MoveCalculator {
     }
 }
 
-fileprivate extension Array where Element == ChessPieceAddress {
-    func withoutEnemyKingBarrier(_ king: King, gameState: GameState) -> [Element] {
+fileprivate extension Array where Element == BoardSquare {
+    func withoutEnemyKingBarrier(_ king: King, gameState: ChessBoard) -> [Element] {
         let enemyKing = gameState.pieces.first{ $0.type == .king && $0.color == king.color.other }
-        guard let enemyKingArea = enemyKing?.address.neighbours else {
+        guard let enemyKingArea = enemyKing?.square.neighbours else {
             return self
         }
         return self.filter { !enemyKingArea.contains($0) }

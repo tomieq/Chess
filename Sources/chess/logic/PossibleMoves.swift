@@ -8,8 +8,8 @@
 import Foundation
 
 struct PossibleMoves {
-    let passive: [ChessPieceAddress]
-    let agressive: [ChessPieceAddress]
+    let passive: [BoardSquare]
+    let agressive: [BoardSquare]
 }
 
 extension PossibleMoves {

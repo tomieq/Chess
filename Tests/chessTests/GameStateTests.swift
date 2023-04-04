@@ -11,7 +11,7 @@ import XCTest
 
 class GameStateTests: XCTestCase {
     func test_addingPieceToGame() {
-        let sut = GameState()
+        let sut = ChessBoard()
         sut.addPiece(Knight(.black, "c6"))
 
         let piece = sut.getPiece("c6")

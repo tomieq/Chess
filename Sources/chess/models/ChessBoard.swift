@@ -10,7 +10,6 @@ import Foundation
 typealias GamePiece = ChessPiece & MovableChessPiece
 
 class ChessBoard {
-    // TODO: migrate to map
     var pieces: [GamePiece]
 
     init() {
@@ -30,11 +29,11 @@ class ChessBoard {
         }
     }
 
-    func getPiece(_ address: ChessPieceAddress) -> GamePiece? {
-        self.pieces.first{ $0.address == address }
+    func getPiece(_ square: BoardSquare) -> GamePiece? {
+        self.pieces.first{ $0.square == square }
     }
     
-    func isFieldFree(_ address: ChessPieceAddress) -> Bool {
-        !self.pieces.contains{ $0.address == address }
+    func isFieldFree(_ square: BoardSquare) -> Bool {
+        !self.pieces.contains{ $0.square == square }
     }
 }

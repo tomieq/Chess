@@ -8,13 +8,13 @@
 import Foundation
 
 protocol MovableChessPiece {
-    var basicMoves: [ChessPieceAddress] { get }
+    var basicMoves: [BoardSquare] { get }
 }
 
 class ChessPiece {
     let type: ChessPieceType
     let color: ChessPieceColor
-    var address: ChessPieceAddress {
+    var square: BoardSquare {
         didSet {
             self.moveCounter += 1
         }
@@ -22,17 +22,17 @@ class ChessPiece {
 
     var moveCounter = 0
 
-    init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ address: ChessPieceAddress?) {
-        guard let position = address else {
-            print("Could not initialize \(type) as adress is nil")
+    init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ square: BoardSquare?) {
+        guard let position = square else {
+            print("Could not initialize \(type) as square is nil")
             return nil
         }
         self.type = type
         self.color = color
-        self.address = position
+        self.square = position
     }
 
     convenience init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ column: BoardColumn, _ row: Int) {
-        self.init(type, color, ChessPieceAddress(column, row))
+        self.init(type, color, BoardSquare(column, row))
     }
 }

@@ -3,7 +3,7 @@ import XCTest
 
 final class MoveCalculatorTests: XCTestCase {
     func test_kingPossibleMovesFieldsOccupiedByOwnArmy() throws {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         gameState.addPiece(King(.white, "e1"))
         let sut = MoveCalculator(gameState: gameState)
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 5)
@@ -20,7 +20,7 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_kingCannotApproachEnemyKing() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         gameState.addPiece(King(.white, "d4"))
         let sut = MoveCalculator(gameState: gameState)
         XCTAssertTrue(sut.possibleMoves(from: "d4")?.passive.contains("d5") ?? false)
@@ -29,7 +29,7 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_castlingWhiteKingPossibleMoves() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
@@ -38,15 +38,15 @@ final class MoveCalculatorTests: XCTestCase {
         let sut = MoveCalculator(gameState: gameState)
 
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
-        king?.address = "e2"
+        king?.square = "e2"
         XCTAssertEqual(sut.possibleMoves(from: "e2")?.count, 8)
         print(sut.possibleMoves(from: "e2"))
-        king?.address = "e1"
+        king?.square = "e1"
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 5)
     }
 
     func test_castlingWhiteQueenSidePossibleMove() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
@@ -55,14 +55,14 @@ final class MoveCalculatorTests: XCTestCase {
         let sut = MoveCalculator(gameState: gameState)
 
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
-        queenSideRook?.address = "a2"
+        queenSideRook?.square = "a2"
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 6)
-        queenSideRook?.address = "a1"
+        queenSideRook?.square = "a1"
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 6)
     }
 
     func test_castlingWhiteKingSidePossibleMove() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
@@ -71,14 +71,14 @@ final class MoveCalculatorTests: XCTestCase {
         let sut = MoveCalculator(gameState: gameState)
 
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
-        kingSideRook?.address = "h2"
+        kingSideRook?.square = "h2"
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 6)
-        kingSideRook?.address = "h1"
+        kingSideRook?.square = "h1"
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 6)
     }
 
     func test_castlingBlackKingPossibleMoves() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
@@ -87,14 +87,14 @@ final class MoveCalculatorTests: XCTestCase {
         let sut = MoveCalculator(gameState: gameState)
 
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 7)
-        king?.address = "e7"
+        king?.square = "e7"
         XCTAssertEqual(sut.possibleMoves(from: "e7")?.count, 8)
-        king?.address = "e8"
+        king?.square = "e8"
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 5)
     }
 
     func test_castlingBlackQueenSidePossibleMove() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
@@ -103,14 +103,14 @@ final class MoveCalculatorTests: XCTestCase {
         let sut = MoveCalculator(gameState: gameState)
 
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 7)
-        queenSideRook?.address = "a7"
+        queenSideRook?.square = "a7"
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 6)
-        queenSideRook?.address = "a8"
+        queenSideRook?.square = "a8"
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 6)
     }
 
     func test_castlingBlackKingSidePossibleMove() {
-        let gameState = GameState()
+        let gameState = ChessBoard()
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
@@ -119,9 +119,9 @@ final class MoveCalculatorTests: XCTestCase {
         let sut = MoveCalculator(gameState: gameState)
 
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 7)
-        kingSideRook?.address = "h7"
+        kingSideRook?.square = "h7"
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 6)
-        kingSideRook?.address = "h8"
+        kingSideRook?.square = "h8"
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 6)
     }
 }

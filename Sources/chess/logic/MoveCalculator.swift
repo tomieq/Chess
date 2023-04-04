@@ -8,13 +8,13 @@
 import Foundation
 
 class MoveCalculator {
-    let gameState: GameState
+    let gameState: ChessBoard
 
-    init(gameState: GameState) {
+    init(gameState: ChessBoard) {
         self.gameState = gameState
     }
     
-    func possibleMoves(from address: ChessPieceAddress) -> PossibleMoves? {
+    func possibleMoves(from address: BoardSquare) -> PossibleMoves? {
         guard let piece = self.gameState.getPiece(address) else {
             print("Could not find a piece at address \(address)")
             return nil
@@ -28,14 +28,14 @@ class MoveCalculator {
         return nil
     }
     
-    func isFieldOccupiedByOwnArmy(piece: ChessPiece, address: ChessPieceAddress) -> Bool {
+    func isFieldOccupiedByOwnArmy(piece: ChessPiece, address: BoardSquare) -> Bool {
         guard let colorOnAddress = self.gameState.getPiece(address)?.color else {
             return false
         }
         return colorOnAddress == piece.color
     }
     
-    func isFieldOccupiedByEnemyArmy(piece: ChessPiece, address: ChessPieceAddress) -> Bool {
+    func isFieldOccupiedByEnemyArmy(piece: ChessPiece, address: BoardSquare) -> Bool {
         guard let colorOnAddress = self.gameState.getPiece(address)?.color else {
             return false
         }
@@ -43,9 +43,9 @@ class MoveCalculator {
     }
 }
 
-extension Array where Element == ChessPieceAddress {
-    func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, gameState: GameState) -> [Element] {
-        let myArmyFields = gameState.pieces.filter{ $0.color == piece.color.other }.map { $0.address }
-        return self.filter { !myArmyFields.contains($0) }
+extension Array where Element == BoardSquare {
+    func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, gameState: ChessBoard) -> [Element] {
+        let myArmySquares = gameState.pieces.filter{ $0.color == piece.color.other }.map { $0.square }
+        return self.filter { !myArmySquares.contains($0) }
     }
 }

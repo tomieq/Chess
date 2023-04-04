@@ -30,7 +30,7 @@ extension BoardSquare: ExpressibleByStringLiteral {
               let column = BoardColumn(firstLetter),
               let lastLetter = value.last,
               let row = Int("\(lastLetter)") else {
-            print("Invalid text address(\(value)) while creating ChessPieceAddress")
+            print("Invalid text address(\(value)) while creating BoardSquare")
             fatalError()
         }
         self.column = column

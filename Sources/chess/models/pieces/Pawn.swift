@@ -8,11 +8,11 @@
 import Foundation
 
 class Pawn: ChessPiece, MovableChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ address: ChessPieceAddress) {
-        self.init(.pawn, color, address)
+    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
+        self.init(.pawn, color, square)
     }
 
-    var basicMoves: [ChessPieceAddress] {
+    var basicMoves: [BoardSquare] {
         switch self.color {
         case .white:
             return self.basicWhiteMoves()
@@ -21,26 +21,26 @@ class Pawn: ChessPiece, MovableChessPiece {
         }
     }
 
-    private func basicWhiteMoves() -> [ChessPieceAddress] {
-        var moves: [ChessPieceAddress?] = [
-            self.address.move(.up),
-            self.address.move(.up)?.move(.left),
-            self.address.move(.up)?.move(.right)
+    private func basicWhiteMoves() -> [BoardSquare] {
+        var moves: [BoardSquare?] = [
+            self.square.move(.up),
+            self.square.move(.up)?.move(.left),
+            self.square.move(.up)?.move(.right)
         ]
-        if self.address.row == 2 {
-            moves.append(self.address.move(.up)?.move(.up))
+        if self.square.row == 2 {
+            moves.append(self.square.move(.up)?.move(.up))
         }
         return moves.compactMap { $0 }
     }
 
-    private func basicBlackMoves() -> [ChessPieceAddress] {
-        var moves: [ChessPieceAddress?] = [
-            self.address.move(.down),
-            self.address.move(.down)?.move(.left),
-            self.address.move(.down)?.move(.right)
+    private func basicBlackMoves() -> [BoardSquare] {
+        var moves: [BoardSquare?] = [
+            self.square.move(.down),
+            self.square.move(.down)?.move(.left),
+            self.square.move(.down)?.move(.right)
         ]
-        if self.address.row == 7 {
-            moves.append(self.address.move(.down)?.move(.down))
+        if self.square.row == 7 {
+            moves.append(self.square.move(.down)?.move(.down))
         }
         return moves.compactMap { $0 }
     }

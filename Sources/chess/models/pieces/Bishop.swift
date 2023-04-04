@@ -8,16 +8,16 @@
 import Foundation
 
 class Bishop: ChessPiece, MovableChessPiece {
-    convenience init?(_ color: ChessPieceColor, _ address: ChessPieceAddress) {
-        self.init(.bishop, color, address)
+    convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
+        self.init(.bishop, color, square)
     }
 
-    var basicMoves: [ChessPieceAddress] {
-        var moves: [ChessPieceAddress?] = []
-        var toUpLeft: ChessPieceAddress? = self.address
-        var toUpRight: ChessPieceAddress? = self.address
-        var toDownLeft: ChessPieceAddress? = self.address
-        var toDownRight: ChessPieceAddress? = self.address
+    var basicMoves: [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        var toUpLeft: BoardSquare? = self.square
+        var toUpRight: BoardSquare? = self.square
+        var toDownLeft: BoardSquare? = self.square
+        var toDownRight: BoardSquare? = self.square
         for _ in 1..<8 {
             toUpLeft = toUpLeft?.move(.up)?.move(.left)
             toUpRight = toUpRight?.move(.up)?.move(.right)
