@@ -23,26 +23,24 @@ class MoveValidator {
             print("Could not find a piece at address \(address)")
             return []
         }
-        let prefilteredMoves = self.filterAddressesTakenByOwnArmy(piece: piece, basicMoves: piece.basicMoves)
+        var moves: [ChessPieceAddress] = []
         switch piece.type {
         case .king:
-            let validator = KingMoveValidator(gameState: self.gameState, king: piece)
-            return validator.possibleMoves(prefilteredMoves: prefilteredMoves)
+            let validator = KingMoveValidator(gameState: self.gameState, king: piece as! King)
+            moves = validator.possibleMoves(from: address)
         default:
             break
         }
-        return prefilteredMoves
+        return moves.filter { self.isFieldTaken(piece: piece, address: $0) }
     }
 
-    private func filterAddressesTakenByOwnArmy(piece: ChessPiece, basicMoves: [ChessPieceAddress]) -> [ChessPieceAddress] {
-        basicMoves.filter { [weak self] address in
-            guard let pieceOnAddress = self?.gameState.getPiece(address) else {
-                return true
-            }
-            if pieceOnAddress.color == piece.color {
-                return false
-            }
+    private func isFieldTaken(piece: ChessPiece, address: ChessPieceAddress) -> Bool {
+        guard let pieceOnAddress = self.gameState.getPiece(address) else {
             return true
         }
+        if pieceOnAddress.color == piece.color {
+            return false
+        }
+        return true
     }
 }

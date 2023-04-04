@@ -17,6 +17,10 @@ class King: ChessPiece, MovableChessPiece {
     }
 
     var canCastle: Bool {
-        self.moveCounter == 0
+        self.moveCounter == 0 && self.address == self.startAddress
+    }
+
+    var startAddress: ChessPieceAddress {
+        self.color == .white ? "e1" : "e8"
     }
 }
