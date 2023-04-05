@@ -8,35 +8,37 @@
 import Foundation
 
 class MoveCalculator {
-    let gameState: ChessBoard
+    let chessBoard: ChessBoard
 
-    init(gameState: ChessBoard) {
-        self.gameState = gameState
+    init(chessBoard: ChessBoard) {
+        self.chessBoard = chessBoard
     }
 
     func possibleMoves(from address: BoardSquare) -> PossibleMoves? {
-        guard let piece = self.gameState.getPiece(address) else {
+        guard let piece = self.chessBoard.getPiece(address) else {
             print("Could not find a piece at address \(address)")
             return nil
         }
         switch piece.type {
         case .king:
             return self.kingMoves(piece as? King)
+        case .rook:
+            return self.rookMoves(piece as? Rook)
         default:
             break
         }
         return nil
     }
 
-    func isFieldOccupiedByOwnArmy(piece: ChessPiece, address: BoardSquare) -> Bool {
-        guard let colorOnAddress = self.gameState.getPiece(address)?.color else {
+    func isFieldOccupiedByOwnArmy(piece: ChessPiece, square: BoardSquare) -> Bool {
+        guard let colorOnAddress = self.chessBoard.getPiece(square)?.color else {
             return false
         }
         return colorOnAddress == piece.color
     }
 
-    func isFieldOccupiedByEnemyArmy(piece: ChessPiece, address: BoardSquare) -> Bool {
-        guard let colorOnAddress = self.gameState.getPiece(address)?.color else {
+    func isFieldOccupiedByEnemyArmy(piece: ChessPiece, square: BoardSquare) -> Bool {
+        guard let colorOnAddress = self.chessBoard.getPiece(square)?.color else {
             return false
         }
         return colorOnAddress != piece.color
@@ -44,8 +46,8 @@ class MoveCalculator {
 }
 
 extension Array where Element == BoardSquare {
-    func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, gameState: ChessBoard) -> [Element] {
-        let myArmySquares = gameState.pieces.filter{ $0.color == piece.color.other }.map { $0.square }
+    func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, chessBoard: ChessBoard) -> [Element] {
+        let myArmySquares = chessBoard.pieces.filter{ $0.color == piece.color.other }.map { $0.square }
         return self.filter { !myArmySquares.contains($0) }
     }
 }

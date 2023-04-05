@@ -61,7 +61,7 @@ class ChessBoard {
         }
     }
 
-    func isFieldFree(_ square: BoardSquare) -> Bool {
+    func isSquareFree(_ square: BoardSquare) -> Bool {
         !self.pieces.contains{ $0.square == square }
     }
 }

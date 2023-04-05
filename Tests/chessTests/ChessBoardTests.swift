@@ -42,4 +42,12 @@ class ChessBoardTests: XCTestCase {
         XCTAssertEqual(sut.getPiece("d1")?.type, .queen)
         XCTAssertEqual(sut.getPiece("e1")?.type, .king)
     }
+
+    func test_isSquareFree() {
+        let sut = ChessBoard()
+        sut.addPieces(.black, "c7 d7 f7")
+        sut.addPieces(.white, "b2")
+        XCTAssertTrue(sut.isSquareFree("c2"))
+        XCTAssertFalse(sut.isSquareFree("c7"))
+    }
 }

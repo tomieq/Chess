@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MoveDirection {
+enum MoveDirection: CaseIterable {
     case right
     case left
     case up

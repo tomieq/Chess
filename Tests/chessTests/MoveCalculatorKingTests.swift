@@ -1,41 +1,41 @@
 import XCTest
 @testable import chess
 
-final class MoveCalculatorTests: XCTestCase {
+final class MoveCalculatorKingTests: XCTestCase {
     func test_kingPossibleMovesFieldsOccupiedByOwnArmy() throws {
-        let gameState = ChessBoard()
-        gameState.addPiece(King(.white, "e1"))
-        let sut = MoveCalculator(gameState: gameState)
+        let chessBoard = ChessBoard()
+        chessBoard.addPiece(King(.white, "e1"))
+        let sut = MoveCalculator(chessBoard: chessBoard)
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 5)
-        gameState.addPiece(Pawn(.white, "e2"))
+        chessBoard.addPiece(Pawn(.white, "e2"))
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 4)
-        gameState.addPiece(Pawn(.white, "f2"))
+        chessBoard.addPiece(Pawn(.white, "f2"))
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 3)
-        gameState.addPiece(Pawn(.white, "d2"))
+        chessBoard.addPiece(Pawn(.white, "d2"))
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 2)
-        gameState.addPiece(Queen(.white, "d1"))
+        chessBoard.addPiece(Queen(.white, "d1"))
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 1)
-        gameState.addPiece(Bishop(.white, "f1"))
+        chessBoard.addPiece(Bishop(.white, "f1"))
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 0)
     }
 
     func test_kingCannotApproachEnemyKing() {
-        let gameState = ChessBoard()
-        gameState.addPiece(King(.white, "d4"))
-        let sut = MoveCalculator(gameState: gameState)
+        let chessBoard = ChessBoard()
+        chessBoard.addPiece(King(.white, "d4"))
+        let sut = MoveCalculator(chessBoard: chessBoard)
         XCTAssertTrue(sut.possibleMoves(from: "d4")?.passive.contains("d5") ?? false)
-        gameState.addPiece(King(.black, "d6"))
+        chessBoard.addPiece(King(.black, "d6"))
         XCTAssertFalse(sut.possibleMoves(from: "d4")?.passive.contains("d5") ?? true)
     }
 
     func test_castlingWhiteKingPossibleMoves() {
-        let gameState = ChessBoard()
+        let chessBoard = ChessBoard()
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
-        gameState.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.addPieces(king, kingSideRook, queenSideRook)
         XCTAssertEqual(king?.moveCounter, 0)
-        let sut = MoveCalculator(gameState: gameState)
+        let sut = MoveCalculator(chessBoard: chessBoard)
 
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
         king?.square = "e2"
@@ -45,13 +45,13 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_castlingWhiteQueenSidePossibleMove() {
-        let gameState = ChessBoard()
+        let chessBoard = ChessBoard()
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
-        gameState.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.addPieces(king, kingSideRook, queenSideRook)
         XCTAssertEqual(king?.moveCounter, 0)
-        let sut = MoveCalculator(gameState: gameState)
+        let sut = MoveCalculator(chessBoard: chessBoard)
 
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
         queenSideRook?.square = "a2"
@@ -61,13 +61,13 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_castlingWhiteKingSidePossibleMove() {
-        let gameState = ChessBoard()
+        let chessBoard = ChessBoard()
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
-        gameState.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.addPieces(king, kingSideRook, queenSideRook)
         XCTAssertEqual(king?.moveCounter, 0)
-        let sut = MoveCalculator(gameState: gameState)
+        let sut = MoveCalculator(chessBoard: chessBoard)
 
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
         kingSideRook?.square = "h2"
@@ -77,13 +77,13 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_castlingBlackKingPossibleMoves() {
-        let gameState = ChessBoard()
+        let chessBoard = ChessBoard()
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
-        gameState.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.addPieces(king, kingSideRook, queenSideRook)
         XCTAssertEqual(king?.moveCounter, 0)
-        let sut = MoveCalculator(gameState: gameState)
+        let sut = MoveCalculator(chessBoard: chessBoard)
 
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 7)
         king?.square = "e7"
@@ -93,13 +93,13 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_castlingBlackQueenSidePossibleMove() {
-        let gameState = ChessBoard()
+        let chessBoard = ChessBoard()
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
-        gameState.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.addPieces(king, kingSideRook, queenSideRook)
         XCTAssertEqual(king?.moveCounter, 0)
-        let sut = MoveCalculator(gameState: gameState)
+        let sut = MoveCalculator(chessBoard: chessBoard)
 
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 7)
         queenSideRook?.square = "a7"
@@ -109,13 +109,13 @@ final class MoveCalculatorTests: XCTestCase {
     }
 
     func test_castlingBlackKingSidePossibleMove() {
-        let gameState = ChessBoard()
+        let chessBoard = ChessBoard()
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
-        gameState.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.addPieces(king, kingSideRook, queenSideRook)
         XCTAssertEqual(king?.moveCounter, 0)
-        let sut = MoveCalculator(gameState: gameState)
+        let sut = MoveCalculator(chessBoard: chessBoard)
 
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 7)
         kingSideRook?.square = "h7"

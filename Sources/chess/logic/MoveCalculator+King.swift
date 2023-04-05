@@ -12,10 +12,10 @@ extension MoveCalculator {
     func kingMoves(_ piece: King?) -> PossibleMoves? {
         guard let king = piece else { return nil }
         let basicMoves = king.basicMoves
-            .withoutOccupiedByMyArmyFields(king, gameState: self.gameState)
-            .withoutEnemyKingBarrier(king, gameState: self.gameState)
-        let agresive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, address: $0) }
-        var passive = basicMoves.filter{ self.gameState.isFieldFree($0) }
+            .withoutOccupiedByMyArmyFields(king, chessBoard: self.chessBoard)
+            .withoutEnemyKingBarrier(king, chessBoard: self.chessBoard)
+        let agresive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, square: $0) }
+        var passive = basicMoves.filter{ self.chessBoard.isSquareFree($0) }
         passive.append(contentsOf: self.castlingMoves(for: king))
         return PossibleMoves(passive: passive, agressive: agresive)
     }
@@ -28,17 +28,17 @@ extension MoveCalculator {
         var moves: [BoardSquare] = []
         switch king.color {
         case .white:
-            if let rook = self.gameState.getPiece("h1") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("h1") as? Rook, rook.canCastle {
                 moves.append("g1")
             }
-            if let rook = self.gameState.getPiece("a1") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("a1") as? Rook, rook.canCastle {
                 moves.append("c1")
             }
         case .black:
-            if let rook = self.gameState.getPiece("h8") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("h8") as? Rook, rook.canCastle {
                 moves.append("g8")
             }
-            if let rook = self.gameState.getPiece("a8") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("a8") as? Rook, rook.canCastle {
                 moves.append("c8")
             }
         }
@@ -47,8 +47,8 @@ extension MoveCalculator {
 }
 
 fileprivate extension Array where Element == BoardSquare {
-    func withoutEnemyKingBarrier(_ king: King, gameState: ChessBoard) -> [Element] {
-        let enemyKing = gameState.pieces.first{ $0.type == .king && $0.color == king.color.other }
+    func withoutEnemyKingBarrier(_ king: King, chessBoard: ChessBoard) -> [Element] {
+        let enemyKing = chessBoard.pieces.first{ $0.type == .king && $0.color == king.color.other }
         guard let enemyKingArea = enemyKing?.square.neighbours else {
             return self
         }

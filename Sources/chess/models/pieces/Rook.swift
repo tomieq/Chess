@@ -13,22 +13,7 @@ class Rook: ChessPiece, MovableChessPiece {
     }
 
     var basicMoves: [BoardSquare] {
-        var moves: [BoardSquare?] = []
-        var toLeft: BoardSquare? = self.square
-        var toRight: BoardSquare? = self.square
-        var toUp: BoardSquare? = self.square
-        var toDown: BoardSquare? = self.square
-        for _ in 1..<8 {
-            toLeft = toLeft?.move(.left)
-            toRight = toRight?.move(.right)
-            toUp = toUp?.move(.up)
-            toDown = toDown?.move(.down)
-            moves.append(toLeft)
-            moves.append(toRight)
-            moves.append(toUp)
-            moves.append(toDown)
-        }
-        return moves.compactMap { $0 }
+        self.moves(to: .right) + self.moves(to: .left) + self.moves(to: .up) + self.moves(to: .down)
     }
 
     var canCastle: Bool {
@@ -42,5 +27,15 @@ class Rook: ChessPiece, MovableChessPiece {
         case .black:
             return ["a8", "h8"].contains(self.square)
         }
+    }
+
+    func moves(to direction: MoveDirection) -> [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        var square: BoardSquare? = self.square
+        for _ in 1..<8 {
+            square = square?.move(direction)
+            moves.append(square)
+        }
+        return moves.compactMap { $0 }
     }
 }
