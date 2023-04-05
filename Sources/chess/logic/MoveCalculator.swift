@@ -24,6 +24,8 @@ class MoveCalculator {
             return self.kingMoves(piece as? King)
         case .rook:
             return self.rookMoves(piece as? Rook)
+        case .knight:
+            return self.knightMoves(piece as? Knight)
         default:
             break
         }
