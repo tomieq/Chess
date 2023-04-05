@@ -163,3 +163,31 @@ extension BoardSquare {
         ].compactMap { $0 }
     }
 }
+
+extension BoardSquare {
+    func squares(to direction: MoveDirection) -> [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        var square: BoardSquare? = self
+        for _ in 1..<8 {
+            square = square?.move(direction)
+            if square.isNil {
+                break
+            }
+            moves.append(square)
+        }
+        return moves.compactMap { $0 }
+    }
+
+    func squares(to direction: DiagonalDirection) -> [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        var square: BoardSquare? = self
+        for _ in 1..<8 {
+            square = square?.move(direction)
+            if square.isNil {
+                break
+            }
+            moves.append(square)
+        }
+        return moves.compactMap { $0 }
+    }
+}

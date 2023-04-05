@@ -13,19 +13,6 @@ class Bishop: ChessPiece, MovableChessPiece {
     }
 
     var basicMoves: [BoardSquare] {
-        self.squares(to: .upRight) + self.squares(to: .upLeft) + self.squares(to: .downRight) + self.squares(to: .downLeft)
-    }
-
-    func squares(to direction: DiagonalDirection) -> [BoardSquare] {
-        var moves: [BoardSquare?] = []
-        var square: BoardSquare? = self.square
-        for _ in 1..<8 {
-            square = square?.move(direction)
-            if square.isNil {
-                break
-            }
-            moves.append(square)
-        }
-        return moves.compactMap { $0 }
+        self.square.squares(to: .upRight) + self.square.squares(to: .upLeft) + self.square.squares(to: .downRight) + self.square.squares(to: .downLeft)
     }
 }

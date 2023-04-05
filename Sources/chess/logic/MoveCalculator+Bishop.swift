@@ -14,7 +14,7 @@ extension MoveCalculator {
         var agressive: [BoardSquare] = []
 
         for direction in DiagonalDirection.allCases {
-            for square in bishop.squares(to: direction) {
+            for square in bishop.square.squares(to: direction) {
                 if self.chessBoard.isSquareFree(square) {
                     passive.append(square)
                 } else if self.isFieldOccupiedByEnemyArmy(piece: bishop, square: square) {

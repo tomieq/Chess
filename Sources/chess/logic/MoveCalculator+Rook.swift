@@ -15,7 +15,7 @@ extension MoveCalculator {
         var agressive: [BoardSquare] = []
 
         for direction in MoveDirection.allCases {
-            for square in rook.squares(to: direction) {
+            for square in rook.square.squares(to: direction) {
                 if self.chessBoard.isSquareFree(square) {
                     passive.append(square)
                 } else if self.isFieldOccupiedByEnemyArmy(piece: rook, square: square) {

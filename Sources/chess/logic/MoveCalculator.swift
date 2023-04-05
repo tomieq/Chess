@@ -30,10 +30,9 @@ class MoveCalculator {
             return self.knightMoves(piece as? Knight)
         case .bishop:
             return self.bishopMoves(piece as? Bishop)
-        default:
-            break
+        case .queen:
+            return self.queenMoves(piece as? Queen)
         }
-        return nil
     }
 
     func isFieldOccupiedByOwnArmy(piece: ChessPiece, square: BoardSquare) -> Bool {
