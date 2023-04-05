@@ -70,11 +70,12 @@ extension ChessPieceType {
 }
 
 extension ChessPieceType {
-    static func make(pl letter: String) -> ChessPieceType? {
-        Self.allCases.first{ $0.plName.first == letter.first }
-    }
-
-    static func make(en letter: String) -> ChessPieceType? {
-        Self.allCases.first{ $0.enLetter.first == letter.first }
+    static func make(letter: String, language: Language) -> ChessPieceType? {
+        switch language {
+        case .english:
+            return Self.allCases.first{ $0.enLetter.first == letter.first }
+        case .polish:
+            return Self.allCases.first{ $0.plName.first == letter.first }
+        }
     }
 }

@@ -31,4 +31,15 @@ class ChessBoardTests: XCTestCase {
         XCTAssertEqual(sut.getPiece("b2")?.type, .pawn)
         XCTAssertEqual(sut.getPiece("b2")?.color, .white)
     }
+
+    func test_addingChessPiecesUsingText() {
+        let sut = ChessBoard()
+        sut.addPieces(.black, "Wa1 Sb1 Gc1 Hd1 Ke1")
+        XCTAssertEqual(sut.pieces.count, 5)
+        XCTAssertEqual(sut.getPiece("a1")?.type, .rook)
+        XCTAssertEqual(sut.getPiece("b1")?.type, .knight)
+        XCTAssertEqual(sut.getPiece("c1")?.type, .bishop)
+        XCTAssertEqual(sut.getPiece("d1")?.type, .queen)
+        XCTAssertEqual(sut.getPiece("e1")?.type, .king)
+    }
 }

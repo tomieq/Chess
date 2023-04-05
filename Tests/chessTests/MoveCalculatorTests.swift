@@ -40,7 +40,6 @@ final class MoveCalculatorTests: XCTestCase {
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 7)
         king?.square = "e2"
         XCTAssertEqual(sut.possibleMoves(from: "e2")?.count, 8)
-        print(sut.possibleMoves(from: "e2"))
         king?.square = "e1"
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 5)
     }

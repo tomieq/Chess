@@ -10,18 +10,18 @@ import XCTest
 
 class ChessPieceTypeTests: XCTestCase {
     func test_creatingTypeFromPolishLetter() {
-        XCTAssertEqual(ChessPieceType.make(pl: "K"), .king)
-        XCTAssertEqual(ChessPieceType.make(pl: "H"), .queen)
-        XCTAssertEqual(ChessPieceType.make(pl: "S"), .knight)
-        XCTAssertEqual(ChessPieceType.make(pl: "W"), .rook)
-        XCTAssertEqual(ChessPieceType.make(pl: "G"), .bishop)
+        XCTAssertEqual(ChessPieceType.make(letter: "K", language: .polish), .king)
+        XCTAssertEqual(ChessPieceType.make(letter: "H", language: .polish), .queen)
+        XCTAssertEqual(ChessPieceType.make(letter: "S", language: .polish), .knight)
+        XCTAssertEqual(ChessPieceType.make(letter: "W", language: .polish), .rook)
+        XCTAssertEqual(ChessPieceType.make(letter: "G", language: .polish), .bishop)
     }
 
     func test_creatingTypeFromEnglishLetter() {
-        XCTAssertEqual(ChessPieceType.make(en: "K"), .king)
-        XCTAssertEqual(ChessPieceType.make(en: "Q"), .queen)
-        XCTAssertEqual(ChessPieceType.make(en: "N"), .knight)
-        XCTAssertEqual(ChessPieceType.make(en: "R"), .rook)
-        XCTAssertEqual(ChessPieceType.make(en: "B"), .bishop)
+        XCTAssertEqual(ChessPieceType.make(letter: "K", language: .english), .king)
+        XCTAssertEqual(ChessPieceType.make(letter: "Q", language: .english), .queen)
+        XCTAssertEqual(ChessPieceType.make(letter: "N", language: .english), .knight)
+        XCTAssertEqual(ChessPieceType.make(letter: "R", language: .english), .rook)
+        XCTAssertEqual(ChessPieceType.make(letter: "B", language: .english), .bishop)
     }
 }
