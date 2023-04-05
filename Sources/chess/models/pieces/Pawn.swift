@@ -12,36 +12,41 @@ class Pawn: ChessPiece, MovableChessPiece {
         self.init(.pawn, color, square)
     }
 
-    var basicMoves: [BoardSquare] {
+    var crawningDirection: MoveDirection {
         switch self.color {
         case .white:
-            return self.basicWhiteMoves()
+            return .up
         case .black:
-            return self.basicBlackMoves()
+            return .down
         }
     }
 
-    private func basicWhiteMoves() -> [BoardSquare] {
-        var moves: [BoardSquare?] = [
-            self.square.move(.up),
-            self.square.move(.up)?.move(.left),
-            self.square.move(.up)?.move(.right)
-        ]
-        if self.square.row == 2 {
-            moves.append(self.square.move(.up)?.move(.up))
+    var isAtStartingSquare: Bool {
+        switch self.color {
+        case .white:
+            return self.square.row == 2
+        case .black:
+            return self.square.row == 7
         }
-        return moves.compactMap { $0 }
     }
 
-    private func basicBlackMoves() -> [BoardSquare] {
-        var moves: [BoardSquare?] = [
-            self.square.move(.down),
-            self.square.move(.down)?.move(.left),
-            self.square.move(.down)?.move(.right)
-        ]
-        if self.square.row == 7 {
-            moves.append(self.square.move(.down)?.move(.down))
+    var passiveMoves: [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        moves.append(self.square.move(self.crawningDirection))
+        if self.isAtStartingSquare {
+            moves.append(self.square.move(self.crawningDirection)?.move(self.crawningDirection))
         }
-        return moves.compactMap { $0 }
+        return moves.compactMap{ $0 }
+    }
+
+    var agressiveMoves: [BoardSquare] {
+        var moves: [BoardSquare?] = []
+        moves.append(self.square.move(self.crawningDirection)?.move(.left))
+        moves.append(self.square.move(self.crawningDirection)?.move(.right))
+        return moves.compactMap{ $0 }
+    }
+
+    var basicMoves: [BoardSquare] {
+        self.passiveMoves + self.agressiveMoves
     }
 }

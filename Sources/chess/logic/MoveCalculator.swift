@@ -20,6 +20,8 @@ class MoveCalculator {
             return nil
         }
         switch piece.type {
+        case .pawn:
+            return self.pawnMoves(piece as? Pawn)
         case .king:
             return self.kingMoves(piece as? King)
         case .rook:
