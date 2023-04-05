@@ -1,5 +1,5 @@
 //
-//  ChessPiecePositionTests.swift
+//  BoardSquareTests.swift
 //
 //
 //  Created by Tomasz on 11/09/2022.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import chess
 
-final class ChessPiecePositionTests: XCTestCase {
+final class BoardSquareTests: XCTestCase {
     func test_movesFromLeftBottom() throws {
         let address = BoardSquare(.a, 1)
         XCTAssertNotNil(address)
@@ -130,5 +130,13 @@ final class ChessPiecePositionTests: XCTestCase {
         XCTAssertEqual(start.path(to: "e2").count, 3)
         XCTAssertTrue(start.path(to: "e2").contains("d3"))
         XCTAssertEqual(start.path(to: "f1").count, 4)
+    }
+
+    func test_diagonalMove() {
+        let start = BoardSquare("c4")
+        XCTAssertEqual(start.move(.upRight), "d5")
+        XCTAssertEqual(start.move(.upLeft), "b5")
+        XCTAssertEqual(start.move(.downRight), "d3")
+        XCTAssertEqual(start.move(.downLeft), "b3")
     }
 }

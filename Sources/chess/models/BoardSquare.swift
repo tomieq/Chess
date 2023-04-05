@@ -57,6 +57,19 @@ extension BoardSquare {
             return BoardSquare(self.column, self.row - 1)
         }
     }
+
+    func move(_ direction: DiagonalDirection) -> BoardSquare? {
+        switch direction {
+        case .upRight:
+            return BoardSquare(self.column.toRight, self.row + 1)
+        case .upLeft:
+            return BoardSquare(self.column.toLeft, self.row + 1)
+        case .downRight:
+            return BoardSquare(self.column.toRight, self.row - 1)
+        case .downLeft:
+            return BoardSquare(self.column.toLeft, self.row - 1)
+        }
+    }
 }
 
 extension BoardSquare {
