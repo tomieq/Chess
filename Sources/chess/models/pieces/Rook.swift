@@ -13,7 +13,7 @@ class Rook: ChessPiece, MovableChessPiece {
     }
 
     var basicMoves: [BoardSquare] {
-        self.moves(to: .right) + self.moves(to: .left) + self.moves(to: .up) + self.moves(to: .down)
+        self.squares(to: .right) + self.squares(to: .left) + self.squares(to: .up) + self.squares(to: .down)
     }
 
     var canCastle: Bool {
@@ -29,11 +29,14 @@ class Rook: ChessPiece, MovableChessPiece {
         }
     }
 
-    func moves(to direction: MoveDirection) -> [BoardSquare] {
+    func squares(to direction: MoveDirection) -> [BoardSquare] {
         var moves: [BoardSquare?] = []
         var square: BoardSquare? = self.square
         for _ in 1..<8 {
             square = square?.move(direction)
+            if square.isNil {
+                break
+            }
             moves.append(square)
         }
         return moves.compactMap { $0 }
