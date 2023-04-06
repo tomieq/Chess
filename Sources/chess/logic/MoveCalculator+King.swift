@@ -30,17 +30,21 @@ extension MoveCalculator {
         var moves: [BoardSquare] = []
         switch king.color {
         case .white:
-            if let rook = self.chessBoard.getPiece("h1") as? Rook, rook.canCastle, self.areSquaresFree("f1", "g1") {
+            if let rook = self.chessBoard.getPiece("h1") as? Rook, rook.canCastle,
+               self.areSquaresFree("f1", "g1"), self.areSquaresSafe(for: .white, "f1", "g1") {
                 moves.append("g1")
             }
-            if let rook = self.chessBoard.getPiece("a1") as? Rook, rook.canCastle, self.areSquaresFree("b1", "c1", "d1") {
+            if let rook = self.chessBoard.getPiece("a1") as? Rook, rook.canCastle,
+               self.areSquaresFree("b1", "c1", "d1"), self.areSquaresSafe(for: .white, "b1", "c1", "d1") {
                 moves.append("c1")
             }
         case .black:
-            if let rook = self.chessBoard.getPiece("h8") as? Rook, rook.canCastle, self.areSquaresFree("f8", "g8") {
+            if let rook = self.chessBoard.getPiece("h8") as? Rook, rook.canCastle,
+               self.areSquaresFree("f8", "g8"), self.areSquaresSafe(for: .black, "f8", "g8") {
                 moves.append("g8")
             }
-            if let rook = self.chessBoard.getPiece("a8") as? Rook, rook.canCastle, self.areSquaresFree("b8", "c8", "d8") {
+            if let rook = self.chessBoard.getPiece("a8") as? Rook, rook.canCastle,
+               self.areSquaresFree("b8", "c8", "d8"), self.areSquaresSafe(for: .black, "b8", "c8", "d8") {
                 moves.append("c8")
             }
         }
@@ -50,6 +54,16 @@ extension MoveCalculator {
     private func areSquaresFree(_ squares: BoardSquare...) -> Bool {
         for square in squares {
             if !self.chessBoard.isSquareFree(square) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private func areSquaresSafe(for color: ChessPieceColor, _ squares: BoardSquare...) -> Bool {
+        let controlledSquares = self.squaresControlled(by: color.other)
+        for square in squares {
+            if controlledSquares.contains(square) {
                 return false
             }
         }

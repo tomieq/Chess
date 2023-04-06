@@ -191,4 +191,52 @@ final class MoveCalculatorKingTests: XCTestCase {
         XCTAssertEqual(moves?.passive.contains("f8"), true)
         XCTAssertEqual(moves?.passive.contains("c8"), true)
     }
+
+    func test_whiteQueenCastlingBlockedByEnemy() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "Wa1 Ke1 Wh1 Sf3 d2 e2 f2")
+        chessBoard.addPieces(.black, "Wb5")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e1")
+        XCTAssertEqual(moves?.count, 3)
+        XCTAssertEqual(moves?.passive.contains("d1"), true)
+        XCTAssertEqual(moves?.passive.contains("f1"), true)
+        XCTAssertEqual(moves?.passive.contains("g1"), true)
+    }
+
+    func test_whiteKingSideCastlingBlockedByEnemy() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "Wa1 Sd3 Ke1 Wh1 d2 e2 f2")
+        chessBoard.addPieces(.black, "Wg4")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e1")
+        XCTAssertEqual(moves?.count, 3)
+        XCTAssertEqual(moves?.passive.contains("d1"), true)
+        XCTAssertEqual(moves?.passive.contains("f1"), true)
+        XCTAssertEqual(moves?.passive.contains("c1"), true)
+    }
+
+    func test_blackQueenSideCastlingBlockedByEnemy() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.black, "Wa8 Sf6 Ke8 Wh8 d7 e7 f7")
+        chessBoard.addPieces(.white, "Wb2")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e8")
+        XCTAssertEqual(moves?.count, 3)
+        XCTAssertEqual(moves?.passive.contains("d8"), true)
+        XCTAssertEqual(moves?.passive.contains("f8"), true)
+        XCTAssertEqual(moves?.passive.contains("g8"), true)
+    }
+
+    func test_blackKingSideCastlingBlockedByEnemy() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.black, "Wa8 Sc6 Ke8 Wh8 d7 e7 f7")
+        chessBoard.addPieces(.white, "Wg2")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e8")
+        XCTAssertEqual(moves?.count, 3)
+        XCTAssertEqual(moves?.passive.contains("d8"), true)
+        XCTAssertEqual(moves?.passive.contains("f8"), true)
+        XCTAssertEqual(moves?.passive.contains("c8"), true)
+    }
 }
