@@ -16,10 +16,13 @@ extension MoveCalculator {
         if calculation == .valid {
             basicMoves = basicMoves.withoutEnemyControlledFields(king, moveCalculator: self)
         }
-        let agresive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, square: $0) }
+        let agressive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, square: $0) }
         var passive = basicMoves.filter{ self.chessBoard.isSquareFree($0) }
         passive.append(contentsOf: self.castlingMoves(for: king))
-        return PossibleMoves(passive: passive, agressive: agresive)
+        if agressive.isEmpty, passive.isEmpty {
+            return nil
+        }
+        return PossibleMoves(passive: passive, agressive: agressive)
     }
 
     // returns possible castling moves
