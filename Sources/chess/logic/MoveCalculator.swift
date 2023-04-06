@@ -21,7 +21,7 @@ class MoveCalculator {
 
     func possibleMoves(from address: BoardSquare, calculation: MoveCalculation = .valid) -> PossibleMoves? {
         guard let piece = self.chessBoard.getPiece(address) else {
-            print("Could not find a piece at address \(address)")
+            print("Could not find a piece at square \(address)")
             return nil
         }
         switch piece.type {
@@ -54,9 +54,23 @@ class MoveCalculator {
         return colorOnAddress != piece.color
     }
 
+    func squaresControlled(from square: BoardSquare) -> [BoardSquare] {
+        guard let piece = self.chessBoard.getPiece(square) else {
+            print("Could not find a piece at square \(square)")
+            return []
+        }
+        switch piece.type {
+        case .pawn:
+            guard let pawn = piece as? Pawn else { return [] }
+            return pawn.agressiveMoves
+        default:
+            return self.possibleMoves(from: square, calculation: .light)?.passive ?? []
+        }
+    }
+
     func squaresControlled(by color: ChessPieceColor) -> [BoardSquare] {
         let pieces = self.chessBoard.getPieces(color: color)
-        let passiveMoves = pieces.compactMap{ self.possibleMoves(from: $0.square, calculation: .light) }.flatMap { $0.passive }
+        let passiveMoves = pieces.flatMap{ self.squaresControlled(from: $0.square) }
         return passiveMoves.unique
     }
 }
