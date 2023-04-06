@@ -10,7 +10,6 @@ import Foundation
 extension MoveCalculator {
     func rookMoves(_ piece: Rook?, calculation: MoveCalculation) -> PossibleMoves? {
         guard let rook = piece else { return nil }
-        // TODO: do not allow to move rook if move will expose king to the enemy
         var passive: [BoardSquare] = []
         var agressive: [BoardSquare] = []
 

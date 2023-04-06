@@ -37,3 +37,23 @@ class ChessPiece {
         self.init(type, color, BoardSquare(column, row))
     }
 }
+
+extension ChessPiece: Equatable {
+    static func == (lhs: ChessPiece, rhs: ChessPiece) -> Bool {
+        lhs.color == rhs.color && lhs.square == rhs.square && lhs.type == rhs.type
+    }
+}
+
+extension ChessPiece: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.type)
+        hasher.combine(self.color)
+        hasher.combine(self.square)
+    }
+}
+
+extension ChessPiece: CustomStringConvertible {
+    var description: String {
+        "\(self.color.plName) \(self.type.plName) z \(self.square)"
+    }
+}

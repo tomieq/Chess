@@ -98,10 +98,18 @@ class MoveCalculator {
         forecaster.chessBoard.remove(square)
         let pieces = forecaster.chessBoard.getPieces(color: piece.color)
             .compactMap { piece -> (ChessPiece, [BoardSquare])? in
-                guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.passive else {
-                    return nil
+                switch piece.type {
+                case .pawn:
+                    guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.agressive else {
+                        return nil
+                    }
+                    return (piece, squares)
+                default:
+                    guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.passive else {
+                        return nil
+                    }
+                    return (piece, squares)
                 }
-                return (piece, squares)
             }
             .filter { $0.1.contains(square) }
             .map { $0.0 }
@@ -112,7 +120,6 @@ class MoveCalculator {
 extension Array where Element == BoardSquare {
     func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, chessBoard: ChessBoard) -> [Element] {
         let myArmySquares = chessBoard.getPieces(color: piece.color.other).map { $0.square }
-        print("myArmySquares \(myArmySquares)")
         return self.filter { !myArmySquares.contains($0) }
     }
 }

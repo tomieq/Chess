@@ -27,4 +27,27 @@ class MoveCalculatorTests: XCTestCase {
         XCTAssertEqual(backup.contains("b4"), true)
         XCTAssertEqual(backup.contains("d2"), true)
     }
+
+    func test_infiniteLoop() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "a2 b2 c2 d4 f2 g2 h2 Wa1 Hd1 Ke1 Gd2 Gd3 Sf3 Wh1")
+        chessBoard.addPieces(.black, "a7 b7 c6 e6 f7 g7 h7 Wa8 Sb8 Gc8 Hd5 Ke8 Gf8 Wh8 Sf6")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        for color in ChessPieceColor.allCases {
+            let pieces = sut.chessBoard.getPieces(color: color)
+            for piece in pieces {
+                if let possibleMoves = sut.possibleMoves(from: piece.square) {
+                    for agressive in possibleMoves.agressive {
+                        guard let inDanger = sut.chessBoard.getPiece(agressive) else { continue }
+                        var info = "  🧠 \(piece.color.plName) \(piece.type.plName) z \(piece.square) może zbić \(inDanger.type.plName) na \(agressive)"
+                        let backup = sut.backup(for: agressive)
+                        if !backup.isEmpty {
+                            info.append(", ale ma on wsparcie od \(backup.map{ "\($0.type.plName) z \($0.square)" }.joined(separator: " oraz "))")
+                        }
+                        print(info)
+                    }
+                }
+            }
+        }
+    }
 }

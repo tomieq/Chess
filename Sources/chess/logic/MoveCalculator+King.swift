@@ -28,7 +28,9 @@ extension MoveCalculator {
                 agressive.append(square)
             }
         }
-        passive.append(contentsOf: self.castlingMoves(for: king))
+        if calculation == .deep {
+            passive.append(contentsOf: self.castlingMoves(for: king))
+        }
         if agressive.isEmpty, passive.isEmpty {
             return nil
         }

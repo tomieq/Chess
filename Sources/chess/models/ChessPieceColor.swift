@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ChessPieceColor: String {
+enum ChessPieceColor: String, CaseIterable {
     case white
     case black
 }
@@ -19,6 +19,17 @@ extension ChessPieceColor {
             return .black
         case .black:
             return .white
+        }
+    }
+}
+
+extension ChessPieceColor {
+    var plName: String {
+        switch self {
+        case .white:
+            return "biały"
+        case .black:
+            return "czarny"
         }
     }
 }

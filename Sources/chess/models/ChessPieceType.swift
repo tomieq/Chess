@@ -54,17 +54,17 @@ extension ChessPieceType {
     var plName: String {
         switch self {
         case .king:
-            return "Król"
+            return "król"
         case .queen:
-            return "Hetman"
+            return "hetman"
         case .rook:
-            return "Wieża"
+            return "wieża"
         case .bishop:
-            return "Goniec"
+            return "goniec"
         case .knight:
-            return "Skoczek"
+            return "skoczek"
         case .pawn:
-            return "Pion"
+            return "pion"
         }
     }
 }
@@ -75,7 +75,7 @@ extension ChessPieceType {
         case .english:
             return Self.allCases.first{ $0.enLetter.first == letter.first }
         case .polish:
-            return Self.allCases.first{ $0.plName.first == letter.first }
+            return Self.allCases.first{ $0.plName.uppercased().first == letter.first }
         }
     }
 }
