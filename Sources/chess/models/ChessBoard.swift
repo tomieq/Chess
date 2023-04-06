@@ -64,4 +64,15 @@ class ChessBoard {
     func isSquareFree(_ square: BoardSquare) -> Bool {
         !self.pieces.contains{ $0.square == square }
     }
+    
+    func setupGame() {
+        self.addPieces(.white, "Wa1 Sb1 Gc1 Hd1 Ke1 Gf1 Sg1 Wh1")
+        self.addPieces(.white, "a2 b2 c2 d2 e2 f2 g2 h2")
+        self.addPieces(.black, "Wa8 Sb8 Gc8 Hd8 Ke8 Gf8 Sg8 Wh8")
+        self.addPieces(.black, "a7 b7 c7 d7 e7 f7 g7 h7")
+    }
+    
+    func getPieces(color: ChessPieceColor) -> [GamePiece] {
+        self.pieces.filter{ $0.color == color }
+    }
 }
