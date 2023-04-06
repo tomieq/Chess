@@ -9,8 +9,8 @@ import Foundation
 
 class MoveCalculator {
     enum MoveCalculation {
-        case valid
-        case light
+        case deep
+        case shallow
     }
 
     let chessBoard: ChessBoard
@@ -23,24 +23,24 @@ class MoveCalculator {
         self.getPossibleMoves(from: square)
     }
 
-    private func getPossibleMoves(from square: BoardSquare, calculation: MoveCalculation = .valid) -> PossibleMoves? {
+    private func getPossibleMoves(from square: BoardSquare, calculation: MoveCalculation = .deep) -> PossibleMoves? {
         guard let piece = self.chessBoard.getPiece(square) else {
             print("Could not find a piece at square \(square)")
             return nil
         }
         switch piece.type {
         case .pawn:
-            return self.pawnMoves(piece as? Pawn)
+            return self.pawnMoves(piece as? Pawn, calculation: calculation)
         case .king:
             return self.kingMoves(piece as? King, calculation: calculation)
         case .rook:
-            return self.rookMoves(piece as? Rook)
+            return self.rookMoves(piece as? Rook, calculation: calculation)
         case .knight:
-            return self.knightMoves(piece as? Knight)
+            return self.knightMoves(piece as? Knight, calculation: calculation)
         case .bishop:
-            return self.bishopMoves(piece as? Bishop)
+            return self.bishopMoves(piece as? Bishop, calculation: calculation)
         case .queen:
-            return self.queenMoves(piece as? Queen)
+            return self.queenMoves(piece as? Queen, calculation: calculation)
         }
     }
 
@@ -58,6 +58,18 @@ class MoveCalculator {
         return colorOnAddress != piece.color
     }
 
+    func isMoveSafeForKing(piece: ChessPiece, to square: BoardSquare) -> Bool {
+        guard let king = self.chessBoard.getKing(color: piece.color) else {
+            return true
+        }
+        let forecaster = MoveCalculator(chessBoard: self.chessBoard.copy)
+        forecaster.chessBoard.move(source: piece.square, to: square)
+        let agressiveMoves = forecaster.chessBoard.getPieces(color: piece.color.other)
+            .compactMap { forecaster.getPossibleMoves(from: $0.square, calculation: .shallow) }
+            .flatMap{ $0.agressive }
+        return !agressiveMoves.contains(king.square)
+    }
+
     func squaresControlled(from square: BoardSquare) -> [BoardSquare] {
         guard let piece = self.chessBoard.getPiece(square) else {
             print("Could not find a piece at square \(square)")
@@ -68,7 +80,7 @@ class MoveCalculator {
             guard let pawn = piece as? Pawn else { return [] }
             return pawn.agressiveMoves
         default:
-            return self.getPossibleMoves(from: square, calculation: .light)?.passive ?? []
+            return self.getPossibleMoves(from: square, calculation: .shallow)?.passive ?? []
         }
     }
 

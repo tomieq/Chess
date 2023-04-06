@@ -13,7 +13,7 @@ class ChessBoard {
     var pieces: [GamePiece]
 
     var copy: ChessBoard {
-        ChessBoard(pieces: self.pieces)
+        ChessBoard(pieces: self.pieces.compactMap{ $0.copy })
     }
 
     init() {
@@ -21,7 +21,7 @@ class ChessBoard {
     }
 
     private init(pieces: [GamePiece]) {
-        self.pieces = pieces.compactMap{ $0.copy }
+        self.pieces = pieces
     }
 
     func addPiece(_ piece: GamePiece?) {
@@ -39,6 +39,10 @@ class ChessBoard {
 
     func getPiece(_ square: BoardSquare) -> GamePiece? {
         self.pieces.first{ $0.square == square }
+    }
+
+    func getKing(color: ChessPieceColor) -> ChessPiece? {
+        self.pieces.first { $0.type == .king && $0.color == color }
     }
 
     func addPieces(_ color: ChessPieceColor, _ txt: String, language: Language = .polish) {

@@ -13,7 +13,7 @@ extension MoveCalculator {
         guard let king = piece else { return nil }
         var basicMoves = king.basicMoves
             .withoutOccupiedByMyArmyFields(king, chessBoard: self.chessBoard)
-        if calculation == .valid {
+        if calculation == .deep {
             basicMoves = basicMoves.withoutEnemyControlledFields(king, moveCalculator: self)
         }
         let agressive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, square: $0) }

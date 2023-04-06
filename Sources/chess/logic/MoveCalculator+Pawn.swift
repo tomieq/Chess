@@ -8,13 +8,19 @@
 import Foundation
 
 extension MoveCalculator {
-    func pawnMoves(_ piece: Pawn?) -> PossibleMoves? {
+    func pawnMoves(_ piece: Pawn?, calculation: MoveCalculation) -> PossibleMoves? {
         guard let pawn = piece else { return nil }
         var passive: [BoardSquare] = []
         var agressive: [BoardSquare] = []
 
+        func isSafeForKing(piece: ChessPiece, to square: BoardSquare) -> Bool {
+            guard calculation == .deep else {
+                return true
+            }
+            return self.isMoveSafeForKing(piece: piece, to: square)
+        }
         for square in pawn.passiveMoves {
-            if self.chessBoard.isSquareFree(square) {
+            if self.chessBoard.isSquareFree(square), isSafeForKing(piece: pawn, to: square) {
                 passive.append(square)
             } else {
                 break
@@ -22,7 +28,7 @@ extension MoveCalculator {
         }
 
         for square in pawn.agressiveMoves {
-            if self.isFieldOccupiedByEnemyArmy(piece: pawn, square: square) {
+            if self.isFieldOccupiedByEnemyArmy(piece: pawn, square: square), isSafeForKing(piece: pawn, to: square) {
                 agressive.append(square)
             }
         }
