@@ -58,4 +58,13 @@ class ChessBoardTests: XCTestCase {
         sut.remove("c7")
         XCTAssertTrue(sut.isSquareFree("c7"))
     }
+
+    func test_move() {
+        let sut = ChessBoard()
+        sut.addPieces(.white, "d2")
+        XCTAssertFalse(sut.isSquareFree("d2"))
+        sut.move(source: "d2", to: "d3")
+        XCTAssertTrue(sut.isSquareFree("d2"))
+        XCTAssertFalse(sut.isSquareFree("d3"))
+    }
 }

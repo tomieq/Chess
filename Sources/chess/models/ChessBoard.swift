@@ -79,4 +79,14 @@ class ChessBoard {
     func remove(_ square: BoardSquare) {
         self.pieces = self.pieces.filter{ $0.square != square }
     }
+
+    func move(source: BoardSquare, to dest: BoardSquare) {
+        guard let piece = self.getPiece(source) else {
+            print("Cannot move piece from \(source) as there is nothing!")
+            return
+        }
+        self.remove(dest)
+        piece.square = dest
+        self.addPiece(piece)
+    }
 }
