@@ -14,14 +14,14 @@ class Knight: ChessPiece, MovableChessPiece {
 
     var basicMoves: [BoardSquare] {
         [
-            self.square.move(.right)?.move(.right)?.move(.up),
-            self.square.move(.right)?.move(.right)?.move(.down),
-            self.square.move(.left)?.move(.left)?.move(.up),
-            self.square.move(.left)?.move(.left)?.move(.down),
-            self.square.move(.up)?.move(.up)?.move(.right),
-            self.square.move(.up)?.move(.up)?.move(.left),
-            self.square.move(.down)?.move(.down)?.move(.right),
-            self.square.move(.down)?.move(.down)?.move(.left)
+            self.square.move(.right)?.move(.upRight),
+            self.square.move(.right)?.move(.downRight),
+            self.square.move(.left)?.move(.upLeft),
+            self.square.move(.left)?.move(.downLeft),
+            self.square.move(.up)?.move(.upRight),
+            self.square.move(.up)?.move(.upLeft),
+            self.square.move(.down)?.move(.downRight),
+            self.square.move(.down)?.move(.downLeft)
         ].compactMap { $0 }
     }
 }
