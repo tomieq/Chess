@@ -16,6 +16,10 @@ class King: ChessPiece, MovableChessPiece {
         self.square.neighbours
     }
 
+    var copy: GamePiece? {
+        King(self.color, self.square)
+    }
+
     var canCastle: Bool {
         self.moveCounter == 0 && self.square == self.startSquare
     }

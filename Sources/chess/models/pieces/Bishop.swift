@@ -15,4 +15,8 @@ class Bishop: ChessPiece, MovableChessPiece {
     var basicMoves: [BoardSquare] {
         self.square.squares(to: .upRight) + self.square.squares(to: .upLeft) + self.square.squares(to: .downRight) + self.square.squares(to: .downLeft)
     }
+
+    var copy: GamePiece? {
+        Bishop(self.color, self.square)
+    }
 }

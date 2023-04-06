@@ -42,4 +42,8 @@ class Queen: ChessPiece, MovableChessPiece {
         }
         return moves.compactMap { $0 }
     }
+
+    var copy: GamePiece? {
+        Queen(self.color, self.square)
+    }
 }

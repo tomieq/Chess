@@ -67,4 +67,17 @@ class ChessBoardTests: XCTestCase {
         XCTAssertTrue(sut.isSquareFree("d2"))
         XCTAssertFalse(sut.isSquareFree("d3"))
     }
+
+    func test_copy() {
+        let sut = ChessBoard()
+        sut.addPieces(.white, "d2")
+        XCTAssertFalse(sut.isSquareFree("d2"))
+
+        let copy = sut.copy
+        copy.move(source: "d2", to: "d3")
+
+        XCTAssertFalse(sut.isSquareFree("d2"))
+        XCTAssertTrue(copy.isSquareFree("d2"))
+        XCTAssertFalse(copy.isSquareFree("d3"))
+    }
 }

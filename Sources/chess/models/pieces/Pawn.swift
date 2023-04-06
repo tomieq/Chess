@@ -49,4 +49,8 @@ class Pawn: ChessPiece, MovableChessPiece {
     var basicMoves: [BoardSquare] {
         self.passiveMoves + self.agressiveMoves
     }
+
+    var copy: GamePiece? {
+        Pawn(self.color, self.square)
+    }
 }

@@ -12,8 +12,16 @@ typealias GamePiece = ChessPiece & MovableChessPiece
 class ChessBoard {
     var pieces: [GamePiece]
 
+    var copy: ChessBoard {
+        ChessBoard(pieces: self.pieces)
+    }
+
     init() {
         self.pieces = []
+    }
+
+    private init(pieces: [GamePiece]) {
+        self.pieces = pieces.compactMap{ $0.copy }
     }
 
     func addPiece(_ piece: GamePiece?) {

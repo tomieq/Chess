@@ -24,4 +24,8 @@ class Knight: ChessPiece, MovableChessPiece {
             self.square.move(.down)?.move(.downLeft)
         ].compactMap { $0 }
     }
+
+    var copy: GamePiece? {
+        Knight(self.color, self.square)
+    }
 }

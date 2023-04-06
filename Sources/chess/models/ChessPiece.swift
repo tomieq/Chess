@@ -9,6 +9,7 @@ import Foundation
 
 protocol MovableChessPiece {
     var basicMoves: [BoardSquare] { get }
+    var copy: GamePiece? { get }
 }
 
 class ChessPiece {

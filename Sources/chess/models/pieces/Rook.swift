@@ -16,6 +16,10 @@ class Rook: ChessPiece, MovableChessPiece {
         self.square.squares(to: .right) + self.square.squares(to: .left) + self.square.squares(to: .up) + self.square.squares(to: .down)
     }
 
+    var copy: GamePiece? {
+        Rook(self.color, self.square)
+    }
+
     var canCastle: Bool {
         self.moveCounter == 0 && self.isAtStartingPosition
     }
