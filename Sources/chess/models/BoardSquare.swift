@@ -156,10 +156,10 @@ extension BoardSquare {
             self.move(.left),
             self.move(.up),
             self.move(.down),
-            self.move(.up)?.move(.left),
-            self.move(.up)?.move(.right),
-            self.move(.down)?.move(.left),
-            self.move(.down)?.move(.right)
+            self.move(.upLeft),
+            self.move(.upRight),
+            self.move(.downLeft),
+            self.move(.downRight)
         ].compactMap { $0 }
     }
 }
