@@ -102,4 +102,14 @@ class ChessBoard {
         piece.square = dest
         self.addPiece(piece)
     }
+
+    var dump: String {
+        var txt = ""
+        for color in ChessPieceColor.allCases {
+            let pieces = self.getPieces(color: color)
+            let log = pieces.map{ ($0.type.plLetter + $0.square.description) }.joined(separator: " ")
+            txt.append("\(color): \(log)\n")
+        }
+        return txt.trimmingCharacters(in: .newlines)
+    }
 }

@@ -47,7 +47,7 @@ extension ChessPieceType {
         case .knight:
             return "N"
         case .pawn:
-            return "_"
+            return ""
         }
     }
 
@@ -67,6 +67,23 @@ extension ChessPieceType {
             return "pion"
         }
     }
+
+    var plLetter: String {
+        switch self {
+        case .king:
+            return "K"
+        case .queen:
+            return "H"
+        case .rook:
+            return "W"
+        case .bishop:
+            return "G"
+        case .knight:
+            return "S"
+        case .pawn:
+            return ""
+        }
+    }
 }
 
 extension ChessPieceType {
@@ -75,7 +92,7 @@ extension ChessPieceType {
         case .english:
             return Self.allCases.first{ $0.enLetter.first == letter.first }
         case .polish:
-            return Self.allCases.first{ $0.plName.uppercased().first == letter.first }
+            return Self.allCases.first{ $0.plLetter.uppercased().first == letter.first }
         }
     }
 }

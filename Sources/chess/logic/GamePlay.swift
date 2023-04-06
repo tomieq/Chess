@@ -18,6 +18,10 @@ class GamePlay {
         "\(self.moveCounter).\(self.turnColor == .black ? "." : "")"
     }
 
+    var dump: String {
+        self.chessBoard.dump
+    }
+
     init() {
         self.chessBoard = ChessBoard()
         self.moveCalculator = MoveCalculator(chessBoard: self.chessBoard)
