@@ -75,4 +75,8 @@ class ChessBoard {
     func getPieces(color: ChessPieceColor) -> [GamePiece] {
         self.pieces.filter{ $0.color == color }
     }
+
+    func remove(_ square: BoardSquare) {
+        self.pieces = self.pieces.filter{ $0.square != square }
+    }
 }
