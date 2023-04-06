@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum MoveCalculation {
+    case valid
+    case light
+}
+
 class MoveCalculator {
     let chessBoard: ChessBoard
 
@@ -14,7 +19,7 @@ class MoveCalculator {
         self.chessBoard = chessBoard
     }
 
-    func possibleMoves(from address: BoardSquare) -> PossibleMoves? {
+    func possibleMoves(from address: BoardSquare, calculation: MoveCalculation = .valid) -> PossibleMoves? {
         guard let piece = self.chessBoard.getPiece(address) else {
             print("Could not find a piece at address \(address)")
             return nil
@@ -23,7 +28,7 @@ class MoveCalculator {
         case .pawn:
             return self.pawnMoves(piece as? Pawn)
         case .king:
-            return self.kingMoves(piece as? King)
+            return self.kingMoves(piece as? King, calculation: calculation)
         case .rook:
             return self.rookMoves(piece as? Rook)
         case .knight:
@@ -48,11 +53,17 @@ class MoveCalculator {
         }
         return colorOnAddress != piece.color
     }
+
+    func squaresControlled(by color: ChessPieceColor) -> [BoardSquare] {
+        let pieces = self.chessBoard.getPieces(color: color)
+        let passiveMoves = pieces.compactMap{ self.possibleMoves(from: $0.square, calculation: .light) }.flatMap { $0.passive }
+        return passiveMoves
+    }
 }
 
 extension Array where Element == BoardSquare {
     func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, chessBoard: ChessBoard) -> [Element] {
-        let myArmySquares = chessBoard.pieces.filter{ $0.color == piece.color.other }.map { $0.square }
+        let myArmySquares = chessBoard.getPieces(color: piece.color.other).map { $0.square }
         return self.filter { !myArmySquares.contains($0) }
     }
 }

@@ -28,6 +28,14 @@ final class MoveCalculatorKingTests: XCTestCase {
         XCTAssertFalse(sut.possibleMoves(from: "d4")?.passive.contains("d5") ?? true)
     }
 
+    func test_kingCannotGoOnSquareControlledByEnemy() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "Ke3")
+        chessBoard.addPieces(.black, "Wd8 Wf8")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        XCTAssertEqual(sut.possibleMoves(from: "e3")?.count, 2)
+    }
+
     func test_castlingWhiteKingPossibleMoves() {
         let chessBoard = ChessBoard()
         let king = King(.white, "e1")

@@ -9,11 +9,13 @@ import Foundation
 
 extension MoveCalculator {
     // calculates possible king moves
-    func kingMoves(_ piece: King?) -> PossibleMoves? {
+    func kingMoves(_ piece: King?, calculation: MoveCalculation) -> PossibleMoves? {
         guard let king = piece else { return nil }
-        let basicMoves = king.basicMoves
+        var basicMoves = king.basicMoves
             .withoutOccupiedByMyArmyFields(king, chessBoard: self.chessBoard)
-            .withoutEnemyKingBarrier(king, chessBoard: self.chessBoard)
+        if calculation == .valid {
+            basicMoves = basicMoves.withoutEnemyControlledFields(king, moveCalculator: self)
+        }
         let agresive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, square: $0) }
         var passive = basicMoves.filter{ self.chessBoard.isSquareFree($0) }
         passive.append(contentsOf: self.castlingMoves(for: king))
@@ -47,11 +49,8 @@ extension MoveCalculator {
 }
 
 fileprivate extension Array where Element == BoardSquare {
-    func withoutEnemyKingBarrier(_ king: King, chessBoard: ChessBoard) -> [Element] {
-        let enemyKing = chessBoard.pieces.first{ $0.type == .king && $0.color == king.color.other }
-        guard let enemyKingArea = enemyKing?.square.neighbours else {
-            return self
-        }
-        return self.filter { !enemyKingArea.contains($0) }
+    func withoutEnemyControlledFields(_ king: King, moveCalculator: MoveCalculator) -> [Element] {
+        let enemyControlledSquares = moveCalculator.squaresControlled(by: king.color.other)
+        return self.filter { !enemyControlledSquares.contains($0) }
     }
 }
