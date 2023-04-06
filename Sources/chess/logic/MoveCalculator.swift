@@ -57,7 +57,7 @@ class MoveCalculator {
     func squaresControlled(by color: ChessPieceColor) -> [BoardSquare] {
         let pieces = self.chessBoard.getPieces(color: color)
         let passiveMoves = pieces.compactMap{ self.possibleMoves(from: $0.square, calculation: .light) }.flatMap { $0.passive }
-        return passiveMoves
+        return passiveMoves.unique
     }
 }
 
