@@ -23,9 +23,9 @@ final class MoveCalculatorKingTests: XCTestCase {
         let chessBoard = ChessBoard()
         chessBoard.addPiece(King(.white, "d4"))
         let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertTrue(sut.possibleMoves(from: "d4")?.passive.contains("d5") ?? false)
+        XCTAssertEqual(sut.possibleMoves(from: "d4")?.passive.contains("d5"), true)
         chessBoard.addPiece(King(.black, "d6"))
-        XCTAssertFalse(sut.possibleMoves(from: "d4")?.passive.contains("d5") ?? true)
+        XCTAssertEqual(sut.possibleMoves(from: "d4")?.passive.contains("d5"), false)
     }
 
     func test_kingCannotGoOnSquareControlledByEnemy() {
@@ -36,12 +36,24 @@ final class MoveCalculatorKingTests: XCTestCase {
         XCTAssertEqual(sut.possibleMoves(from: "e3")?.count, 2)
     }
 
+    func test_kingCanTakeEnemyPawn() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "Ke1")
+        chessBoard.addPieces(.black, "e2")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e1")
+        XCTAssertEqual(moves?.count, 3)
+        XCTAssertEqual(moves?.agressive, ["e2"])
+    }
+
     func test_kingCannotGoOnSquareControlledByEnemyPawn() {
         let chessBoard = ChessBoard()
         chessBoard.addPieces(.white, "Ke3")
         chessBoard.addPieces(.black, "e4")
         let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertEqual(sut.possibleMoves(from: "e3")?.count, 5)
+        let moves = sut.possibleMoves(from: "e3")
+        XCTAssertEqual(moves?.agressive.count, 1)
+        XCTAssertEqual(moves?.passive.count, 5)
     }
 
     func test_castlingWhiteKingPossibleMoves() {
@@ -238,5 +250,15 @@ final class MoveCalculatorKingTests: XCTestCase {
         XCTAssertEqual(moves?.passive.contains("d8"), true)
         XCTAssertEqual(moves?.passive.contains("f8"), true)
         XCTAssertEqual(moves?.passive.contains("c8"), true)
+    }
+
+    func test_kingCantTakeSecuredPawn() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "Ke1")
+        chessBoard.addPieces(.black, "e2 Ke8 Gb5")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e1")
+        XCTAssertEqual(moves?.count, 2)
+        XCTAssertEqual(moves?.agressive, [])
     }
 }

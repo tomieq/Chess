@@ -11,13 +11,23 @@ extension MoveCalculator {
     // calculates possible king moves
     func kingMoves(_ piece: King?, calculation: MoveCalculation) -> PossibleMoves? {
         guard let king = piece else { return nil }
-        var basicMoves = king.basicMoves
-            .withoutOccupiedByMyArmyFields(king, chessBoard: self.chessBoard)
-        if calculation == .deep {
-            basicMoves = basicMoves.withoutEnemyControlledFields(king, moveCalculator: self)
+        var passive: [BoardSquare] = []
+        var agressive: [BoardSquare] = []
+
+        func isSafeForKing(piece: ChessPiece, to square: BoardSquare) -> Bool {
+            guard calculation == .deep else {
+                return true
+            }
+            return self.isMoveSafeForKing(piece: piece, to: square)
         }
-        let agressive = basicMoves.filter{ self.isFieldOccupiedByEnemyArmy(piece: king, square: $0) }
-        var passive = basicMoves.filter{ self.chessBoard.isSquareFree($0) }
+
+        for square in king.basicMoves {
+            if self.chessBoard.isSquareFree(square), isSafeForKing(piece: king, to: square) {
+                passive.append(square)
+            } else if self.isFieldOccupiedByEnemyArmy(piece: king, square: square), isSafeForKing(piece: king, to: square) {
+                agressive.append(square)
+            }
+        }
         passive.append(contentsOf: self.castlingMoves(for: king))
         if agressive.isEmpty, passive.isEmpty {
             return nil
@@ -71,12 +81,5 @@ extension MoveCalculator {
             }
         }
         return true
-    }
-}
-
-fileprivate extension Array where Element == BoardSquare {
-    func withoutEnemyControlledFields(_ king: King, moveCalculator: MoveCalculator) -> [Element] {
-        let enemyControlledSquares = moveCalculator.squaresControlled(by: king.color.other)
-        return self.filter { !enemyControlledSquares.contains($0) }
     }
 }

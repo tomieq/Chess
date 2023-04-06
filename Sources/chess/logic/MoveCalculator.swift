@@ -59,11 +59,11 @@ class MoveCalculator {
     }
 
     func isMoveSafeForKing(piece: ChessPiece, to square: BoardSquare) -> Bool {
-        guard let king = self.chessBoard.getKing(color: piece.color) else {
-            return true
-        }
         let forecaster = MoveCalculator(chessBoard: self.chessBoard.copy)
         forecaster.chessBoard.move(source: piece.square, to: square)
+        guard let king = forecaster.chessBoard.getKing(color: piece.color) else {
+            return true
+        }
         let agressiveMoves = forecaster.chessBoard.getPieces(color: piece.color.other)
             .compactMap { forecaster.getPossibleMoves(from: $0.square, calculation: .shallow) }
             .flatMap{ $0.agressive }
@@ -94,6 +94,7 @@ class MoveCalculator {
 extension Array where Element == BoardSquare {
     func withoutOccupiedByMyArmyFields(_ piece: ChessPiece, chessBoard: ChessBoard) -> [Element] {
         let myArmySquares = chessBoard.getPieces(color: piece.color.other).map { $0.square }
+        print("myArmySquares \(myArmySquares)")
         return self.filter { !myArmySquares.contains($0) }
     }
 }
