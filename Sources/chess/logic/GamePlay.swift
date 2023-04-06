@@ -74,6 +74,10 @@ class GamePlay {
             self.takeDownMove(color: color, move: move, language: language)
             return
         }
+        if move.starts(with: "O-O") {
+            self.castlingMove(color: color, move: move, language: language)
+            return
+        }
 
         var type: ChessPieceType = .pawn
         var square = move
@@ -127,5 +131,53 @@ class GamePlay {
         }
         print("\(self.moveCounterInfo) \(attacker.color.plName) \(attacker.type.plName) z \(attacker.square) bije na \(square)")
         self.chessBoard.move(source: attacker.square, to: square)
+    }
+
+    private func castlingMove(color: ChessPieceColor, move: String, language: Language) {
+        guard let king = self.chessBoard.getKing(color: color) as? King else {
+            print("❗Could not find king for \(color) castling")
+            return
+        }
+        let possibleMoves = self.moveCalculator.kingMoves(king, calculation: .deep)
+        switch move {
+        case "O-O":
+            switch color {
+            case .white:
+                guard possibleMoves?.passive.contains("g1") == true else {
+                    print("❗\(color) king can't castle!")
+                    return
+                }
+                self.chessBoard.move(source: king.square, to: "g1")
+                self.chessBoard.move(source: "h1", to: "f1")
+            case .black:
+                guard possibleMoves?.passive.contains("g8") == true else {
+                    print("❗\(color) king can't castle!")
+                    return
+                }
+                self.chessBoard.move(source: king.square, to: "g8")
+                self.chessBoard.move(source: "h8", to: "f8")
+            }
+            print("\(self.moveCounterInfo) \(color.plName) \(king.type.plName) robi krótką roszadę")
+        case "O-O-O":
+            switch color {
+            case .white:
+                guard possibleMoves?.passive.contains("c1") == true else {
+                    print("❗\(color) king can't castle!")
+                    return
+                }
+                self.chessBoard.move(source: king.square, to: "c1")
+                self.chessBoard.move(source: "a1", to: "d1")
+            case .black:
+                guard possibleMoves?.passive.contains("c8") == true else {
+                    print("❗\(color) king can't castle!")
+                    return
+                }
+                self.chessBoard.move(source: king.square, to: "c8")
+                self.chessBoard.move(source: "a8", to: "d8")
+            }
+            print("\(self.moveCounterInfo) \(color.plName) \(king.type.plName) robi długą roszadę")
+        default:
+            print("❗Invalid command \(move) for castling")
+        }
     }
 }
