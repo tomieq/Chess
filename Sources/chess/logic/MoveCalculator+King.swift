@@ -23,28 +23,37 @@ extension MoveCalculator {
     }
 
     // returns possible castling moves
-    func castlingMoves(for king: King) -> [BoardSquare] {
+    private func castlingMoves(for king: King) -> [BoardSquare] {
         guard king.canCastle else {
             return []
         }
         var moves: [BoardSquare] = []
         switch king.color {
         case .white:
-            if let rook = self.chessBoard.getPiece("h1") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("h1") as? Rook, rook.canCastle, self.areSquaresFree("f1", "g1") {
                 moves.append("g1")
             }
-            if let rook = self.chessBoard.getPiece("a1") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("a1") as? Rook, rook.canCastle, self.areSquaresFree("b1", "c1", "d1") {
                 moves.append("c1")
             }
         case .black:
-            if let rook = self.chessBoard.getPiece("h8") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("h8") as? Rook, rook.canCastle, self.areSquaresFree("f8", "g8") {
                 moves.append("g8")
             }
-            if let rook = self.chessBoard.getPiece("a8") as? Rook, rook.canCastle {
+            if let rook = self.chessBoard.getPiece("a8") as? Rook, rook.canCastle, self.areSquaresFree("b8", "c8", "d8") {
                 moves.append("c8")
             }
         }
         return moves
+    }
+
+    private func areSquaresFree(_ squares: BoardSquare...) -> Bool {
+        for square in squares {
+            if !self.chessBoard.isSquareFree(square) {
+                return false
+            }
+        }
+        return true
     }
 }
 
