@@ -96,20 +96,13 @@ class MoveCalculator {
         }
         let forecaster = MoveCalculator(chessBoard: self.chessBoard.copy)
         forecaster.chessBoard.remove(square)
+        forecaster.chessBoard.addPiece(Pawn(piece.color.other, square))
         let pieces = forecaster.chessBoard.getPieces(color: piece.color)
             .compactMap { piece -> (ChessPiece, [BoardSquare])? in
-                switch piece.type {
-                case .pawn:
-                    guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.agressive else {
-                        return nil
-                    }
-                    return (piece, squares)
-                default:
-                    guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.passive else {
-                        return nil
-                    }
-                    return (piece, squares)
+                guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.agressive else {
+                    return nil
                 }
+                return (piece, squares)
             }
             .filter { $0.1.contains(square) }
             .map { $0.0 }
