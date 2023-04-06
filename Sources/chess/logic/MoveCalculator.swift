@@ -89,6 +89,24 @@ class MoveCalculator {
         let passiveMoves = pieces.flatMap{ self.squaresControlled(from: $0.square) }
         return passiveMoves.unique
     }
+
+    func backup(for square: BoardSquare) -> [ChessPiece] {
+        guard let piece = self.chessBoard.getPiece(square) else {
+            return []
+        }
+        let forecaster = MoveCalculator(chessBoard: self.chessBoard.copy)
+        forecaster.chessBoard.remove(square)
+        let pieces = forecaster.chessBoard.getPieces(color: piece.color)
+            .compactMap { piece -> (ChessPiece, [BoardSquare])? in
+                guard let squares = forecaster.getPossibleMoves(from: piece.square, calculation: .shallow)?.passive else {
+                    return nil
+                }
+                return (piece, squares)
+            }
+            .filter { $0.1.contains(square) }
+            .map { $0.0 }
+        return pieces
+    }
 }
 
 extension Array where Element == BoardSquare {

@@ -68,4 +68,14 @@ final class MoveCalculatorPawnTests: XCTestCase {
         XCTAssertEqual(moves?.count, 1)
         XCTAssertEqual(moves?.agressive, ["c3"])
     }
+
+    func test_takeEnemyPawn() {
+        let chessBoard = ChessBoard()
+        chessBoard.addPieces(.white, "Ke1 d4 e4")
+        chessBoard.addPieces(.black, "Ke8 e5")
+        let sut = MoveCalculator(chessBoard: chessBoard)
+        let moves = sut.possibleMoves(from: "e5")
+        XCTAssertEqual(moves?.agressive, ["d4"])
+        XCTAssertEqual(moves?.passive, [])
+    }
 }

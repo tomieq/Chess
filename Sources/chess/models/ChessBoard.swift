@@ -97,6 +97,7 @@ class ChessBoard {
             print("Cannot move piece from \(source) as there is nothing!")
             return
         }
+        self.remove(source)
         self.remove(dest)
         piece.square = dest
         self.addPiece(piece)
