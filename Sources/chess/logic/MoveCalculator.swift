@@ -7,21 +7,25 @@
 
 import Foundation
 
-enum MoveCalculation {
-    case valid
-    case light
-}
-
 class MoveCalculator {
+    enum MoveCalculation {
+        case valid
+        case light
+    }
+
     let chessBoard: ChessBoard
 
     init(chessBoard: ChessBoard) {
         self.chessBoard = chessBoard
     }
 
-    func possibleMoves(from address: BoardSquare, calculation: MoveCalculation = .valid) -> PossibleMoves? {
-        guard let piece = self.chessBoard.getPiece(address) else {
-            print("Could not find a piece at square \(address)")
+    func possibleMoves(from square: BoardSquare) -> PossibleMoves? {
+        self.getPossibleMoves(from: square)
+    }
+
+    private func getPossibleMoves(from square: BoardSquare, calculation: MoveCalculation = .valid) -> PossibleMoves? {
+        guard let piece = self.chessBoard.getPiece(square) else {
+            print("Could not find a piece at square \(square)")
             return nil
         }
         switch piece.type {
@@ -64,7 +68,7 @@ class MoveCalculator {
             guard let pawn = piece as? Pawn else { return [] }
             return pawn.agressiveMoves
         default:
-            return self.possibleMoves(from: square, calculation: .light)?.passive ?? []
+            return self.getPossibleMoves(from: square, calculation: .light)?.passive ?? []
         }
     }
 
