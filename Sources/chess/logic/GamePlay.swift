@@ -83,29 +83,36 @@ class GamePlay {
             return
         }
 
-        var type: ChessPieceType = .pawn
-        var square = move
-        if move.count == 3 {
+        var square: BoardSquare?
+        var piece: ChessPiece?
+        if move.count == 2 {
+            square = BoardSquare(stringLiteral: move)
+            piece = self.possibleMoves[color]?.first { $0.key.type == .pawn && $0.value.passive.contains(square!) }.map { $0.key }
+        } else {
             guard let detectedType = ChessPieceType.make(letter: move.subString(0, 1), language: language) else {
                 print("❗Could not detect piece type from letter \(move.subString(0, 1))")
                 return
             }
-            type = detectedType
-            square = move.subString(1, 3)
-        }
-        let destSquare = BoardSquare(stringLiteral: square)
-
-        if self.chessBoard.isSquareFree(destSquare) {
-            // normal move
-            let piece = self.possibleMoves[color]?.first { $0.key.type == type && $0.value.passive.contains(destSquare) }.map { $0.key }
-            guard let piece = piece else {
-                print("❗Movement to \(move) for \(color) is not possible")
-                return
+            if move.count == 3 {
+                square = BoardSquare(stringLiteral: move.subString(1, 3))
+                piece = self.possibleMoves[color]?.first { $0.key.type == detectedType && $0.value.passive.contains(square!) }.map { $0.key }
+            } else if move.count == 4 {
+                let column = move.subString(1, 2)
+                square = BoardSquare(stringLiteral: move.subString(2, 4))
+                piece = self.possibleMoves[color]?.first { $0.key.type == detectedType && $0.key.square.column.letter == column.first && $0.value.passive.contains(square!) }.map { $0.key }
+            } else {
+                print("error")
             }
-            print("\(self.moveCounterInfo) \(piece.color.plName) \(piece.type.plName) z \(piece.square) rusza się na \(destSquare)")
-            self.chessBoard.move(source: piece.square, to: destSquare)
+        }
+
+        guard let piece = piece, let square = square else {
+            print("❗Movement to \(move) for \(color) is not possible")
+            return
+        }
+        if self.chessBoard.isSquareFree(square) {
+            print("\(self.moveCounterInfo) (\(move)) - \(piece.color.plName) \(piece.type.plName) z \(piece.square) rusza się na \(square)")
+            self.chessBoard.move(source: piece.square, to: square)
         } else {
-            // agressive move
             print("❗Movement to \(move) for \(color) is not possible as field \(square) is taken")
         }
     }
