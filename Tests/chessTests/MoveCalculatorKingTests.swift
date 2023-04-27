@@ -16,7 +16,7 @@ final class MoveCalculatorKingTests: XCTestCase {
         chessBoard.addPiece(Queen(.white, "d1"))
         XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 1)
         chessBoard.addPiece(Bishop(.white, "f1"))
-        XCTAssertNil(sut.possibleMoves(from: "e1"))
+        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 0)
     }
 
     func test_kingCannotApproachEnemyKing() {
@@ -156,8 +156,8 @@ final class MoveCalculatorKingTests: XCTestCase {
         let chessBoard = ChessBoard()
         chessBoard.setupGame()
         let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertNil(sut.possibleMoves(from: "e1"))
-        XCTAssertNil(sut.possibleMoves(from: "e8"))
+        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 0)
+        XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 0)
     }
 
     func test_whiteQueenSideCastlingBlockedByOwnArmy() {

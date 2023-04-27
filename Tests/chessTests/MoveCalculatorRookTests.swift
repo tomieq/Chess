@@ -37,7 +37,7 @@ final class MoveCalculatorRookTests: XCTestCase {
         chessBoard.addPieces(.black, "Ke8 Ha5")
         let sut = MoveCalculator(chessBoard: chessBoard)
         let moves = sut.possibleMoves(from: "d2")
-        XCTAssertNil(moves)
+        XCTAssertEqual(moves?.count, 0)
     }
 
     func test_defendKing() {

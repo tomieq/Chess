@@ -56,7 +56,8 @@ class GamePlay {
                     for agressive in possibleMoves.agressive {
                         guard let inDanger = self.chessBoard.getPiece(agressive) else { continue }
                         var info = "  🧠 \(piece.color.plName) \(piece.type.plName) z \(piece.square) może zbić \(inDanger.type.plName) na \(agressive)"
-                        let backup = self.moveCalculator.backup(for: agressive)
+                        //let backup = self.moveCalculator.backup(for: agressive)
+                        let backup = possibleMoves.covers.compactMap { self.moveCalculator.chessBoard.getPiece($0) }
                         if !backup.isEmpty {
                             info.append(", ale ma on wsparcie od \(backup.map{ "\($0.type.plName) z \($0.square)" }.joined(separator: " oraz "))")
                         }

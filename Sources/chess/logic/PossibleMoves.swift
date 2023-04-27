@@ -10,6 +10,7 @@ import Foundation
 struct PossibleMoves {
     let passive: [BoardSquare]
     let agressive: [BoardSquare]
+    let covers: [BoardSquare]
 }
 
 extension PossibleMoves {

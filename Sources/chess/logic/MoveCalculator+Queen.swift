@@ -12,6 +12,7 @@ extension MoveCalculator {
         guard let queen = piece else { return nil }
         var passive: [BoardSquare] = []
         var agressive: [BoardSquare] = []
+        var covers: [BoardSquare] = []
 
         func isAllowed(piece: ChessPiece, to square: BoardSquare) -> Bool {
             guard calculation == .deep else {
@@ -43,6 +44,9 @@ extension MoveCalculator {
                     agressive.append(square)
                     break
                 } else if self.isFieldOccupiedByOwnArmy(piece: queen, square: square) {
+                    if isSafeForKing(direction, piece: queen, to: square) {
+                        covers.append(square)
+                    }
                     break
                 }
             }
@@ -71,6 +75,9 @@ extension MoveCalculator {
                     agressive.append(square)
                     break
                 } else if self.isFieldOccupiedByOwnArmy(piece: queen, square: square) {
+                    if isSafeForKing(direction, piece: queen, to: square) {
+                        covers.append(square)
+                    }
                     break
                 }
             }
@@ -79,6 +86,6 @@ extension MoveCalculator {
         if agressive.isEmpty, passive.isEmpty {
             return nil
         }
-        return PossibleMoves(passive: passive, agressive: agressive)
+        return PossibleMoves(passive: passive, agressive: agressive, covers: covers)
     }
 }
