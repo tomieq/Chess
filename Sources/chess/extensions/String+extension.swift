@@ -8,7 +8,7 @@
 import Foundation
 
 extension String {
-    public func subString(_ from: Int, _ to: Int) -> String {
+    func subString(_ from: Int, _ to: Int) -> String {
         if self.count < to {
             return self
         }
@@ -18,5 +18,11 @@ extension String {
 
         let range = start..<end
         return String(self[range])
+    }
+}
+
+extension String {
+    func with(_ elems: CustomStringConvertible...) -> String {
+        return String(format: self, arguments: elems.map{ $0.description })
     }
 }

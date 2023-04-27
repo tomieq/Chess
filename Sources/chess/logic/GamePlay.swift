@@ -33,6 +33,16 @@ class GamePlay {
         self.updatePossibleMoves()
     }
 
+    func play(gameplay: String) {
+        gameplay.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .forEach { self.nextMove($0) }
+    }
+
+    func setPieces(_ color: ChessPieceColor, _ txt: String) {
+        self.chessBoard.addPieces(color, txt)
+    }
+
     func nextMove(_ move: String, language: Language = .polish) {
         let parts = move.components(separatedBy: .whitespaces)
         self.move(color: self.turnColor, move: parts[0], language: language)
@@ -52,14 +62,16 @@ class GamePlay {
             for piece in pieces {
                 if let possibleMoves = self.moveCalculator.possibleMoves(from: piece.square) {
                     self.possibleMoves[color, default: [:]][piece] = possibleMoves
-                    guard color == self.turnColor.other else { continue }
+                    //guard color == self.turnColor.other else { continue }
                     for agressive in possibleMoves.agressive {
                         guard let inDanger = self.chessBoard.getPiece(agressive) else { continue }
-                        var info = "  🧠 \(piece.color.plName) \(piece.type.plName) z \(piece.square) może zbić \(inDanger.type.plName) na \(agressive)"
+                        
+                        var info = "  🧠 \(Text["analysisDanger"].with(piece, inDanger.type.plName, agressive))"
                         //let backup = self.moveCalculator.backup(for: agressive)
                         let backup = possibleMoves.covers.compactMap { self.moveCalculator.chessBoard.getPiece($0) }
                         if !backup.isEmpty {
-                            info.append(", ale ma on wsparcie od \(backup.map{ "\($0.type.plName) z \($0.square)" }.joined(separator: " oraz "))")
+                            let times = backup.count > 1 ? Text["timesx\(backup.count)"] : ""
+                            info.append(", ale ma on \(times) wsparcie od \(backup.map{ "\($0.type.plName) z \($0.square)" }.joined(separator: " oraz "))")
                         }
                         print(info)
                     }
