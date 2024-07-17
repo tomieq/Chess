@@ -10,14 +10,16 @@ import Foundation
 struct CalculatedMoves {
     let possibleMoves: [BoardSquare]
     let possibleVictims: [BoardSquare]
-    let backedUpFriends: [BoardSquare]
     let possiblePredators: [BoardSquare]
+    let defended: [BoardSquare]
+    let defenders: [BoardSquare]
     
     
     static var `default`: CalculatedMoves {
-        CalculatedMoves(possibleMoves: [], 
+        CalculatedMoves(possibleMoves: [],
                         possibleVictims: [],
-                        backedUpFriends: [],
-                        possiblePredators: [])
+                        possiblePredators: [],
+                        defended: [],
+                        defenders: [])
     }
 }

@@ -15,12 +15,12 @@ protocol MoveCalculator {
     // fields that this piece can attack
     var possibleVictims: [BoardSquare] { get }
     
-    // fields that are defended by this piece
-    var backedUpFriends: [BoardSquare] { get }
-    
-    // fields that defend this piece
-    //var backingUpFriends: [BoardSquare] { get }
-    
     // fields that this piece might get attack from
     var possiblePredators: [BoardSquare] { get }
+    
+    // fields that are defended by this piece
+    var defended: [BoardSquare] { get }
+    
+    // fields that defend this piece
+    var defenders: [BoardSquare] { get }
 }

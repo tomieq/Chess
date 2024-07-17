@@ -14,7 +14,8 @@ class PawnMoveCalculator: MoveCalculator {
     
     var possibleVictims: [BoardSquare] = []
     
-    var backedUpFriends: [BoardSquare] = []
+    var defended: [BoardSquare] = []
+    var defenders: [BoardSquare] = []
     
     var possiblePredators: [BoardSquare] = []
     

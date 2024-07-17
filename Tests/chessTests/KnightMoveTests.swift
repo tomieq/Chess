@@ -8,25 +8,7 @@
 import XCTest
 @testable import chess
 
-final class KnightMoveTests: XCTestCase {
-    
-    let chessBoard = ChessBoard()
-    
-    private func possibleMoves(from square: BoardSquare?) -> [BoardSquare] {
-        chessBoard.piece(at: square)?.moveCalculator.possibleMoves ?? []
-    }
-    
-    private func supports(from square: BoardSquare?) -> [BoardSquare] {
-        chessBoard.piece(at: square)?.moveCalculator.backedUpFriends ?? []
-    }
-    
-    private func attacks(from square: BoardSquare?) -> [BoardSquare] {
-        chessBoard.piece(at: square)?.moveCalculator.possibleVictims ?? []
-    }
-    
-    private func attackedBy(on square: BoardSquare?) -> [BoardSquare] {
-        chessBoard.piece(at: square)?.moveCalculator.possiblePredators ?? []
-    }
+final class KnightMoveTests: MoveTests {
     
     func test_allMoves() throws {
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Sd4")
@@ -44,7 +26,7 @@ final class KnightMoveTests: XCTestCase {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Sd4")
             .load(.black, "b3 e6")
-        XCTAssertEqual(attacks(from: "d4").count, 2)
+        XCTAssertEqual(possibleVictims(for: "d4").count, 2)
         XCTAssertEqual(possibleMoves(from: "d4").count, 8)
     }
     
@@ -52,27 +34,27 @@ final class KnightMoveTests: XCTestCase {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1 Sf2")
             .load(.black, "Gh4")
-        XCTAssertEqual(attacks(from: "f2").count, 0)
+        XCTAssertEqual(possibleVictims(for: "f2").count, 0)
         XCTAssertEqual(possibleMoves(from: "f2").count, 0)
-        XCTAssertEqual(attackedBy(on: "f2"), ["h4"])
+        XCTAssertEqual(possiblePredators(for: "f2"), ["h4"])
     }
     
     func test_movePinnedByRook() {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1 Sd1")
             .load(.black, "Wa1")
-        XCTAssertEqual(attacks(from: "d1").count, 0)
+        XCTAssertEqual(possibleVictims(for: "d1").count, 0)
         XCTAssertEqual(possibleMoves(from: "d1").count, 0)
-        XCTAssertEqual(attackedBy(on: "d1"), ["a1"])
+        XCTAssertEqual(possiblePredators(for: "d1"), ["a1"])
     }
     
     func test_movePinnedByQueen() {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1 Sd1")
             .load(.black, "Ha1")
-        XCTAssertEqual(attacks(from: "d1").count, 0)
+        XCTAssertEqual(possibleVictims(for: "d1").count, 0)
         XCTAssertEqual(possibleMoves(from: "d1").count, 0)
-        XCTAssertEqual(attackedBy(on: "d1"), ["a1"])
+        XCTAssertEqual(possiblePredators(for: "d1"), ["a1"])
     }
 }
 

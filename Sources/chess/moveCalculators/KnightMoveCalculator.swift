@@ -30,12 +30,21 @@ class KnightMoveCalculator: MoveCalculator {
         }
     }
     
-    var backedUpFriends: [BoardSquare] {
+    var defended: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.backedUpFriends
+            return calculatedMoves.defended
+        }
+    }
+    
+    var defenders: [BoardSquare] {
+        get {
+            if !isAnalized {
+                analize()
+            }
+            return calculatedMoves.defenders
         }
     }
     
@@ -67,15 +76,16 @@ class KnightMoveCalculator: MoveCalculator {
     
     private func analize() {
         var possibleMoves: [BoardSquare] = []
-        var supports: [BoardSquare] = []
-        var attacks: [BoardSquare] = []
-        var attackedBy: [BoardSquare] = []
+        var defended: [BoardSquare] = []
+        var defenders: [BoardSquare] = []
+        var possibleVictims: [BoardSquare] = []
+        var possiblePredators: [BoardSquare] = []
         
         var allowedSquares = square.knightMoves
         // check if move is pinned
         for direction in MoveDirection.allCases {
             if let nearestPiece = self.nearestPiece(in: direction), nearestPiece.longDistanceAttackDirections.contains(direction) {
-                attackedBy.append(nearestPiece.square)
+                possiblePredators.append(nearestPiece.square)
                 if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                   oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
                     print("knight at \(square) is pinned by \(nearestPiece.square)")
@@ -87,9 +97,9 @@ class KnightMoveCalculator: MoveCalculator {
         for position in allowedSquares {
             if let piece = chessBoard.piece(at: position) {
                 if piece.color == self.color {
-                    supports.append(position)
+                    defended.append(position)
                 } else {
-                    attacks.append(position)
+                    possibleVictims.append(position)
                     possibleMoves.append(position)
                 }
             } else {
@@ -98,9 +108,10 @@ class KnightMoveCalculator: MoveCalculator {
         }
         
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
-                                               possibleVictims: attacks,
-                                               backedUpFriends: supports,
-                                               possiblePredators: attackedBy)
+                                               possibleVictims: possibleVictims,
+                                               possiblePredators: possiblePredators,
+                                               defended: defended,
+                                               defenders: defenders)
         self.isAnalized = true
     }
 

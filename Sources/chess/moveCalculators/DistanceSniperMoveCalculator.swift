@@ -30,12 +30,21 @@ class DistanceSniperMoveCalculator: MoveCalculator {
         }
     }
     
-    var backedUpFriends: [BoardSquare] {
+    var defended: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.backedUpFriends
+            return calculatedMoves.defended
+        }
+    }
+    
+    var defenders: [BoardSquare] {
+        get {
+            if !isAnalized {
+                analize()
+            }
+            return calculatedMoves.defenders
         }
     }
     
@@ -69,7 +78,8 @@ class DistanceSniperMoveCalculator: MoveCalculator {
     
     private func analize() {
         var possibleMoves: [BoardSquare] = []
-        var backedUpFriends: [BoardSquare] = []
+        var defended: [BoardSquare] = []
+        var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possiblePredators: [BoardSquare] = []
         var allowedDirections = self.longDistanceAttackDirections
@@ -78,11 +88,16 @@ class DistanceSniperMoveCalculator: MoveCalculator {
         for direction in MoveDirection.allCases {
             if let nearestPiece = self.nearestPiece(in: direction), 
                 nearestPiece.longDistanceAttackDirections.contains(direction) {
-                possiblePredators.append(nearestPiece.square)
-                if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
-                  oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                   print("piece at \(square) is pinned by \(nearestPiece.square)")
-                   allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
+                
+                if nearestPiece.color == self.color {
+                    defenders.append(nearestPiece.square)
+                } else {
+                    possiblePredators.append(nearestPiece.square)
+                    if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
+                       oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
+                        print("piece at \(square) is pinned by \(nearestPiece.square)")
+                        allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
+                    }
                 }
             }
         }
@@ -91,7 +106,7 @@ class DistanceSniperMoveCalculator: MoveCalculator {
             for position in square.squares(to: direction) {
                 if let piece = chessBoard.piece(at: position) {
                     if piece.color == self.color {
-                        backedUpFriends.append(position)
+                        defended.append(position)
                     } else {
                         possibleVictims.append(position)
                         possibleMoves.append(position)
@@ -104,8 +119,9 @@ class DistanceSniperMoveCalculator: MoveCalculator {
         }
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
-                                               backedUpFriends: backedUpFriends,
-                                               possiblePredators: possiblePredators)
+                                               possiblePredators: possiblePredators,
+                                               defended: defended,
+                                               defenders: defenders)
         self.isAnalized = true
     }
 
