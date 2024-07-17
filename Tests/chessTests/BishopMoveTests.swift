@@ -11,8 +11,8 @@ import XCTest
 
 class BishopMoveTests: XCTestCase {
     func testMovesFromA1() throws {
-        let rook = Bishop(.white, "a1")
-        let basicMoves = rook?.basicMoves ?? []
+        let bishop = Bishop(.white, "a1")
+        let basicMoves = bishop?.basicMoves ?? []
         XCTAssertEqual(basicMoves.count, 7)
         XCTAssertTrue(basicMoves.contains("b2"))
         XCTAssertTrue(basicMoves.contains("c3"))
@@ -22,8 +22,8 @@ class BishopMoveTests: XCTestCase {
     }
 
     func testMovesFromH3() throws {
-        let rook = Bishop(.white, "h3")
-        let basicMoves = rook?.basicMoves ?? []
+        let bishop = Bishop(.white, "h3")
+        let basicMoves = bishop?.basicMoves ?? []
         XCTAssertEqual(basicMoves.count, 7)
         XCTAssertTrue(basicMoves.contains("g2"))
         XCTAssertTrue(basicMoves.contains("f1"))
@@ -33,8 +33,8 @@ class BishopMoveTests: XCTestCase {
     }
 
     func testMovesFromE5() throws {
-        let rook = Bishop(.white, "e5")
-        let basicMoves = rook?.basicMoves ?? []
+        let bishop = Bishop(.white, "e5")
+        let basicMoves = bishop?.basicMoves ?? []
         XCTAssertEqual(basicMoves.count, 13)
         XCTAssertTrue(basicMoves.contains("f6"))
         XCTAssertTrue(basicMoves.contains("f4"))
