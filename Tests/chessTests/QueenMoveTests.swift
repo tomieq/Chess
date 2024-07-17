@@ -51,7 +51,7 @@ final class QueenMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "d4"), ["b5"])
     }
     
-    func test_queenIsmultipleDefended() {
+    func test_queenIsMultipleDefended() {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Kf1 Ga1 Hc3 Wh3 Wg3 Sd1")
             .load(.black, "Ke8 Se4 Wc7 Wc8")

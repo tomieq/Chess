@@ -113,13 +113,27 @@ class KnightMoveCalculator: MoveCalculator {
                 possibleMoves.append(position)
             }
         }
-
+        
+        // find all knight predators and defenders
         for position in square.knightMoves {
             if let piece = chessBoard.piece(at: position), piece.type == .knight {
                 if piece.color == color {
                     defenders.append(piece.square)
                 } else {
                     possiblePredators.append(piece.square)
+                }
+            }
+        }
+        
+        // find all pawn predators and defenders
+        let enemyPawnSearchDirection: [MoveDirection] = [.downLeft, .downRight, .upLeft, .upRight]
+        for direction in enemyPawnSearchDirection {
+            if let activePawn = chessBoard.activePawn(at: square.move(direction)),
+               activePawn.attackedSquares.contains(square) {
+                if activePawn.color == color {
+                    defenders.append(activePawn.square)
+                } else {
+                    possiblePredators.append(activePawn.square)
                 }
             }
         }

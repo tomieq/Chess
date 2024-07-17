@@ -117,6 +117,14 @@ class RookMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "c3"), ["c7"])
         XCTAssertEqual(possiblePredators(for: "c3").count, 3)
     }
+    
+    func test_pawnDefendsAndAttacks() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 d3 Wc4")
+            .load(.black, "Ke8 d5")
+        XCTAssertEqual(possiblePredators(for: "c4"), ["d5"])
+        XCTAssertEqual(defenders(for: "c4"), ["d3"])
+    }
 
 }
 
