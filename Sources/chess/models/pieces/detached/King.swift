@@ -33,6 +33,6 @@ class King: DetachedChessPiece {
 
 extension King: ChessPieceConvertible {
     func chessPiece(chessBoard: ChessBoard) -> ChessPiece {
-        ChessPiece(self, KingMoveCalculator(from: self.square, on: chessBoard))
+        ChessPiece(self, KingMoveCalculator(for: self, on: chessBoard))
     }
 }

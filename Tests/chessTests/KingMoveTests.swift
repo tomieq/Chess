@@ -1,61 +1,70 @@
 import XCTest
 @testable import chess
-/*
-final class MoveCalculatorKingTests: XCTestCase {
+
+final class KingMoveTests: MoveTests {
     func test_kingPossibleMovesFieldsOccupiedByOwnArmy() throws {
-        let chessBoard = ChessBoard()
         chessBoard.addPiece(King(.white, "e1"))
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 5)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 5)
         chessBoard.addPiece(Pawn(.white, "e2"))
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 4)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 4)
         chessBoard.addPiece(Pawn(.white, "f2"))
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 3)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 3)
         chessBoard.addPiece(Pawn(.white, "d2"))
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 2)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 2)
         chessBoard.addPiece(Queen(.white, "d1"))
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 1)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 1)
         chessBoard.addPiece(Bishop(.white, "f1"))
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 0)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 0)
     }
 
     func test_kingCannotApproachEnemyKing() {
-        let chessBoard = ChessBoard()
         chessBoard.addPiece(King(.white, "d4"))
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertEqual(sut.possibleMoves(from: "d4")?.passive.contains("d5"), true)
+        XCTAssertEqual(possibleMoves(from: "d4").contains("d5"), true)
         chessBoard.addPiece(King(.black, "d6"))
-        XCTAssertEqual(sut.possibleMoves(from: "d4")?.passive.contains("d5"), false)
+        XCTAssertEqual(possibleMoves(from: "d4").contains("d5"), false)
     }
 
-    func test_kingCannotGoOnSquareControlledByEnemy() {
-        let chessBoard = ChessBoard()
+    func test_kingCannotGoOnSquareControlledByEnemyRook() {
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke3")
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Wd8 Wf8")
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertEqual(sut.possibleMoves(from: "e3")?.count, 2)
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Wd8 Wf8")
+        XCTAssertEqual(possibleMoves(from: "e3").count, 2)
     }
-
-    func test_kingCanTakeEnemyPawn() {
-        let chessBoard = ChessBoard()
+    
+    func test_kingCannotGoOnSquareControlledByEnemyKnights() {
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "e2")
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        let moves = sut.possibleMoves(from: "e1")
-        XCTAssertEqual(moves?.count, 3)
-        XCTAssertEqual(moves?.agressive, ["e2"])
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Se4 Sf4")
+        XCTAssertEqual(possibleMoves(from: "e1").count, 2)
     }
 
-    func test_kingCannotGoOnSquareControlledByEnemyPawn() {
-        let chessBoard = ChessBoard()
-        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke3")
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "e4")
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        let moves = sut.possibleMoves(from: "e3")
-        XCTAssertEqual(moves?.agressive.count, 1)
-        XCTAssertEqual(moves?.passive.count, 5)
+    func test_kingCannotGoOnSquareControlledByEnemyBishop() {
+        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Gf4 Gg4")
+        XCTAssertEqual(possibleMoves(from: "e1").count, 2)
+    }
+    
+    func test_kingCannotGoOnSquareControlledByEnemyPawns() {
+        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 e3 f3")
+        XCTAssertEqual(possibleMoves(from: "e1").count, 2)
+    }
+    
+    func test_kingCanTakeEnemyPawn() {
+        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "e2 Kh8")
+        XCTAssertEqual(possibleMoves(from: "e1").count, 3)
+        XCTAssertEqual(possibleVictims(for: "e1"), ["e2"])
+        XCTAssertEqual(possiblePredators(for: "e1").count, 0)
+    }
+    
+    func test_enemyPawnAttackingKing() {
+        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "d2 Kh8")
+        XCTAssertEqual(possibleMoves(from: "e1").count, 5)
+        XCTAssertEqual(possibleVictims(for: "e1"), ["d2"])
+        XCTAssertEqual(possiblePredators(for: "e1"), ["d2"])
     }
 
+    /*
     func test_castlingWhiteKingPossibleMoves() {
         let chessBoard = ChessBoard()
         let king = King(.white, "e1")
@@ -151,15 +160,13 @@ final class MoveCalculatorKingTests: XCTestCase {
         kingSideRook?.square = "h8"
         XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 6)
     }
-
+*/
     func test_movesAtGameStart() {
-        let chessBoard = ChessBoard()
         chessBoard.setupGame()
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        XCTAssertEqual(sut.possibleMoves(from: "e1")?.count, 0)
-        XCTAssertEqual(sut.possibleMoves(from: "e8")?.count, 0)
+        XCTAssertEqual(possibleMoves(from: "e1").count, 0)
+        XCTAssertEqual(possibleMoves(from: "e8").count, 0)
     }
-
+/*
     func test_whiteQueenSideCastlingBlockedByOwnArmy() {
         let chessBoard = ChessBoard()
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Wa1 Sb1 Ke1 Wh1 d2 e2 f2")
@@ -255,16 +262,14 @@ final class MoveCalculatorKingTests: XCTestCase {
         XCTAssertEqual(moves?.passive.contains("f8"), true)
         XCTAssertEqual(moves?.passive.contains("c8"), true)
     }
-
+ */
     func test_kingCantTakeSecuredPawn() {
-        let chessBoard = ChessBoard()
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1")
             .load(.black, "e2 Ke8 Gb5")
-        let sut = MoveCalculator(chessBoard: chessBoard)
-        let moves = sut.possibleMoves(from: "e1")
-        XCTAssertEqual(moves?.count, 2)
-        XCTAssertEqual(moves?.agressive, [])
+        XCTAssertEqual(possibleMoves(from: "e1").count, 2)
+        XCTAssertEqual(possibleVictims(for: "e1"), ["e2"])
+        XCTAssertFalse(possibleMoves(from: "e1").contains("e2"))
     }
 }
-*/
+
