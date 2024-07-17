@@ -17,4 +17,27 @@ enum MoveDirection: CaseIterable {
     case downRight
     case downLeft
 }
+
+extension MoveDirection {
+    var opposite: MoveDirection {
+        switch self {
+        case .right:
+            .left
+        case .left:
+            .right
+        case .up:
+            .down
+        case .down:
+            .up
+        case .upRight:
+            .downLeft
+        case .upLeft:
+            .downRight
+        case .downRight:
+            .upLeft
+        case .downLeft:
+            .upRight
+        }
+    }
+}
 }
