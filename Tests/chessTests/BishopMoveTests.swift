@@ -127,5 +127,25 @@ class BishopMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "d4").count, 0)
         XCTAssertEqual(possiblePredators(for: "d4"), ["b5"])
     }
+    
+    func test_bishopUnderTripleAttack() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Kf1 Gc3")
+            .load(.black, "Ke8 Se4 Wc7 Wc8")
+        XCTAssertEqual(defenders(for: "c3").count, 0)
+        XCTAssertEqual(defended(from: "c3").count, 0)
+        XCTAssertEqual(possibleVictims(for: "c3").count, 0)
+        XCTAssertEqual(possiblePredators(for: "c3").count, 3)
+    }
+    
+    func test_bishopIsTripleDefended() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Kf1 Gc3 Wg3 Wh3 Sd1")
+            .load(.black, "Ke8 Se4 Wc7 Wc8")
+        XCTAssertEqual(defenders(for: "c3").count, 3)
+        XCTAssertEqual(defended(from: "c3").count, 0)
+        XCTAssertEqual(possibleVictims(for: "c3").count, 0)
+        XCTAssertEqual(possiblePredators(for: "c3").count, 3)
+    }
 }
 

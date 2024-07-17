@@ -84,18 +84,29 @@ class DistanceSniperMoveCalculator: MoveCalculator {
         var possiblePredators: [BoardSquare] = []
         var allowedDirections = self.longDistanceAttackDirections
         
-        // check if move is pinned
-        for direction in MoveDirection.allCases {
-            if let nearestPiece = self.nearestPiece(in: direction), 
-                nearestPiece.longDistanceAttackDirections.contains(direction) {
-                
-                if nearestPiece.color == self.color {
-                    defenders.append(nearestPiece.square)
+        
+        for position in square.knightMoves {
+            if let piece = chessBoard.piece(at: position), piece.type == .knight {
+                if piece.color == color {
+                    defenders.append(piece.square)
                 } else {
-                    possiblePredators.append(nearestPiece.square)
+                    possiblePredators.append(piece.square)
+                }
+            }
+        }
+        // check if move is pinned and update defenders and predators
+        for direction in MoveDirection.allCases {
+            for piece in pieces(in: direction) {
+                guard piece.longDistanceAttackDirections.contains(direction) else {
+                    break
+                }
+                if piece.color == self.color {
+                    defenders.append(piece.square)
+                } else {
+                    possiblePredators.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                        print("piece at \(square) is pinned by \(nearestPiece.square)")
+                        print("piece at \(square) is pinned by \(piece.square)")
                         allowedDirections = allowedDirections.filter { $0 == direction || $0 == direction.opposite }
                     }
                 }
@@ -117,15 +128,6 @@ class DistanceSniperMoveCalculator: MoveCalculator {
                 }
             }
         }
-        for position in square.knightMoves {
-            if let piece = chessBoard.piece(at: position), piece.type == .knight {
-                if piece.color == color {
-                    defenders.append(piece.square)
-                } else {
-                    possiblePredators.append(piece.square)
-                }
-            }
-        }
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possiblePredators: possiblePredators,
@@ -141,5 +143,15 @@ class DistanceSniperMoveCalculator: MoveCalculator {
             }
         }
         return nil
+    }
+    
+    private func pieces(in direction: MoveDirection) -> [ChessPiece] {
+        var pieces: [ChessPiece] = []
+        for position in square.squares(to: direction) {
+            if let piece = chessBoard.piece(at: position) {
+                pieces.append(piece)
+            }
+        }
+        return pieces
     }
 }

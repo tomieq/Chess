@@ -82,14 +82,21 @@ class KnightMoveCalculator: MoveCalculator {
         var possiblePredators: [BoardSquare] = []
         
         var allowedSquares = square.knightMoves
-        // check if move is pinned
+        // check if move is pinned and update defenders and predators
         for direction in MoveDirection.allCases {
-            if let nearestPiece = self.nearestPiece(in: direction), nearestPiece.longDistanceAttackDirections.contains(direction) {
-                possiblePredators.append(nearestPiece.square)
-                if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
-                  oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
-                    print("knight at \(square) is pinned by \(nearestPiece.square)")
-                    allowedSquares = []
+            for piece in pieces(in: direction) {
+                guard piece.longDistanceAttackDirections.contains(direction) else {
+                    break
+                }
+                if piece.color == self.color {
+                    defenders.append(piece.square)
+                } else {
+                    possiblePredators.append(piece.square)
+                    if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
+                       oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
+                        print("knight at \(square) is pinned by \(piece.square)")
+                        allowedSquares = []
+                    }
                 }
             }
         }
@@ -132,5 +139,15 @@ class KnightMoveCalculator: MoveCalculator {
             }
         }
         return nil
+    }
+    
+    private func pieces(in direction: MoveDirection) -> [ChessPiece] {
+        var pieces: [ChessPiece] = []
+        for position in square.squares(to: direction) {
+            if let piece = chessBoard.piece(at: position) {
+                pieces.append(piece)
+            }
+        }
+        return pieces
     }
 }
