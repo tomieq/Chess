@@ -134,6 +134,16 @@ class KingMoveCalculator: MoveCalculator {
         }
         possiblePredators = predatorsFor(square: square)
         
+        // castling
+        if moveCounter == 0, square == startingSquare {
+            if rookCanCastle(at: BoardSquare(.a, square.row)) {
+                possibleMoves.append(BoardSquare(.c, square.row)!)
+            }
+            if rookCanCastle(at: BoardSquare(.h, square.row)) {
+                possibleMoves.append(BoardSquare(.g, square.row)!)
+            }
+        }
+        
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possiblePredators: possiblePredators,
@@ -159,5 +169,30 @@ class KingMoveCalculator: MoveCalculator {
             }
         }
         return pieces
+    }
+    
+    private var startingSquare: BoardSquare {
+        switch color {
+        case .white:
+            "e1"
+        case .black:
+            "e8"
+        }
+    }
+    
+    private func rookCanCastle(at square: BoardSquare?) -> Bool {
+        guard let rook = chessBoard.piece(at: square), rook.type == .rook,
+              rook.color == color, rook.moveCalculator.moveCounter == 0 else {
+            return false
+        }
+        let side: MoveDirection = self.square.column > rook.square.column ? .left : .right
+        let wayToCrawl = self.square.squares(to: side).dropLast(1)
+        guard wayToCrawl.map({ chessBoard.isFree($0) }).allSatisfy({ $0 }) else {
+            return false
+        }
+        guard wayToCrawl.map( { predatorsFor(square: $0).isEmpty }).allSatisfy( { $0 }) else {
+            return false
+        }
+        return true
     }
 }
