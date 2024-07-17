@@ -10,9 +10,29 @@ import Foundation
 import XCTest
 
 class RookMoveTests: XCTestCase {
-    func testMovesFromA1() throws {
+    
+    let chessBoard = ChessBoard()
+    
+    private func possibleMoves(from square: BoardSquare?) -> [BoardSquare] {
+        chessBoard.piece(at: square)?.moveCalculator.possibleMoves ?? []
+    }
+    
+    private func supports(from square: BoardSquare?) -> [BoardSquare] {
+        chessBoard.piece(at: square)?.moveCalculator.backedUpFriends ?? []
+    }
+    
+    private func attacks(from square: BoardSquare?) -> [BoardSquare] {
+        chessBoard.piece(at: square)?.moveCalculator.possibleVictims ?? []
+    }
+    
+    private func attackedBy(on square: BoardSquare?) -> [BoardSquare] {
+        chessBoard.piece(at: square)?.moveCalculator.possiblePredators ?? []
+    }
+    
+    func testMovesFromA1OnEMptyBoard() throws {
         let rook = Rook(.white, "a1")
-        let basicMoves = rook?.basicMoves ?? []
+        chessBoard.addPiece(rook)
+        let basicMoves = possibleMoves(from: rook?.square)
         XCTAssertEqual(basicMoves.count, 14)
         XCTAssertTrue(basicMoves.contains("b1"))
         XCTAssertTrue(basicMoves.contains("h1"))
@@ -21,14 +41,80 @@ class RookMoveTests: XCTestCase {
         XCTAssertFalse(basicMoves.contains("b2"))
     }
 
-    func testMovesFromD4() throws {
+    func testMovesFromD4OnEMptyBoard() throws {
         let rook = Rook(.white, "d4")
-        let basicMoves = rook?.basicMoves ?? []
+        chessBoard.addPiece(rook)
+        let basicMoves = possibleMoves(from: rook?.square)
         XCTAssertEqual(basicMoves.count, 14)
         XCTAssertTrue(basicMoves.contains("d1"))
         XCTAssertTrue(basicMoves.contains("h4"))
         XCTAssertTrue(basicMoves.contains("d3"))
         XCTAssertTrue(basicMoves.contains("a4"))
         XCTAssertFalse(basicMoves.contains("c3"))
+        XCTAssertEqual(attackedBy(on: "d4"), [])
+        XCTAssertEqual(attacks(from: "d4"), [])
     }
+
+    func test_movesOccupiedByOwnArmy() {
+        let chessboardLoader = ChessBoardLoader(chessBoads: chessBoard)
+        chessboardLoader.load(.white, "Wa1 a2")
+        XCTAssertEqual(possibleMoves(from: "a1").count, 7)
+        chessboardLoader.load(.white, "Wh1")
+        XCTAssertEqual(possibleMoves(from: "a1").count, 6)
+        chessboardLoader.load(.black, "g1")
+        XCTAssertEqual(attacks(from: "a1").first, "g1")
+        XCTAssertEqual(supports(from: "a1").first, "a2")
+        XCTAssertEqual(attackedBy(on: "d4"), [])
+        XCTAssertEqual(attacks(from: "d4"), [])
+    }
+    
+    func test_movesOccupiedByEnemyArmy() {
+        let chessboardLoader = ChessBoardLoader(chessBoads: chessBoard)
+        chessboardLoader.load(.white, "Wd1")
+        XCTAssertEqual(possibleMoves(from: "d1").count, 14)
+        chessboardLoader.load(.black, "d3")
+        XCTAssertEqual(possibleMoves(from: "d1").count, 9)
+        XCTAssertEqual(attacks(from: "d1").first, "d3")
+        XCTAssertEqual(attackedBy(on: "d1"), [])
+    }
+    
+    func test_support() {
+        chessBoard.setupGame()
+        XCTAssertEqual(possibleMoves(from: "a1").count, 0)
+        XCTAssertEqual(attacks(from: "a1").count, 0)
+        XCTAssertEqual(supports(from: "a1"), ["b1", "a2"])
+    }
+
+    func test_possibleMovesWhenPinnedByRook() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 We2")
+            .load(.black, "Kh8 We7")
+        XCTAssertEqual(possibleMoves(from: "e2").count, 5)
+        XCTAssertEqual(attacks(from: "e2"), ["e7"])
+        XCTAssertEqual(attackedBy(on: "e2"), ["e7"])
+    }
+    
+    func test_possibleMovesWhenPinnedByBishop() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 Wd2")
+            .load(.black, "Ke8 Ga5")
+        XCTAssertEqual(possibleMoves(from: "d2").count, 0)
+        XCTAssertEqual(attacks(from: "d2").count, 0)
+        XCTAssertEqual(attackedBy(on: "d2"), ["a5"])
+    }
+
+    func test_defendKing() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Wd2")
+            .load(.black, "Ke8 Ha2")
+        let moves = possibleMoves(from: "d2")
+        XCTAssertEqual(moves.count, 3)
+        XCTAssertEqual(moves.contains("a2"), true)
+        XCTAssertEqual(moves.contains("b2"), true)
+        XCTAssertEqual(moves.contains("c2"), true)
+        XCTAssertEqual(attacks(from: "d2"), ["a2"])
+        XCTAssertEqual(attackedBy(on: "d2"), ["a2"])
+    }
+
 }
+

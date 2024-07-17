@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 class GameAnalizer {
     let chessBoard: ChessBoard
     let moveCalculator: MoveCalculator
@@ -37,3 +37,4 @@ class GameAnalizer {
         print("all white moves: \(allMoves.count)")
     }
 }
+*/

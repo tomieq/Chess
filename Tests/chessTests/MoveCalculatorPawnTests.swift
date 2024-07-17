@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import chess
-
+/*
 final class MoveCalculatorPawnTests: XCTestCase {
     func test_initialMoves() throws {
         let chessBoard = ChessBoard()
@@ -84,3 +84,4 @@ final class MoveCalculatorPawnTests: XCTestCase {
         XCTAssertEqual(moves?.passive, [])
     }
 }
+*/

@@ -7,11 +7,13 @@
 
 import Foundation
 
-class King: ChessPiece, MovableChessPiece {
+
+
+class King: DetachedChessPiece {
     convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
         self.init(.king, color, square)
     }
-
+/*
     var basicMoves: [BoardSquare] {
         self.square.neighbours
     }
@@ -26,5 +28,11 @@ class King: ChessPiece, MovableChessPiece {
 
     var startSquare: BoardSquare {
         self.color == .white ? "e1" : "e8"
+    }*/
+}
+
+extension King: ChessPieceConvertible {
+    func chessPiece(chessBoard: ChessBoard) -> ChessPiece {
+        ChessPiece(self, KingMoveCalculator(from: self.square, on: chessBoard))
     }
 }

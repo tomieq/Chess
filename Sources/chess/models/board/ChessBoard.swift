@@ -7,37 +7,48 @@
 
 import Foundation
 
-typealias GamePiece = ChessPiece & MovableChessPiece
+typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
+
 
 class ChessBoard {
-    var pieces: [GamePiece]
-
-    var copy: ChessBoard {
-        ChessBoard(pieces: self.pieces.compactMap{ $0.copy })
-    }
+    var pieces: [ChessPiece]
+    private var listeners: [() -> Void] = []
 
     init() {
         self.pieces = []
     }
 
-    private init(pieces: [GamePiece]) {
+    private init(pieces: [ChessPiece]) {
         self.pieces = pieces
     }
+    
+    func subscribe(subscriber: @escaping () -> Void) {
+        self.listeners.append(subscriber)
+    }
+    
+    private func broadcastChanges() {
+        listeners.forEach { $0() }
+    }
 
-    func addPiece(_ piece: GamePiece?) {
-        guard let piece = piece else {
-            return
+    @discardableResult
+    func addPiece(_ piece: GamePiece?, emitChanges: Bool = true) -> ChessBoard {
+        if let chessPiece = piece?.chessPiece(chessBoard: self) {
+            self.pieces.append(chessPiece)
         }
-        self.pieces.append(piece)
+        if emitChanges {
+            broadcastChanges()
+        }
+        return self
     }
 
     func addPieces(_ pieces: GamePiece?...) {
         for piece in pieces {
-            self.addPiece(piece)
+            self.addPiece(piece, emitChanges: false)
         }
+        broadcastChanges()
     }
 
-    func getPiece(_ square: BoardSquare) -> GamePiece? {
+    func piece(at square: BoardSquare?) -> ChessPiece? {
         self.pieces.first{ $0.square == square }
     }
 
@@ -45,27 +56,31 @@ class ChessBoard {
         self.pieces.first { $0.type == .king && $0.color == color }
     }
 
-    func isSquareFree(_ square: BoardSquare) -> Bool {
+    func isFree(_ square: BoardSquare) -> Bool {
         !self.pieces.contains{ $0.square == square }
     }
 
-    func setupGame() {
+    @discardableResult
+    func setupGame() -> ChessBoard {
         let chessboardLoader = ChessBoardLoader(chessBoads: self)
         chessboardLoader
             .load(.white, "Wa1 Sb1 Gc1 Hd1 Ke1 Gf1 Sg1 Wh1")
             .load(.white, "a2 b2 c2 d2 e2 f2 g2 h2")
             .load(.black, "Wa8 Sb8 Gc8 Hd8 Ke8 Gf8 Sg8 Wh8")
             .load(.black, "a7 b7 c7 d7 e7 f7 g7 h7")
+        broadcastChanges()
+        return self
     }
 
-    func getPieces(color: ChessPieceColor) -> [GamePiece] {
+    func getPieces(color: ChessPieceColor) -> [ChessPiece] {
         self.pieces.filter{ $0.color == color }
     }
 
     func remove(_ square: BoardSquare) {
         self.pieces = self.pieces.filter{ $0.square != square }
+        broadcastChanges()
     }
-
+/*
     func move(source: BoardSquare, to dest: BoardSquare) {
         guard let piece = self.getPiece(source) else {
             print("Cannot move piece from \(source) as there is nothing!")
@@ -86,4 +101,5 @@ class ChessBoard {
         }
         return txt.trimmingCharacters(in: .newlines)
     }
+ */
 }

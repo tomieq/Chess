@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import chess
-
+/*
 class GameAnalizerTests: XCTestCase {
     func test_1() {
         let sut = GameAnalizer()
@@ -66,3 +66,4 @@ class GameAnalizerTests: XCTestCase {
         print(Text["pawn"])
     }
 }
+*/

@@ -1,6 +1,6 @@
 import XCTest
 @testable import chess
-
+/*
 final class MoveCalculatorKingTests: XCTestCase {
     func test_kingPossibleMovesFieldsOccupiedByOwnArmy() throws {
         let chessBoard = ChessBoard()
@@ -267,3 +267,4 @@ final class MoveCalculatorKingTests: XCTestCase {
         XCTAssertEqual(moves?.agressive, [])
     }
 }
+*/

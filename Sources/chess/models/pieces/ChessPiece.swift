@@ -7,34 +7,21 @@
 
 import Foundation
 
-protocol MovableChessPiece {
-    var basicMoves: [BoardSquare] { get }
-    var copy: GamePiece? { get }
-}
 
-class ChessPiece {
+struct ChessPiece {
     let type: ChessPieceType
     let color: ChessPieceColor
-    var square: BoardSquare {
-        didSet {
-            self.moveCounter += 1
-        }
-    }
+    let square: BoardSquare
+    let longDistanceAttackDirections: [MoveDirection]
+    let moveCalculator: MoveCalculator
 
-    var moveCounter = 0
-
-    init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ square: BoardSquare?) {
-        guard let position = square else {
-            print("Could not initialize \(type) as square is nil")
-            return nil
-        }
-        self.type = type
-        self.color = color
-        self.square = position
-    }
-
-    convenience init?(_ type: ChessPieceType, _ color: ChessPieceColor, _ column: BoardColumn, _ row: Int) {
-        self.init(type, color, BoardSquare(column, row))
+    init(_ detached: DetachedChessPiece,
+         _ moveCalculator: MoveCalculator) {
+        self.type = detached.type
+        self.color = detached.color
+        self.longDistanceAttackDirections = detached.longDistanceAttackDirections
+        self.square = detached.square
+        self.moveCalculator = moveCalculator
     }
 }
 

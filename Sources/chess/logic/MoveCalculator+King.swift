@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 extension MoveCalculator {
     // calculates possible king moves
     func kingMoves(_ piece: King?, calculation: MoveCalculation) -> PossibleMoves? {
@@ -85,3 +85,4 @@ extension MoveCalculator {
         return true
     }
 }
+*/

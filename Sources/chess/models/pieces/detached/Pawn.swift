@@ -7,11 +7,11 @@
 
 import Foundation
 
-class Pawn: ChessPiece, MovableChessPiece {
+class Pawn: DetachedChessPiece {
     convenience init?(_ color: ChessPieceColor, _ square: BoardSquare) {
         self.init(.pawn, color, square)
     }
-
+    /*
     var crawningDirection: MoveDirection {
         switch self.color {
         case .white:
@@ -52,5 +52,11 @@ class Pawn: ChessPiece, MovableChessPiece {
 
     var copy: GamePiece? {
         Pawn(self.color, self.square)
+    }*/
+}
+
+extension Pawn: ChessPieceConvertible {
+    func chessPiece(chessBoard: ChessBoard) -> ChessPiece {
+        ChessPiece(self, PawnMoveCalculator(from: self.square, on: chessBoard))
     }
 }

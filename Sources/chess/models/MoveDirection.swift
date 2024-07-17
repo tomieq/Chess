@@ -40,4 +40,24 @@ extension MoveDirection {
         }
     }
 }
+
+
+extension MoveDirection {
+    var isDiagonal: Bool {
+        switch self {
+        case .upRight, .upLeft, .downRight, .downLeft:
+            true
+        default:
+            false
+        }
+    }
+    
+    static var allDiagonal: [MoveDirection] {
+        [.upRight, .upLeft, .downRight, .downLeft]
+    }
+    
+    static var allStraight: [MoveDirection] {
+        [.left, .right, .up, .down]
+    }
 }
+

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+/*
 extension MoveCalculator {
     func pawnMoves(_ piece: Pawn?, calculation: MoveCalculation) -> PossibleMoves? {
         guard let pawn = piece else { return nil }
@@ -39,3 +39,4 @@ extension MoveCalculator {
         return PossibleMoves(passive: passive, agressive: agressive, covers: covers)
     }
 }
+*/

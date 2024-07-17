@@ -6,10 +6,10 @@
 //
 
 import Foundation
-
+/*
 class GamePlay {
     private let chessBoard: ChessBoard
-    private let moveCalculator: MoveCalculator
+    //private let moveCalculator: MoveCalculator
     private var turnColor: ChessPieceColor
     private var possibleMoves: [ChessPieceColor: [ChessPiece: PossibleMoves]] = [:]
     private var moveCounter = 1
@@ -24,7 +24,7 @@ class GamePlay {
 
     init() {
         self.chessBoard = ChessBoard()
-        self.moveCalculator = MoveCalculator(chessBoard: self.chessBoard)
+        //self.moveCalculator = MoveCalculator(chessBoard: self.chessBoard)
         self.turnColor = .white
     }
 
@@ -205,3 +205,4 @@ class GamePlay {
         }
     }
 }
+*/
