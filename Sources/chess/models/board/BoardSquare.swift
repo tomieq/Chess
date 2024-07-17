@@ -96,3 +96,9 @@ extension BoardSquare {
         ].compactMap { $0 }
     }
 }
+
+extension BoardSquare {
+    var neighbours: [BoardSquare] {
+        MoveDirection.allCases.compactMap { self.move($0) }
+    }
+}

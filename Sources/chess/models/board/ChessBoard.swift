@@ -53,13 +53,13 @@ class ChessBoard {
     }
 
     func activePawn(at square: BoardSquare?) -> ActivePawn? {
-        guard let piece = self.piece(at: square) else { return nil }
+        guard let piece = self.piece(at: square), piece.type == .pawn else { return nil }
         return ActivePawn(color: piece.color, square: piece.square)
     }
 
-    //    func getKing(color: ChessPieceColor) -> ChessPiece? {
-//        self.pieces.first { $0.type == .king && $0.color == color }
-//    }
+    func king(color: ChessPieceColor) -> ChessPiece? {
+        self.pieces.first { $0.type == .king && $0.color == color }
+    }
 
     func isFree(_ square: BoardSquare) -> Bool {
         !self.pieces.contains{ $0.square == square }

@@ -125,6 +125,22 @@ class RookMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "c4"), ["d5"])
         XCTAssertEqual(defenders(for: "c4"), ["d3"])
     }
+    
+    func test_isDefendedByKing() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 Wd1 Wf2")
+            .load(.black, "Ke8 d5")
+        XCTAssertEqual(defenders(for: "f2"), ["e1"])
+        XCTAssertEqual(defenders(for: "d1"), ["e1"])
+    }
+    
+    func test_isAttackedByEnemyKing() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Kh1 Wd1 Wf2")
+            .load(.black, "Ke1 d5")
+        XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
+        XCTAssertEqual(possiblePredators(for: "d1"), ["e1"])
+    }
 
 }
 

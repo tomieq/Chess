@@ -138,6 +138,15 @@ class KnightMoveCalculator: MoveCalculator {
             }
         }
         
+        // find my king defender
+        if let myKing = chessBoard.king(color: color), myKing.square.neighbours.contains(square) {
+            defenders.append(myKing.square)
+        }
+        // find enemy king predator
+        if let enemyKing = chessBoard.king(color: color.other), enemyKing.square.neighbours.contains(square) {
+            possiblePredators.append(enemyKing.square)
+        }
+        
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possiblePredators: possiblePredators,
