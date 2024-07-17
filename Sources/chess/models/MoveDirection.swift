@@ -12,4 +12,9 @@ enum MoveDirection: CaseIterable {
     case left
     case up
     case down
+    case upRight
+    case upLeft
+    case downRight
+    case downLeft
+}
 }
