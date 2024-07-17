@@ -117,6 +117,15 @@ class DistanceSniperMoveCalculator: MoveCalculator {
                 }
             }
         }
+        for position in square.knightMoves {
+            if let piece = chessBoard.piece(at: position), piece.type == .knight {
+                if piece.color == color {
+                    defenders.append(piece.square)
+                } else {
+                    possiblePredators.append(piece.square)
+                }
+            }
+        }
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possiblePredators: possiblePredators,

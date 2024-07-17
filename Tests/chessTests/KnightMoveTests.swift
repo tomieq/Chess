@@ -56,5 +56,15 @@ final class KnightMoveTests: MoveTests {
         XCTAssertEqual(possibleMoves(from: "d1").count, 0)
         XCTAssertEqual(possiblePredators(for: "d1"), ["a1"])
     }
+    
+    func test_knightIsDefendedByKnight() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Kf3 Sd4 Sf5")
+            .load(.black, "Ke8 Sb5")
+        XCTAssertEqual(defenders(for: "d4"), ["f5"])
+        XCTAssertEqual(defended(from: "d4").count, 2)
+        XCTAssertEqual(possibleVictims(for: "d4"), ["b5"])
+        XCTAssertEqual(possiblePredators(for: "d4"), ["b5"])
+    }
 }
 
