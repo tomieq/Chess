@@ -11,28 +11,29 @@ import XCTest
 final class MoveCalculatorBishopTests: XCTestCase {
     func test_movesOccupiedByOwnArmy() {
         let chessBoard = ChessBoard()
-        chessBoard.addPieces(.white, "Ge4")
+        let chessboardLoader = ChessBoardLoader(chessBoads: chessBoard)
+        chessboardLoader.load(.white, "Ge4")
         let sut = MoveCalculator(chessBoard: chessBoard)
         var moves = sut.possibleMoves(from: "e4")
         XCTAssertEqual(moves?.passive.count, 13)
         XCTAssertEqual(moves?.agressive.count, 0)
 
-        chessBoard.addPieces(.white, "g6")
+        chessboardLoader.load(.white, "g6")
         moves = sut.possibleMoves(from: "e4")
         XCTAssertEqual(moves?.passive.count, 11)
         XCTAssertEqual(moves?.agressive.count, 0)
 
-        chessBoard.addPieces(.white, "c6")
+        chessboardLoader.load(.white, "c6")
         moves = sut.possibleMoves(from: "e4")
         XCTAssertEqual(moves?.passive.count, 8)
         XCTAssertEqual(moves?.agressive.count, 0)
 
-        chessBoard.addPieces(.white, "f3")
+        chessboardLoader.load(.white, "f3")
         moves = sut.possibleMoves(from: "e4")
         XCTAssertEqual(moves?.passive.count, 5)
         XCTAssertEqual(moves?.agressive.count, 0)
 
-        chessBoard.addPieces(.white, "c2")
+        chessboardLoader.load(.white, "c2")
         moves = sut.possibleMoves(from: "e4")
         XCTAssertEqual(moves?.passive.count, 3)
         XCTAssertEqual(moves?.agressive.count, 0)
@@ -40,8 +41,9 @@ final class MoveCalculatorBishopTests: XCTestCase {
 
     func test_movesOccupiedByEnemy() {
         let chessBoard = ChessBoard()
-        chessBoard.addPieces(.white, "Gc1")
-        chessBoard.addPieces(.black, "Wa3 Se3")
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Gc1")
+            .load(.black, "Wa3 Se3")
         let sut = MoveCalculator(chessBoard: chessBoard)
         let moves = sut.possibleMoves(from: "c1")
         XCTAssertEqual(moves?.passive.count, 2)
@@ -50,8 +52,9 @@ final class MoveCalculatorBishopTests: XCTestCase {
 
     func test_exposeKing() {
         let chessBoard = ChessBoard()
-        chessBoard.addPieces(.white, "Ke2 Gd2")
-        chessBoard.addPieces(.black, "Ke8 Ha2")
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Gd2")
+            .load(.black, "Ke8 Ha2")
         let sut = MoveCalculator(chessBoard: chessBoard)
         let moves = sut.possibleMoves(from: "d2")
         XCTAssertEqual(moves?.count, 0)
@@ -59,8 +62,9 @@ final class MoveCalculatorBishopTests: XCTestCase {
 
     func test_defendKing() {
         let chessBoard = ChessBoard()
-        chessBoard.addPieces(.white, "Ke1 Gd2")
-        chessBoard.addPieces(.black, "Ke8 Ha5")
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 Gd2")
+            .load(.black, "Ke8 Ha5")
         let sut = MoveCalculator(chessBoard: chessBoard)
         let moves = sut.possibleMoves(from: "d2")
         XCTAssertEqual(moves?.count, 3)

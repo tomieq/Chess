@@ -40,7 +40,7 @@ class GamePlay {
     }
 
     func setPieces(_ color: ChessPieceColor, _ txt: String) {
-        self.chessBoard.addPieces(color, txt)
+        ChessBoardLoader(chessBoads: self.chessBoard).load(color, txt)
     }
 
     func nextMove(_ move: String, language: Language = .polish) {

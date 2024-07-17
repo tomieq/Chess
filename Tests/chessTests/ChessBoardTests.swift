@@ -21,8 +21,9 @@ class ChessBoardTests: XCTestCase {
 
     func test_addingPawnFromText() {
         let sut = ChessBoard()
-        sut.addPieces(.black, "c7 d7 f7")
-        sut.addPieces(.white, "b2")
+        ChessBoardLoader(chessBoads: sut)
+            .load(.black, "c7 d7 f7")
+            .load(.white, "b2")
         XCTAssertEqual(sut.pieces.count, 4)
         XCTAssertEqual(sut.getPiece("c7")?.type, .pawn)
         XCTAssertEqual(sut.getPiece("d7")?.type, .pawn)
@@ -34,7 +35,7 @@ class ChessBoardTests: XCTestCase {
 
     func test_addingChessPiecesUsingText() {
         let sut = ChessBoard()
-        sut.addPieces(.black, "Wa1 Sb1 Gc1 Hd1 Ke1")
+        ChessBoardLoader(chessBoads: sut).load(.black, "Wa1 Sb1 Gc1 Hd1 Ke1")
         XCTAssertEqual(sut.pieces.count, 5)
         XCTAssertEqual(sut.getPiece("a1")?.type, .rook)
         XCTAssertEqual(sut.getPiece("b1")?.type, .knight)
@@ -45,15 +46,16 @@ class ChessBoardTests: XCTestCase {
 
     func test_isSquareFree() {
         let sut = ChessBoard()
-        sut.addPieces(.black, "c7 d7 f7")
-        sut.addPieces(.white, "b2")
+        ChessBoardLoader(chessBoads: sut)
+            .load(.black, "c7 d7 f7")
+            .load(.white, "b2")
         XCTAssertTrue(sut.isSquareFree("c2"))
         XCTAssertFalse(sut.isSquareFree("c7"))
     }
 
     func test_pieceRemoval() {
         let sut = ChessBoard()
-        sut.addPieces(.black, "c7")
+        ChessBoardLoader(chessBoads: sut).load(.black, "c7")
         XCTAssertFalse(sut.isSquareFree("c7"))
         sut.remove("c7")
         XCTAssertTrue(sut.isSquareFree("c7"))
@@ -61,7 +63,7 @@ class ChessBoardTests: XCTestCase {
 
     func test_move() {
         let sut = ChessBoard()
-        sut.addPieces(.white, "d2")
+        ChessBoardLoader(chessBoads: sut).load(.white, "d2")
         XCTAssertFalse(sut.isSquareFree("d2"))
         sut.move(source: "d2", to: "d3")
         XCTAssertTrue(sut.isSquareFree("d2"))
@@ -70,7 +72,7 @@ class ChessBoardTests: XCTestCase {
 
     func test_copy() {
         let sut = ChessBoard()
-        sut.addPieces(.white, "d2")
+        ChessBoardLoader(chessBoads: sut).load(.white, "d2")
         XCTAssertFalse(sut.isSquareFree("d2"))
 
         let copy = sut.copy
