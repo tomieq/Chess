@@ -15,9 +15,9 @@ class ChessBoardLoader {
     }
     
     // adds pieces to the board parsing the text, e.g.:
-    // Ke1 Wa1 Wh1 c2
+    // Ke1 Ra1 Rh1 c2
     @discardableResult
-    func load(_ color: ChessPieceColor, _ txt: String, language: Language = .polish) -> ChessBoardLoader {
+    func load(_ color: ChessPieceColor, _ txt: String, language: Language = .english) -> ChessBoardLoader {
         let parts = txt.components(separatedBy: .whitespaces)
         for part in parts {
             if part.count == 2 {

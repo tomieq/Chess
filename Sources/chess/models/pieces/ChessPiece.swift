@@ -41,6 +41,6 @@ extension ChessPiece: Hashable {
 
 extension ChessPiece: CustomStringConvertible {
     var description: String {
-        "\(self.color.plName) \(self.type.plName) z \(self.square)"
+        "\(self.color.enName) \(self.type.enName) on \(self.square)"
     }
 }

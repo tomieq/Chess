@@ -26,19 +26,19 @@ final class KingMoveTests: MoveTests {
 
     func test_kingCannotGoOnSquareControlledByEnemyRook() {
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke3")
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Wd8 Wf8")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Rd8 Rf8")
         XCTAssertEqual(possibleMoves(from: "e3").count, 2)
     }
     
     func test_kingCannotGoOnSquareControlledByEnemyKnights() {
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Se4 Sf4")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Ne4 Nf4")
         XCTAssertEqual(possibleMoves(from: "e1").count, 2)
     }
 
     func test_kingCannotGoOnSquareControlledByEnemyBishop() {
         ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ke1")
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Gf4 Gg4")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ke8 Bf4 Bg4")
         XCTAssertEqual(possibleMoves(from: "e1").count, 2)
     }
     
@@ -127,7 +127,7 @@ final class KingMoveTests: MoveTests {
     }
     
     func test_whiteQueenSideCastlingBlockedByOwnArmy() {
-        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Wa1 Sb1 Ke1 Wh1 d2 e2 f2")
+        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ra1 Nb1 Ke1 Rh1 d2 e2 f2")
         let moves = possibleMoves(from: "e1")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d1"), true)
@@ -136,7 +136,7 @@ final class KingMoveTests: MoveTests {
     }
     
     func test_whiteKingSideCastlingBlockedByOwnArmy() {
-        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Wa1 Sg1 Ke1 Wh1 d2 e2 f2")
+        ChessBoardLoader(chessBoads: chessBoard).load(.white, "Ra1 Ng1 Ke1 Rh1 d2 e2 f2")
         let moves = possibleMoves(from: "e1")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d1"), true)
@@ -145,7 +145,7 @@ final class KingMoveTests: MoveTests {
     }
     
     func test_blackQueenSideCastlingBlockedByOwnArmy() {
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Wa8 Sb8 Ke8 Wh8 d7 e7 f7")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ra8 Nb8 Ke8 Rh8 d7 e7 f7")
         let moves = possibleMoves(from: "e8")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d8"), true)
@@ -154,7 +154,7 @@ final class KingMoveTests: MoveTests {
     }
     
     func test_blackKingSideCastlingBlockedByOwnArmy() {
-        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Wa8 Sg8 Ke8 Wh8 d7 e7 f7")
+        ChessBoardLoader(chessBoads: chessBoard).load(.black, "Ra8 Ng8 Ke8 Rh8 d7 e7 f7")
         let moves = possibleMoves(from: "e8")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d8"), true)
@@ -164,8 +164,8 @@ final class KingMoveTests: MoveTests {
     
     func test_whiteQueenCastlingBlockedByEnemy() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Wa1 Ke1 Wh1 Sf3 d2 e2 f2")
-            .load(.black, "Wb5")
+            .load(.white, "Ra1 Ke1 Rh1 Nf3 d2 e2 f2")
+            .load(.black, "Rb5")
         let moves = possibleMoves(from: "e1")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d1"), true)
@@ -175,8 +175,8 @@ final class KingMoveTests: MoveTests {
     
     func test_whiteKingSideCastlingBlockedByEnemy() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Wa1 Sd3 Ke1 Wh1 d2 e2 f2")
-            .load(.black, "Wg4")
+            .load(.white, "Ra1 Nd3 Ke1 Rh1 d2 e2 f2")
+            .load(.black, "Rg4")
         let moves = possibleMoves(from: "e1")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d1"), true)
@@ -186,8 +186,8 @@ final class KingMoveTests: MoveTests {
     
     func test_blackQueenSideCastlingBlockedByEnemy() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.black, "Wa8 Sf6 Ke8 Wh8 d7 e7 f7")
-            .load(.white, "Wb2")
+            .load(.black, "Ra8 Nf6 Ke8 Rh8 d7 e7 f7")
+            .load(.white, "Rb2")
         let moves = possibleMoves(from: "e8")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d8"), true)
@@ -197,8 +197,8 @@ final class KingMoveTests: MoveTests {
     
     func test_blackKingSideCastlingBlockedByEnemy() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.black, "Wa8 Sc6 Ke8 Wh8 d7 e7 f7")
-            .load(.white, "Wg2")
+            .load(.black, "Ra8 Nc6 Ke8 Rh8 d7 e7 f7")
+            .load(.white, "Rg2")
         let moves = possibleMoves(from: "e8")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("d8"), true)
@@ -209,7 +209,7 @@ final class KingMoveTests: MoveTests {
     func test_kingCantTakeSecuredPawn() {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1")
-            .load(.black, "e2 Ke8 Gb5")
+            .load(.black, "e2 Ke8 Bb5")
         XCTAssertEqual(possibleMoves(from: "e1").count, 2)
         XCTAssertEqual(possibleVictims(for: "e1"), ["e2"])
         XCTAssertFalse(possibleMoves(from: "e1").contains("e2"))

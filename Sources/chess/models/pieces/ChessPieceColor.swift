@@ -32,4 +32,12 @@ extension ChessPieceColor {
             return "czarny"
         }
     }
+    var enName: String {
+        switch self {
+        case .white:
+            return "white"
+        case .black:
+            return "black"
+        }
+    }
 }

@@ -49,7 +49,7 @@ class BishopMoveTests: MoveTests {
 
     func test_movesOccupiedByOwnArmy() {
         let chessboardLoader = ChessBoardLoader(chessBoads: chessBoard)
-        chessboardLoader.load(.white, "Ge4")
+        chessboardLoader.load(.white, "Be4")
         XCTAssertEqual(possibleMoves(from: "e4").count, 13)
         XCTAssertEqual(possibleVictims(for: "e4").count, 0)
 
@@ -72,23 +72,23 @@ class BishopMoveTests: MoveTests {
 
     func test_movesOccupiedByEnemy() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Gc1")
-            .load(.black, "Wa3 Se3")
+            .load(.white, "Bc1")
+            .load(.black, "Ra3 Ne3")
         XCTAssertEqual(possibleMoves(from: "c1").count, 4)
         XCTAssertEqual(possibleVictims(for: "c1").count, 2)
     }
 
     func test_exposeKing() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Ke2 Gd2")
-            .load(.black, "Ke8 Ha2")
+            .load(.white, "Ke2 Bd2")
+            .load(.black, "Ke8 Qa2")
         XCTAssertEqual(possibleMoves(from: "d2").count, 0)
     }
 
     func test_movesWhenPinnedByQueen() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Ke1 Gd2")
-            .load(.black, "Ke8 Ha5")
+            .load(.white, "Ke1 Bd2")
+            .load(.black, "Ke8 Qa5")
         let moves = possibleMoves(from: "d2")
         XCTAssertEqual(moves.count, 3)
         XCTAssertEqual(moves.contains("c3"), true)
@@ -99,8 +99,8 @@ class BishopMoveTests: MoveTests {
     
     func test_movesWhenPinnedByRook() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Kg4 Gd4 Wd1")
-            .load(.black, "Ke8 Wb4")
+            .load(.white, "Kg4 Bd4 Rd1")
+            .load(.black, "Ke8 Rb4")
         XCTAssertEqual(possibleMoves(from: "d4").count, 0)
         XCTAssertEqual(possibleVictims(for: "d4").count, 0)
         XCTAssertEqual(possiblePredators(for: "d4"), ["b4"])
@@ -110,7 +110,7 @@ class BishopMoveTests: MoveTests {
     
     func test_bishopIsDefendedByTwoRooks() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Ke1 Gd2 Wa2 Wh2")
+            .load(.white, "Ke1 Bd2 Ra2 Rh2")
             .load(.black, "Ke8")
         XCTAssertEqual(defenders(for: "d2").count, 3)
         XCTAssertEqual(defended(from: "d2").count, 1)
@@ -120,8 +120,8 @@ class BishopMoveTests: MoveTests {
     
     func test_bishopIsDefendedByKnight() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Kf3 Gd4 Sf5")
-            .load(.black, "Ke8 Sb5")
+            .load(.white, "Kf3 Bd4 Nf5")
+            .load(.black, "Ke8 Nb5")
         XCTAssertEqual(defenders(for: "d4"), ["f5"])
         XCTAssertEqual(defended(from: "d4").count, 0)
         XCTAssertEqual(possibleVictims(for: "d4").count, 0)
@@ -130,8 +130,8 @@ class BishopMoveTests: MoveTests {
     
     func test_bishopUnderTripleAttack() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Kf1 Gc3")
-            .load(.black, "Ke8 Se4 Wc7 Wc8")
+            .load(.white, "Kf1 Bc3")
+            .load(.black, "Ke8 Ne4 Rc7 Rc8")
         XCTAssertEqual(defenders(for: "c3").count, 0)
         XCTAssertEqual(defended(from: "c3").count, 0)
         XCTAssertEqual(possibleVictims(for: "c3").count, 0)
@@ -140,8 +140,8 @@ class BishopMoveTests: MoveTests {
     
     func test_bishopIsTripleDefended() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Kf1 Gc3 Wg3 Wh3 Sd1")
-            .load(.black, "Ke8 Se4 Wc7 Wc8")
+            .load(.white, "Kf1 Bc3 Rg3 Rh3 Nd1")
+            .load(.black, "Ke8 Ne4 Rc7 Rc8")
         XCTAssertEqual(defenders(for: "c3").count, 3)
         XCTAssertEqual(defended(from: "c3").count, 0)
         XCTAssertEqual(possibleVictims(for: "c3").count, 0)
@@ -150,7 +150,7 @@ class BishopMoveTests: MoveTests {
     
     func test_isDefendedByKing() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Ke1 Gd1 Gf2")
+            .load(.white, "Ke1 Bd1 Bf2")
             .load(.black, "Ke8 d5")
         XCTAssertEqual(defenders(for: "f2"), ["e1"])
         XCTAssertEqual(defenders(for: "d1"), ["e1"])
@@ -158,7 +158,7 @@ class BishopMoveTests: MoveTests {
     
     func test_isAttackedByEnemyKing() {
         ChessBoardLoader(chessBoads: chessBoard)
-            .load(.white, "Kh1 Gd1 Gf2")
+            .load(.white, "Kh1 Bd1 Bf2")
             .load(.black, "Ke1 d5")
         XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
         XCTAssertEqual(possiblePredators(for: "d1"), ["e1"])

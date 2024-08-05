@@ -35,7 +35,7 @@ class ChessBoardTests: XCTestCase {
 
     func test_addingChessPiecesUsingText() {
         let sut = ChessBoard()
-        ChessBoardLoader(chessBoads: sut).load(.black, "Wa1 Sb1 Gc1 Hd1 Ke1")
+        ChessBoardLoader(chessBoads: sut).load(.black, "Ra1 Nb1 Bc1 Qd1 Ke1")
         XCTAssertEqual(sut.pieces.count, 5)
         XCTAssertEqual(sut.piece(at: "a1")?.type, .rook)
         XCTAssertEqual(sut.piece(at: "b1")?.type, .knight)
