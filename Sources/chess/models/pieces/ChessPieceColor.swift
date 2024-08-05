@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ChessPieceColor: String, CaseIterable {
+public enum ChessPieceColor: String, CaseIterable {
     case white
     case black
 }

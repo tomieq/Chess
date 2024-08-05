@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ChessPiece {
+public struct ChessPiece {
     let type: ChessPieceType
     let color: ChessPieceColor
     let square: BoardSquare
@@ -23,16 +23,24 @@ struct ChessPiece {
         self.square = detached.square
         self.moveCalculator = moveCalculator
     }
+    
+    func moved(to square: BoardSquare) -> ChessPiece {
+        ChessPiece(DetachedChessPiece(type,
+                                      color,
+                                      square,
+                                      longDistanceAttackDirections: longDistanceAttackDirections),
+                   moveCalculator)
+    }
 }
 
 extension ChessPiece: Equatable {
-    static func == (lhs: ChessPiece, rhs: ChessPiece) -> Bool {
+    public static func == (lhs: ChessPiece, rhs: ChessPiece) -> Bool {
         lhs.color == rhs.color && lhs.square == rhs.square && lhs.type == rhs.type
     }
 }
 
 extension ChessPiece: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(self.type)
         hasher.combine(self.color)
         hasher.combine(self.square)
@@ -40,7 +48,7 @@ extension ChessPiece: Hashable {
 }
 
 extension ChessPiece: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         "\(self.color.enName) \(self.type.enName) on \(self.square)"
     }
 }

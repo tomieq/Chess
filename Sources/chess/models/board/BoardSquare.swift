@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BoardSquare {
+public struct BoardSquare {
     let column: BoardColumn
     let row: Int
 
@@ -24,7 +24,7 @@ extension BoardSquare: Equatable {}
 extension BoardSquare: Hashable {}
 
 extension BoardSquare: ExpressibleByStringLiteral {
-    init(stringLiteral value: String) {
+    public init(stringLiteral value: String) {
         guard value.count == 2,
               let firstLetter = value.first,
               let column = BoardColumn(firstLetter),
@@ -39,7 +39,7 @@ extension BoardSquare: ExpressibleByStringLiteral {
 }
 
 extension BoardSquare: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         "\(self.column.letter)\(self.row)"
     }
 }

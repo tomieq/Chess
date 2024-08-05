@@ -65,12 +65,20 @@ class PawnMoveCalculator: MoveCalculator {
         self.square = piece.square
         self.color = piece.color
         self.chessBoard = chessBoard
-        self.chessBoard.subscribe { [weak self] in
-            self?.gameChanged()
+        self.chessBoard.subscribe { [weak self] event in
+            self?.gameChanged(event)
         }
     }
     
-    private func gameChanged() {
+    private func gameChanged(_ event: ChessBoardEvent) {
+        switch event {
+        case .pieceMoved(let from, let to):
+            if self.square == from {
+                self.square = to
+            }
+        default:
+            break
+        }
         self.isAnalized = false
     }
     
