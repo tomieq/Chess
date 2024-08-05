@@ -50,6 +50,7 @@ public class ChessMoveManager {
                     updateChessboardWithMove(piece: rook, from: "h1", to: "f1")
                     share(.pieceMoved(from: "e1", to: "g1"))
                     share(.pieceMoved(from: "h1", to: "f1"))
+                    return
                 }
                 if to == "c1", let rook = chessboard["a1"] {
                     // short castling
@@ -57,6 +58,7 @@ public class ChessMoveManager {
                     updateChessboardWithMove(piece: rook, from: "a1", to: "d1")
                     share(.pieceMoved(from: "e1", to: "c1"))
                     share(.pieceMoved(from: "a1", to: "d1"))
+                    return
                 }
             case .black:
                 if to == "g8", let rook = chessboard["h8"] {
@@ -65,6 +67,7 @@ public class ChessMoveManager {
                     updateChessboardWithMove(piece: rook, from: "h8", to: "f8")
                     share(.pieceMoved(from: "e8", to: "g8"))
                     share(.pieceMoved(from: "h8", to: "f8"))
+                    return
                 }
                 if to == "c8", let rook = chessboard["a8"] {
                     // short castling
@@ -72,16 +75,18 @@ public class ChessMoveManager {
                     updateChessboardWithMove(piece: rook, from: "a8", to: "d8")
                     share(.pieceMoved(from: "e8", to: "c8"))
                     share(.pieceMoved(from: "a8", to: "d8"))
+                    return
                 }
             }
+            
         }
         let event: ChessBoardEvent!
         if let attackedPiece = chessboard[to] {
             event = .pieceTakes(from: from, to: to, killedType: attackedPiece.type)
-            print("\(piece) moved from \(from) to \(to)")
+            print("\(piece.color) \(piece.type.enName) from \(from) took \(attackedPiece)")
         } else {
             event = .pieceMoved(from: from, to: to)
-            print("\(piece) moved from \(from) to \(to)")
+            print("\(piece.color) \(piece.type.enName) moved from \(from) to \(to)")
         }
         updateChessboardWithMove(piece: piece, from: from, to: to)
         share(event)

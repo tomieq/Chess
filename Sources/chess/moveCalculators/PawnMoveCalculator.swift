@@ -72,7 +72,7 @@ class PawnMoveCalculator: MoveCalculator {
     
     private func gameChanged(_ event: ChessBoardEvent) {
         switch event {
-        case .pieceMoved(let from, let to):
+        case .pieceMoved(let from, let to), .pieceTakes(let from, let to, _):
             if self.square == from {
                 self.square = to
             }
