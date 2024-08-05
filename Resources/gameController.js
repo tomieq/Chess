@@ -1,5 +1,4 @@
 let curBoard;
-let curPlayer;
 
 let curHeldPiece;
 let curHeldPieceStartingPosition;
@@ -14,14 +13,11 @@ function startGame() {
     ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
     ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r']];
 
-    const starterPlayer = 'white';
-
-    loadPosition(starterPosition, starterPlayer);
+    loadPosition(starterPosition);
 }
 
-function loadPosition(position, playerToMove) {
+function loadPosition(position) {
     curBoard = position;
-    curPlayer = playerToMove;
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -117,9 +113,7 @@ function setPieceHoldEvents() {
                     const pieceReleasePosition = [yPosition, xPosition];
 
                     if (!(pieceReleasePosition[0] == curHeldPieceStartingPosition[0] && pieceReleasePosition[1] == curHeldPieceStartingPosition[1])) {
-                        if (validateMovement(curHeldPieceStartingPosition, pieceReleasePosition)) {
-                            movePiece(curHeldPiece, curHeldPieceStartingPosition, pieceReleasePosition);
-                        }
+                        tryMove(curHeldPiece, curHeldPieceStartingPosition, pieceReleasePosition);
                     }
                 }
 
@@ -137,30 +131,26 @@ function movePiece(piece, startingPosition, endingPosition) {
     const boardPiece = curBoard[startingPosition[0]][startingPosition[1]];
     
     if (boardPiece != '.') {
-        if ((boardPiece === boardPiece.toUpperCase() && curPlayer == 'black') ||
-            (boardPiece === boardPiece.toLowerCase() && curPlayer == 'white')) {
-                curBoard[startingPosition[0]][startingPosition[1]] = '.';
-                curBoard[endingPosition[0]][endingPosition[1]] = boardPiece;
+        curBoard[startingPosition[0]][startingPosition[1]] = '.';
+        curBoard[endingPosition[0]][endingPosition[1]] = boardPiece;
 
-                const destinationSquare = document.getElementById(`${endingPosition[0] + 1}${endingPosition[1] + 1}`);
-                destinationSquare.textContent = '';
-                destinationSquare.appendChild(piece);
-
-                // check if is check/checkmate
-
-                if (curPlayer == 'white') {
-                    curPlayer = 'black';
-                } else {
-                    curPlayer = 'white';
-                }
-        }
+        const destinationSquare = document.getElementById(`${endingPosition[0] + 1}${endingPosition[1] + 1}`);
+        destinationSquare.textContent = '';
+        destinationSquare.appendChild(piece);
     }
 }
 
-function validateMovement(startingPosition, endingPosition) {
+function tryMove(piece, startingPosition, endingPosition) {
     const boardPiece = curBoard[startingPosition[0]][startingPosition[1]];
     console.log("Move from " + unifiedSquareName(startingPosition)+ " to " +unifiedSquareName(endingPosition));
-    return false;
+
+    $.getScript( "move?from=" + unifiedSquareName(startingPosition) + "&to=" + unifiedSquareName(endingPosition) )
+      .done(function( script, textStatus ) {
+          movePiece(piece, startingPosition, endingPosition);
+      })
+      .fail(function( jqxhr, settings, exception ) {
+          
+    });
 }
 
 function unifiedSquareName(position) {
