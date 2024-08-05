@@ -6,10 +6,11 @@ import PackageDescription
 let package = Package(
     name: "chess",
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "chess",
-            targets: ["chess"])
+            targets: ["chess"]),
+        .executable(name: "web",
+                    targets: ["web"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -21,6 +22,8 @@ let package = Package(
         .target(
             name: "chess",
             dependencies: []),
+        .executableTarget(name: "web",
+                          dependencies: ["chess"]),
         .testTarget(
             name: "chessTests",
             dependencies: ["chess"])
