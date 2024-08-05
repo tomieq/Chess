@@ -15,6 +15,7 @@ public enum ChessMoveError: Error {
 public class ChessMoveManager {
     let chessboard: ChessBoard
     public var colorOnMove: ChessPieceColor = .white
+    public var status: ((ChessBoardEvent) -> Void)?
     
     public init(chessboard: ChessBoard) {
         self.chessboard = chessboard
@@ -40,8 +41,13 @@ public class ChessMoveManager {
         let movedPiece = piece.moved(to: to)
         chessboard.pieces.removeAll { [to, from].contains($0.square) }
         chessboard.pieces.append(movedPiece)
+        status?(.pieceMoved(from: from, to: to))
         chessboard.broadcast(event: .pieceMoved(from: from, to: to))
         print("\(piece) moved from \(from) to \(to)")
         colorOnMove = colorOnMove.other
+        
+//        if chessboard.king(color: piece.color.other)?.moveCalculator.possiblePredators.isEmpty == false {
+//            status?("Check!")
+//        }
     }
 }

@@ -3,6 +3,11 @@ let curBoard;
 let curHeldPiece;
 let curHeldPieceStartingPosition;
 
+
+let mouseX, mouseY = 0;
+let movePieceInterval;
+let hasIntervalStarted = false;
+
 function startGame() {
     const starterPosition = [['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
@@ -22,14 +27,14 @@ function loadPosition(position) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (position[i][j] != '.') {
-                loadPiece(position[i][j], [i + 1, j + 1]);
+                loadPiece(position[i][j], [i, j]);
             }
         }
     }
 }
 
 function loadPiece(piece, position) {
-    const squareElement = document.getElementById(`${position[0]}${position[1]}`);
+    const squareElement = document.getElementById(`${position[0] + 1}${position[1] + 1}`);
 
     const pieceElement = document.createElement('img');
     pieceElement.classList.add('piece');
@@ -58,38 +63,16 @@ function getPieceImageSource(piece) {
 }
 
 function setPieceHoldEvents() {
-    let mouseX, mouseY = 0;
-
+    
     document.addEventListener('mousemove', function(event) {
         mouseX = event.clientX;
         mouseY = event.clientY;
     });
 
     let pieces = document.getElementsByClassName('piece');
-    let movePieceInterval;
-    let hasIntervalStarted = false;
 
     for (const piece of pieces) {
-        piece.addEventListener('mousedown', function(event) {
-            mouseX = event.clientX;
-            mouseY = event.clientY;
-        
-            if (hasIntervalStarted === false) {
-                piece.style.position = 'absolute';
-
-                curHeldPiece = piece;
-                const curHeldPieceStringPosition = piece.parentElement.id.split('');
-
-                curHeldPieceStartingPosition = [parseInt(curHeldPieceStringPosition[0]) - 1, parseInt(curHeldPieceStringPosition[1]) - 1];
-
-                movePieceInterval = setInterval(function() {
-                    piece.style.top = mouseY - piece.offsetHeight / 2 + window.scrollY + 'px';
-                    piece.style.left = mouseX - piece.offsetWidth / 2 + window.scrollX + 'px';
-                }, 1);
-        
-                hasIntervalStarted = true;
-            }
-        });
+        registerPieceMove(piece);
     }
         
     document.addEventListener('mouseup', function(event) {
@@ -126,35 +109,60 @@ function setPieceHoldEvents() {
     });
 }
 
-function movePiece(piece, startingPosition, endingPosition) {
-    // move validations to validateMovement()
-    const boardPiece = curBoard[startingPosition[0]][startingPosition[1]];
+function registerPieceMove(piece) {
+    piece.addEventListener('mousedown', function(event) {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
     
-    if (boardPiece != '.') {
-        curBoard[startingPosition[0]][startingPosition[1]] = '.';
-        curBoard[endingPosition[0]][endingPosition[1]] = boardPiece;
+        if (hasIntervalStarted === false) {
+            piece.style.position = 'absolute';
 
-        const destinationSquare = document.getElementById(`${endingPosition[0] + 1}${endingPosition[1] + 1}`);
-        destinationSquare.textContent = '';
-        destinationSquare.appendChild(piece);
-    }
+            curHeldPiece = piece;
+            const curHeldPieceStringPosition = piece.parentElement.id.split('');
+
+            curHeldPieceStartingPosition = [parseInt(curHeldPieceStringPosition[0]) - 1, parseInt(curHeldPieceStringPosition[1]) - 1];
+
+            movePieceInterval = setInterval(function() {
+                piece.style.top = mouseY - piece.offsetHeight / 2 + window.scrollY + 'px';
+                piece.style.left = mouseX - piece.offsetWidth / 2 + window.scrollX + 'px';
+            }, 1);
+    
+            hasIntervalStarted = true;
+        }
+    });
 }
 
 function tryMove(piece, startingPosition, endingPosition) {
     const boardPiece = curBoard[startingPosition[0]][startingPosition[1]];
-    console.log("Move from " + unifiedSquareName(startingPosition)+ " to " +unifiedSquareName(endingPosition));
+    console.log("Move from " + serverSquareName(startingPosition)+ " to " + serverSquareName(endingPosition));
 
-    $.getScript( "move?from=" + unifiedSquareName(startingPosition) + "&to=" + unifiedSquareName(endingPosition) )
+    $.getScript( "move?from=" + serverSquareName(startingPosition) + "&to=" + serverSquareName(endingPosition) )
       .done(function( script, textStatus ) {
-          movePiece(piece, startingPosition, endingPosition);
       })
       .fail(function( jqxhr, settings, exception ) {
           
     });
 }
 
-function unifiedSquareName(position) {
+function serverSquareName(position) {
     let files = "abcdefgh";
     return files[position[1]] + "" + (8 - [position[0]]);
 }
 
+function clientPosition(square) {
+    return [-1 * (Number(square[1]) - 8), (square.charCodeAt(0) - 97)];
+}
+
+function removePieceFrom(square) {
+    var position = clientPosition(square);
+    const destinationSquare = document.getElementById(`${position[0] + 1}${position[1] + 1}`);
+    destinationSquare.textContent = '';
+}
+
+function addPiece(piece, square) {
+    var position = clientPosition(square);
+    loadPiece(piece, position);
+    
+    const domPiece = document.getElementById(`${position[0] + 1}${position[1] + 1}`).firstChild;
+    registerPieceMove(domPiece)
+}

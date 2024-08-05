@@ -9,7 +9,7 @@ import Foundation
 
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
-enum ChessBoardEvent {
+public enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
     case pieceMoved(from: BoardSquare, to: BoardSquare)
 }

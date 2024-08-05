@@ -75,8 +75,19 @@ do {
             try moveManager.move(from: from, to: to)
             return .ok(.js(""))
         } catch {
-            LiveConnection.shared.notifyClient("\(error)")
-            return .ok(.js(""))
+            if let moveError = error as? ChessMoveError {
+                switch moveError {
+                case .invalidSquare:
+                    break
+                case .noPiece(let square):
+                    break
+                case .colorOnMove(let color):
+                    return .ok(.js(JSCode.showError("Now it is \(color)`s turn")))
+                case .canNotMove(let square):
+                    return .ok(.js(JSCode.showError("You cannot move to \(square)")))
+                }
+            }
+            return .ok(.js(JSCode.showError("\(error)")))
         }
         
     }
