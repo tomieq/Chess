@@ -7,8 +7,18 @@ import chess
 var chessboard = ChessBoard()
 chessboard.setupGame()
 var moveManager = ChessMoveManager(chessboard: chessboard)
+moveManager.status = { event in
+    switch event {
+    case .pieceMoved(let from, let to):
+        let letter = chessboard[to]?.letter
+        LiveConnection.shared.notifyClient("remove:\(from)")
+        LiveConnection.shared.notifyClient("remove:\(to)")
+        LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
+    case .pieceAdded(let square):
+        break
+    }
+}
 
-var websockets: [WebSocketSession] = []
 
 do {
     let server = HttpServer()
@@ -35,11 +45,7 @@ do {
             var square: BoardSquare? = line
             while square != nil {
                 if let piece = chessboard[square] {
-                    var letter = piece.type == .pawn ? "P" : piece.type.enLetter
-                    if piece.color == .white {
-                        letter = letter.lowercased()
-                    }
-                    elems.append(letter)
+                    elems.append(piece.letter)
                 } else {
                     elems.append(".")
                 }
@@ -67,11 +73,10 @@ do {
             let from = BoardSquare(stringLiteral: move.from)
             let to = BoardSquare(stringLiteral: move.to)
             try moveManager.move(from: from, to: to)
-            websockets.forEach { $0.writeText("\(moveManager.colorOnMove) on move") }
             return .ok(.js(""))
         } catch {
-            websockets.forEach { $0.writeText("\(error)") }
-            return .badRequest(.text("Error: \(error)"))
+            LiveConnection.shared.notifyClient("\(error)")
+            return .ok(.js(""))
         }
         
     }
@@ -81,11 +86,9 @@ do {
     }, pong: { (_, _) in
         // Got a pong frame
     }, connected: { socket in
-        // New client connected
-        websockets.append(socket)
+        LiveConnection.shared.addConnection(socket)
     }, disconnected: { socket in
-        // Client disconnected
-        websockets.removeAll { $0 == socket }
+        LiveConnection.shared.removeConnection(socket)
     })
     server.middleware.append({ request, _ in
         request.disableKeepAlive = true
