@@ -14,7 +14,7 @@ public enum ChessMoveError: Error {
 
 public class ChessMoveManager {
     let chessboard: ChessBoard
-    var colorOnMove: ChessPieceColor = .white
+    public var colorOnMove: ChessPieceColor = .white
     
     public init(chessboard: ChessBoard) {
         self.chessboard = chessboard

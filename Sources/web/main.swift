@@ -8,6 +8,8 @@ var chessboard = ChessBoard()
 chessboard.setupGame()
 var moveManager = ChessMoveManager(chessboard: chessboard)
 
+var websockets: [WebSocketSession] = []
+
 do {
     let server = HttpServer()
     server["/"] = { request, headers in
@@ -24,7 +26,7 @@ do {
         moveManager = ChessMoveManager(chessboard: chessboard)
         return .movedTemporarily("/")
     }
-    server.get["init.js"] = { _, _ in
+    server.get["init.js"] = {  request, _ in
         let template = Template.load(relativePath: "templates/init.tpl.js")
         var left: BoardSquare? = "a8"
         var matrix: [[String]] = []
@@ -47,6 +49,7 @@ do {
             left = left?.move(.down)
         }
         template["matrix"] = matrix
+        template["address"] = request.headers.get("host")
         return .ok(.js(template))
     }
     server.get["style.css"] = { _, _ in
@@ -64,12 +67,26 @@ do {
             let from = BoardSquare(stringLiteral: move.from)
             let to = BoardSquare(stringLiteral: move.to)
             try moveManager.move(from: from, to: to)
+            websockets.forEach { $0.writeText("\(moveManager.colorOnMove) on move") }
             return .ok(.js(""))
         } catch {
+            websockets.forEach { $0.writeText("\(error)") }
             return .badRequest(.text("Error: \(error)"))
         }
         
     }
+    server["/websocket"] = websocket(text: { (session, text) in
+    }, binary: { (session, binary) in
+        session.writeBinary(binary)
+    }, pong: { (_, _) in
+        // Got a pong frame
+    }, connected: { socket in
+        // New client connected
+        websockets.append(socket)
+    }, disconnected: { socket in
+        // Client disconnected
+        websockets.removeAll { $0 == socket }
+    })
     server.middleware.append({ request, _ in
         request.disableKeepAlive = true
         return nil
