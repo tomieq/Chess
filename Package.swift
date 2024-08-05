@@ -13,8 +13,8 @@ let package = Package(
                     targets: ["web"])
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/tomieq/swifter.git", .upToNextMajor(from: "2.0.0")),
+        .package(url: "https://github.com/tomieq/Template.swift.git", from: "1.5.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,7 +23,9 @@ let package = Package(
             name: "chess",
             dependencies: []),
         .executableTarget(name: "web",
-                          dependencies: ["chess"]),
+                          dependencies: ["chess",
+                                         .product(name: "Swifter", package: "Swifter"),
+                                         .product(name: "Template", package: "Template.swift")]),
         .testTarget(
             name: "chessTests",
             dependencies: ["chess"])
