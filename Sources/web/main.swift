@@ -3,7 +3,7 @@ import Swifter
 import Template
 import chess
 
-let chessboard = ChessBoard()
+var chessboard = ChessBoard()
 chessboard.setupGame()
 
 do {
@@ -11,6 +11,11 @@ do {
     server["/"] = { request, headers in
         let template = Template.load(relativePath: "templates/index.html")
         return .ok(.html(template))
+    }
+    server.get["new"] = { _, _ in
+        chessboard = ChessBoard()
+        chessboard.setupGame()
+        return .movedTemporarily("/")
     }
     server.get["init.js"] = { _, _ in
         let template = Template.load(relativePath: "templates/init.tpl.js")
@@ -58,6 +63,10 @@ do {
         }
         
     }
+    server.middleware.append({ request, _ in
+        request.disableKeepAlive = true
+        return nil
+    })
     server.notFoundHandler = { request, responseHeaders in
         let resourcePath = Resource().absolutePath(for: request.path)
         try HttpFileResponse.with(absolutePath: resourcePath)
