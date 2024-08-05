@@ -13,6 +13,7 @@ let package = Package(
                     targets: ["web"])
     ],
     dependencies: [
+        .package(url: "https://github.com/tomieq/BootstrapStarter", from: "1.0.0"),
         .package(url: "https://github.com/tomieq/swifter.git", .upToNextMajor(from: "2.0.0")),
         .package(url: "https://github.com/tomieq/Template.swift.git", from: "1.5.0")
     ],
@@ -24,6 +25,7 @@ let package = Package(
             dependencies: []),
         .executableTarget(name: "web",
                           dependencies: ["chess",
+                                         .product(name: "BootstrapTemplate", package: "BootstrapStarter"),
                                          .product(name: "Swifter", package: "Swifter"),
                                          .product(name: "Template", package: "Template.swift")]),
         .testTarget(

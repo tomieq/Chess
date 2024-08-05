@@ -1,6 +1,7 @@
 import Foundation
 import Swifter
 import Template
+import BootstrapTemplate
 import chess
 
 var chessboard = ChessBoard()
@@ -10,7 +11,11 @@ var moveManager = ChessMoveManager(chessboard: chessboard)
 do {
     let server = HttpServer()
     server["/"] = { request, headers in
-        let template = Template.load(relativePath: "templates/index.html")
+        let template = BootstrapTemplate()
+        template.addCSS(url: "style.css")
+        template.addJS(url: "gameController.js")
+        template.addJS(url: "init.js")
+        template.body = Template.load(relativePath: "templates/body.tpl.html")
         return .ok(.html(template))
     }
     server.get["new"] = { _, _ in
@@ -70,6 +75,9 @@ do {
         return nil
     })
     server.notFoundHandler = { request, responseHeaders in
+        if let filePath = BootstrapTemplate.absolutePath(for: request.path) {
+            try HttpFileResponse.with(absolutePath: filePath)
+        }
         let resourcePath = Resource().absolutePath(for: request.path)
         try HttpFileResponse.with(absolutePath: resourcePath)
         return .notFound()

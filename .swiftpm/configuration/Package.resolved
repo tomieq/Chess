@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "BootstrapStarter",
+        "repositoryURL": "https://github.com/tomieq/BootstrapStarter",
+        "state": {
+          "branch": null,
+          "revision": "8ce2045226527cda984b05ce25077edc0ff36e9a",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "Swifter",
         "repositoryURL": "https://github.com/tomieq/swifter.git",
         "state": {

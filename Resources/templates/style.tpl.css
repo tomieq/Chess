@@ -6,19 +6,6 @@
     box-sizing: border-box;
 }
 
-body {
-    background: #f0f0f5;
-    -webkit-font-smoothing: antialiased;
-}
-
-input, button, textarea {
-    font: 400 18px Roboto, sans-serif;
-}
-
-button {
-    cursor: pointer;
-}
-
 .board {
     width: min-content;
     margin: 32px auto 0;
@@ -31,7 +18,7 @@ button {
     align-items: center;
 }
 
-.row {
+.chessRow {
     display: flex;
     flex-direction: row;
     justify-content: center;
