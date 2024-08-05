@@ -10,6 +10,11 @@ do {
         let template = Template.load(relativePath: "templates/index.html")
         return .ok(.html(template))
     }
+    server.get["style.css"] = { _, _ in
+        let template = Template.load(relativePath: "templates/style.tpl.css")
+        template["squareSize"] = 70
+        return .ok(.css(template))
+    }
     server.notFoundHandler = { request, responseHeaders in
         let resourcePath = Resource().absolutePath(for: request.path)
         try HttpFileResponse.with(absolutePath: resourcePath)
