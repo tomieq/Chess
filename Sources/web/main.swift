@@ -5,6 +5,7 @@ import chess
 
 var chessboard = ChessBoard()
 chessboard.setupGame()
+var moveManager = ChessMoveManager(chessboard: chessboard)
 
 do {
     let server = HttpServer()
@@ -15,6 +16,7 @@ do {
     server.get["new"] = { _, _ in
         chessboard = ChessBoard()
         chessboard.setupGame()
+        moveManager = ChessMoveManager(chessboard: chessboard)
         return .movedTemporarily("/")
     }
     server.get["init.js"] = { _, _ in
@@ -56,7 +58,7 @@ do {
             let move: Movement = try request.queryParams.decode()
             let from = BoardSquare(stringLiteral: move.from)
             let to = BoardSquare(stringLiteral: move.to)
-            try chessboard.move(from: from, to: to)
+            try moveManager.move(from: from, to: to)
             return .ok(.js(""))
         } catch {
             return .badRequest(.text("Error: \(error)"))

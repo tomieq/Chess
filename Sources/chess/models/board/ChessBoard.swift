@@ -9,13 +9,6 @@ import Foundation
 
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
-public enum ChessBoardError: Error {
-    case invalidSquare
-    case noPiece(at: BoardSquare)
-    case colorOnMove(ChessPieceColor)
-    case canNotMove(to: BoardSquare)
-}
-
 enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
     case pieceMoved(from: BoardSquare, to: BoardSquare)
@@ -23,7 +16,6 @@ enum ChessBoardEvent {
 
 public class ChessBoard {
     var pieces: [ChessPiece]
-    var colorOnMove: ChessPieceColor = .white
     private var listeners: [(ChessBoardEvent) -> Void] = []
 
     public init() {
@@ -34,36 +26,11 @@ public class ChessBoard {
         self.pieces = pieces
     }
     
-    public func move(from: BoardSquare?, to: BoardSquare?) throws {
-        guard let from = from, let to = to else {
-            print("Invalid square")
-            throw ChessBoardError.invalidSquare
-        }
-        guard let piece = self[from] else {
-            print("No piece at \(from)")
-            throw ChessBoardError.noPiece(at: from)
-        }
-        guard piece.color == colorOnMove else {
-            print("Cannot move with \(piece) as now only \(colorOnMove) can move now")
-            throw ChessBoardError.colorOnMove(colorOnMove)
-        }
-        guard piece.moveCalculator.possibleMoves.contains(to) else {
-            print("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
-            throw ChessBoardError.canNotMove(to: to)
-        }
-        let movedPiece = piece.moved(to: to)
-        pieces.removeAll { [to, from].contains($0.square) }
-        pieces.append(movedPiece)
-        broadcastChanges(.pieceMoved(from: from, to: to))
-        print("\(piece) moved from \(from) to \(to)")
-        colorOnMove = colorOnMove.other
-    }
-    
     func subscribe(subscriber: @escaping (ChessBoardEvent) -> Void) {
         self.listeners.append(subscriber)
     }
     
-    private func broadcastChanges(_ event: ChessBoardEvent) {
+    func broadcast(event: ChessBoardEvent) {
         listeners.forEach { $0(event) }
     }
 
@@ -72,7 +39,7 @@ public class ChessBoard {
         if let chessPiece = piece?.chessPiece(chessBoard: self) {
             self.pieces.append(chessPiece)
             if emitChanges {
-                broadcastChanges(.pieceAdded(at: [chessPiece.square]))
+                broadcast(event: .pieceAdded(at: [chessPiece.square]))
             }
         }
         return self
@@ -83,7 +50,7 @@ public class ChessBoard {
             self.addPiece(piece, emitChanges: false)
         }
         let squares = pieces.compactMap{ $0?.square }
-        broadcastChanges(.pieceAdded(at: squares))
+        broadcast(event: .pieceAdded(at: squares))
     }
 
     func piece(at square: BoardSquare?) -> ChessPiece? {
@@ -118,7 +85,7 @@ public class ChessBoard {
             .load(.white, "a2 b2 c2 d2 e2 f2 g2 h2")
             .load(.black, "Ra8 Nb8 Bc8 Qd8 Ke8 Bf8 Ng8 Rh8")
             .load(.black, "a7 b7 c7 d7 e7 f7 g7 h7")
-        broadcastChanges(.pieceAdded(at: []))
+        broadcast(event: .pieceAdded(at: []))
         return self
     }
 
