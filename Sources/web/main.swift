@@ -12,9 +12,34 @@ do {
         let template = Template.load(relativePath: "templates/index.html")
         return .ok(.html(template))
     }
+    server.get["init.js"] = { _, _ in
+        let template = Template.load(relativePath: "templates/init.tpl.js")
+        var left: BoardSquare? = "a8"
+        var matrix: [[String]] = []
+        while let line = left {
+            var elems: [String] = []
+            var square: BoardSquare? = line
+            while square != nil {
+                if let piece = chessboard[square] {
+                    var letter = piece.type == .pawn ? "P" : piece.type.enLetter
+                    if piece.color == .white {
+                        letter = letter.lowercased()
+                    }
+                    elems.append(letter)
+                } else {
+                    elems.append(".")
+                }
+                square = square?.move(.right)
+            }
+            matrix.append(elems)
+            left = left?.move(.down)
+        }
+        template["matrix"] = matrix
+        return .ok(.js(template))
+    }
     server.get["style.css"] = { _, _ in
         let template = Template.load(relativePath: "templates/style.tpl.css")
-        template["squareSize"] = 60
+        template["squareSize"] = 50
         return .ok(.css(template))
     }
     server.get["move"] = { request, _ in

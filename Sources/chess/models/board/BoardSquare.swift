@@ -45,7 +45,7 @@ extension BoardSquare: CustomStringConvertible {
 }
 
 extension BoardSquare {
-    func move(_ direction: MoveDirection) -> BoardSquare? {
+    public func move(_ direction: MoveDirection) -> BoardSquare? {
         switch direction {
         case .right:
             return BoardSquare(self.column.toRight, self.row)

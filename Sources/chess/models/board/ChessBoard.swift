@@ -90,7 +90,7 @@ public class ChessBoard {
         self.pieces.first{ $0.square == square }
     }
     
-    subscript(square: BoardSquare) -> ChessPiece? {
+    public subscript(square: BoardSquare?) -> ChessPiece? {
         set {}
         get {
             piece(at: square)

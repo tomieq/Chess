@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ChessPieceType: CaseIterable {
+public  enum ChessPieceType: CaseIterable {
     case king
     case queen
     case rook
@@ -34,7 +34,7 @@ extension ChessPieceType {
         }
     }
 
-    var enLetter: String {
+    public var enLetter: String {
         switch self {
         case .king:
             return "K"
@@ -68,7 +68,7 @@ extension ChessPieceType {
         }
     }
 
-    var plLetter: String {
+    public var plLetter: String {
         switch self {
         case .king:
             return "K"

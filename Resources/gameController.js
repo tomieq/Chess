@@ -157,5 +157,4 @@ function unifiedSquareName(position) {
     let files = "abcdefgh";
     return files[position[1]] + "" + (8 - [position[0]]);
 }
-startGame();
-setPieceHoldEvents();
+

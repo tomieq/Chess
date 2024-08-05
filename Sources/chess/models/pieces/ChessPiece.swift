@@ -9,8 +9,8 @@ import Foundation
 
 
 public struct ChessPiece {
-    let type: ChessPieceType
-    let color: ChessPieceColor
+    public let type: ChessPieceType
+    public let color: ChessPieceColor
     let square: BoardSquare
     let longDistanceAttackDirections: [MoveDirection]
     let moveCalculator: MoveCalculator
