@@ -52,7 +52,7 @@ public class ChessBoard {
             throw ChessBoardError.canNotMove(to: to)
         }
         let movedPiece = piece.moved(to: to)
-        pieces.removeAll { $0.square == to }
+        pieces.removeAll { [to, from].contains($0.square) }
         pieces.append(movedPiece)
         broadcastChanges(.pieceMoved(from: from, to: to))
         print("\(piece) moved from \(from) to \(to)")
