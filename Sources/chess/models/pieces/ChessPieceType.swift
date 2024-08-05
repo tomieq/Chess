@@ -17,7 +17,7 @@ public  enum ChessPieceType: CaseIterable {
 }
 
 extension ChessPieceType {
-    var enName: String {
+    public var enName: String {
         switch self {
         case .king:
             return "King"

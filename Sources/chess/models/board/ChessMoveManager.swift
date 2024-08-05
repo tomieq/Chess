@@ -38,16 +38,19 @@ public class ChessMoveManager {
             print("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
             throw ChessMoveError.canNotMove(to: to)
         }
+        let event: ChessBoardEvent!
+        if let attackedPiece = chessboard[to] {
+            event = .pieceTakes(from: from, to: to, killedType: attackedPiece.type)
+            print("\(piece) moved from \(from) to \(to)")
+        } else {
+            event = .pieceMoved(from: from, to: to)
+            print("\(piece) moved from \(from) to \(to)")
+        }
         let movedPiece = piece.moved(to: to)
         chessboard.pieces.removeAll { [to, from].contains($0.square) }
         chessboard.pieces.append(movedPiece)
-        status?(.pieceMoved(from: from, to: to))
-        chessboard.broadcast(event: .pieceMoved(from: from, to: to))
-        print("\(piece) moved from \(from) to \(to)")
+        status?(event)
+        chessboard.broadcast(event: event)
         colorOnMove = colorOnMove.other
-        
-//        if chessboard.king(color: piece.color.other)?.moveCalculator.possiblePredators.isEmpty == false {
-//            status?("Check!")
-//        }
     }
 }

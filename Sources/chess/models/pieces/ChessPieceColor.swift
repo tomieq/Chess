@@ -13,7 +13,7 @@ public enum ChessPieceColor: String, CaseIterable {
 }
 
 extension ChessPieceColor {
-    var other: ChessPieceColor {
+    public var other: ChessPieceColor {
         switch self {
         case .white:
             return .black

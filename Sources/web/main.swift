@@ -14,8 +14,21 @@ moveManager.status = { event in
         LiveConnection.shared.notifyClient("remove:\(from)")
         LiveConnection.shared.notifyClient("remove:\(to)")
         LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
+        let piece = chessboard[to]!
+        var text = "\(piece.color) \(piece.type.enName) moved to \(to)"
+        if chessboard.isCheck() { text.append(" with check!") }
+        LiveConnection.shared.notifyClient("text:\(text)")
     case .pieceAdded(let square):
         break
+    case .pieceTakes(let from, let to, let killedType):
+        let letter = chessboard[to]?.letter
+        LiveConnection.shared.notifyClient("remove:\(from)")
+        LiveConnection.shared.notifyClient("remove:\(to)")
+        LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
+        let piece = chessboard[to]!
+        var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(killedType.enName) on \(to)"
+        if chessboard.isCheck() { text.append(" with check!") }
+        LiveConnection.shared.notifyClient("text:\(text)")
     }
 }
 

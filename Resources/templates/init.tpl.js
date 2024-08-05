@@ -28,5 +28,8 @@ function handleMessage(txt) {
         case "add":
             addPiece(parts[1], parts[2]);
             break;
+        case "text":
+            $("#tips").append("<br>" + parts[1]);
+            break;
     }
 }

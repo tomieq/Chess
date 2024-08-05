@@ -12,6 +12,7 @@ typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 public enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
     case pieceMoved(from: BoardSquare, to: BoardSquare)
+    case pieceTakes(from: BoardSquare, to: BoardSquare, killedType: ChessPieceType)
 }
 
 public class ChessBoard {
@@ -71,6 +72,15 @@ public class ChessBoard {
 
     func king(color: ChessPieceColor) -> ChessPiece? {
         self.pieces.first { $0.type == .king && $0.color == color }
+    }
+
+    public func isCheck() -> Bool {
+        for color in ChessPieceColor.allCases {
+            if let king = king(color: color), !king.moveCalculator.possiblePredators.isEmpty {
+                return true
+            }
+        }
+        return false
     }
 
     func isFree(_ square: BoardSquare) -> Bool {
