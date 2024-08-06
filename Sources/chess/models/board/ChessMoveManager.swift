@@ -21,6 +21,7 @@ public enum ChessMoveEvent {
     case castling(side: Castling)
     case checkMate(ChessPieceColor)
 }
+extension ChessMoveEvent: Equatable {}
 
 public class ChessMoveManager {
     let chessboard: ChessBoard
@@ -50,7 +51,6 @@ public class ChessMoveManager {
             throw ChessMoveError.canNotMove(type: piece.type, to: to)
         }
         defer {
-            colorOnMove = colorOnMove.other
             checkForGameOver()
         }
         if let event = promotionMove(piece: piece, move: move) {
@@ -109,7 +109,10 @@ public class ChessMoveManager {
         return nil
     }
     
-    private func consume(_ event: ChessMoveEvent) {
+    func consume(_ event: ChessMoveEvent) {
+        defer {
+            colorOnMove = colorOnMove.other
+        }
         switch event {
         case .pieceMoved(_, let move):
             chessboard.move(move)

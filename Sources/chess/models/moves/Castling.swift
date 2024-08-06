@@ -28,3 +28,4 @@ public enum Castling {
         }
     }
 }
+extension Castling: Equatable {}

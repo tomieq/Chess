@@ -9,3 +9,4 @@ public struct ChessMove {
     public let from: BoardSquare
     public let to: BoardSquare
 }
+extension ChessMove: Equatable {}
