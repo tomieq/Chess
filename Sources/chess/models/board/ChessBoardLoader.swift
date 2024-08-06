@@ -7,17 +7,17 @@
 
 import Foundation
 
-class ChessBoardLoader {
+public class ChessBoardLoader {
     let chessBoads: ChessBoard
     
-    init(chessBoads: ChessBoard) {
+    public init(chessBoads: ChessBoard) {
         self.chessBoads = chessBoads
     }
     
     // adds pieces to the board parsing the text, e.g.:
     // Ke1 Ra1 Rh1 c2
     @discardableResult
-    func load(_ color: ChessPieceColor, _ txt: String, language: Language = .english) -> ChessBoardLoader {
+    public func load(_ color: ChessPieceColor, _ txt: String) -> ChessBoardLoader {
         let parts = txt.components(separatedBy: .whitespaces)
         for part in parts {
             if part.count == 2 {
@@ -25,7 +25,7 @@ class ChessBoardLoader {
                 continue
             }
             let square = BoardSquare(stringLiteral: part.subString(1, 3))
-            guard let type = ChessPieceType.make(letter: part.subString(0, 1), language: language) else {
+            guard let type = ChessPieceType.make(letter: part.subString(0, 1), language: .english) else {
                 continue
             }
             switch type {
