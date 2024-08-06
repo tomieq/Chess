@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Language {
+public enum Language {
     case english
     case polish
 }

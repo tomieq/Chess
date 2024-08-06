@@ -9,9 +9,11 @@ import Foundation
 
 public class ChessBoardLoader {
     let chessBoads: ChessBoard
+    private let language: Language
     
-    public init(chessBoads: ChessBoard) {
+    public init(chessBoads: ChessBoard, language: Language = .english) {
         self.chessBoads = chessBoads
+        self.language = language
     }
     
     // adds pieces to the board parsing the text, e.g.:
@@ -25,7 +27,7 @@ public class ChessBoardLoader {
                 continue
             }
             let square = BoardSquare(stringLiteral: part.subString(1, 3))
-            guard let type = ChessPieceType.make(letter: part.subString(0, 1), language: .english) else {
+            guard let type = ChessPieceType.make(letter: part.subString(0, 1), language: language) else {
                 continue
             }
             switch type {
