@@ -10,7 +10,12 @@ chessBoard.setupGame()
 var moveManager = ChessMoveManager(chessboard: chessBoard)
 moveManager.connect(to: LiveConnection.shared)
 
-
+let parser = NotationParser(moveManager: moveManager)
+var moves = parser.split("""
+                        1. e4 e5
+                        2. Nf3 Nc6
+                        3. Bc4
+        """)
 
 do {
     let server = HttpServer()
@@ -20,7 +25,11 @@ do {
         template.addJS(url: "gameController.js")
         template.addJS(url: "confetti.browser.min.js")
         template.addJS(url: "init.js")
-        template.body = Template.load(relativePath: "templates/body.tpl.html")
+        let body = Template.load(relativePath: "templates/body.tpl.html")
+        if moves.isEmpty.not {
+            body.assign([:], inNest: "nextMoveButton")
+        }
+        template.body = body
         return .ok(.html(template))
     }
     server.get["new"] = { _, _ in
@@ -86,6 +95,15 @@ do {
         
     }
     server["/websocket"] = websocket(text: { (session, text) in
+        if text.starts(with: "nextMove") {
+            if let move = moves.first {
+                moves.removeFirst()
+                try? parser.apply(move)
+            }
+            if moves.isEmpty {
+                LiveConnection.shared.notifyClient("noMoreMoves:")
+            }
+        }
     }, binary: { (session, binary) in
         session.writeBinary(binary)
     }, pong: { (_, _) in

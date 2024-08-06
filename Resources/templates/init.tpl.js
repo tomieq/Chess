@@ -46,6 +46,8 @@ function handleMessage(txt) {
             break;
         case "checkmate":
             checkMate();
+        case "noMoreMoves":
+            $("#nextMove").remove();
     }
 }
 
@@ -68,4 +70,8 @@ function checkMate() {
             requestAnimationFrame(frame);
         }
     }());
+}
+
+function send(txt) {
+    webSocket.send(txt)
 }

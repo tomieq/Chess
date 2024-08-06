@@ -18,13 +18,17 @@ public class NotationParser {
         self.moveManager = moveManager
         self.language = language
     }
+    
+    public func split(_ txt: String) -> [String] {
+        txt.components(separatedBy: .whitespacesAndNewlines)
+            .filter { $0.isEmpty.not }
+            .filter { $0.contains(".").not }
+    }
 
     @discardableResult
     public func apply(_ txt: String) throws -> [ChessMoveEvent] {
         var events: [ChessMoveEvent] = []
-        let parts = txt.components(separatedBy: .whitespacesAndNewlines)
-            .filter { $0.isEmpty.not }
-            .filter { $0.contains(".").not }
+        let parts = split(txt)
         for part in parts {
             var type: ChessPieceType?
             var to: BoardSquare?

@@ -18,7 +18,7 @@ class NotationParserTests: XCTestCase {
         return manager
     }
     
-    func test_pawnMoves() throws {
+    func test_basicMoves() throws {
         let sut = NotationParser(moveManager: moveManager)
         let events = try sut.apply("""
         1. e4 e5

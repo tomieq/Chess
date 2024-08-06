@@ -6,7 +6,7 @@
 //
 
 extension Bool {
-    var not: Bool {
+    public var not: Bool {
         !self
     }
 }
