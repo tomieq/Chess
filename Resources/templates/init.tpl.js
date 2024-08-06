@@ -48,6 +48,8 @@ function handleMessage(txt) {
             checkMate();
         case "noMoreMoves":
             $("#nextMove").remove();
+        case "reloadBoard":
+            runScripts(["reload.js"]);
     }
 }
 
@@ -74,4 +76,10 @@ function checkMate() {
 
 function send(txt) {
     webSocket.send(txt)
+}
+
+function removeAllPieces() {
+    $( ".chessRow > div" ).each(function() {
+        $(this).html('');
+    });
 }

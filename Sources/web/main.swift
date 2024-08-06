@@ -41,24 +41,15 @@ do {
     }
     server.get["init.js"] = {  request, _ in
         let template = Template.load(relativePath: "templates/init.tpl.js")
-        var left: BoardSquare? = "a8"
-        var matrix: [[String]] = []
-        while let line = left {
-            var elems: [String] = []
-            var square: BoardSquare? = line
-            while square != nil {
-                if let piece = chessBoard[square] {
-                    elems.append(piece.letter)
-                } else {
-                    elems.append(".")
-                }
-                square = square?.move(.right)
-            }
-            matrix.append(elems)
-            left = left?.move(.down)
-        }
-        template["matrix"] = matrix
+        
+        template["matrix"] = chessBoard.matrix
         template["address"] = request.headers.get("host")
+        return .ok(.js(template))
+    }
+    server.get["reload.js"] = { _, _ in
+        let template = Template.load(relativePath: "templates/reloadBoard.tpl.js")
+        template["matrix"] = chessBoard.matrix
+        template["random"] = UUID().uuidString.components(separatedBy: "-").first
         return .ok(.js(template))
     }
     server.get["style.css"] = { _, _ in
@@ -184,3 +175,24 @@ extension ChessMoveManager {
     }
 }
 
+extension ChessBoard {
+    var matrix: [[String]] {
+        var left: BoardSquare? = "a8"
+        var matrix: [[String]] = []
+        while let line = left {
+            var elems: [String] = []
+            var square: BoardSquare? = line
+            while square != nil {
+                if let piece = chessBoard[square] {
+                    elems.append(piece.letter)
+                } else {
+                    elems.append(".")
+                }
+                square = square?.move(.right)
+            }
+            matrix.append(elems)
+            left = left?.move(.down)
+        }
+        return matrix
+    }
+}

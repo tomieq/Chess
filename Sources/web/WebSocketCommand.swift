@@ -11,6 +11,7 @@ enum WebSocketCommand {
     case addPiece(BoardSquare, letter: String)
     case checkMate
     case hideNextMoveButton
+    case reloadBoard
     case text(String)
     
     var raw: String {
@@ -23,6 +24,8 @@ enum WebSocketCommand {
             "checkmate:"
         case .hideNextMoveButton:
             "noMoreMoves:"
+        case .reloadBoard:
+            "reloadBoard:"
         case .text(let txt):
             "text:\(txt)"
         }
