@@ -105,11 +105,10 @@ class KingMoveCalculator: MoveCalculator {
         }
         // check long distance hitters
         for direction in MoveDirection.allCases {
-            for piece in pieces(in: direction, from: square) {
-                guard piece.color == color.other, piece.longDistanceAttackDirections.contains(direction) else {
-                    break
+            if let piece = nearestPiece(in: direction, from: square) {
+                if piece.color == color.other, piece.longDistanceAttackDirections.contains(direction.opposite) {
+                    predators.append(piece.square)
                 }
-                predators.append(piece.square)
             }
         }
         return predators
@@ -160,23 +159,13 @@ class KingMoveCalculator: MoveCalculator {
         self.isAnalized = true
     }
 
-    private func nearestPiece(in direction: MoveDirection) -> ChessPiece? {
+    private func nearestPiece(in direction: MoveDirection, from square: BoardSquare) -> ChessPiece? {
         for position in square.squares(to: direction) {
-            if let piece = chessBoard.piece(at: position) {
+            if let piece = chessBoard[position] {
                 return piece
             }
         }
         return nil
-    }
-    
-    private func pieces(in direction: MoveDirection, from square: BoardSquare) -> [ChessPiece] {
-        var pieces: [ChessPiece] = []
-        for position in square.squares(to: direction) {
-            if let piece = chessBoard.piece(at: position) {
-                pieces.append(piece)
-            }
-        }
-        return pieces
     }
     
     private var startingSquare: BoardSquare {

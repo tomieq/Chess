@@ -76,7 +76,6 @@ public class ChessBoard {
             if emitChanges {
                 broadcast(event: .pieceAdded(at: [chessPiece.square]))
             }
-            print("Added \(chessPiece)")
         }
     }
 

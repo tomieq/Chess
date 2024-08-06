@@ -214,5 +214,12 @@ final class KingMoveTests: MoveTests {
         XCTAssertEqual(possibleVictims(for: "e1"), ["e2"])
         XCTAssertFalse(possibleMoves(from: "e1").contains("e2"))
     }
+    
+    func test_kingAttackers() throws {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Bc3")
+            .load(.black, "Ke8 Qa2 Qb2")
+        XCTAssertEqual(possiblePredators(for: "e2"), ["b2"])
+    }
 }
 
