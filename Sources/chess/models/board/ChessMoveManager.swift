@@ -19,6 +19,7 @@ public enum ChessMoveEvent {
     case pieceTakes(type: ChessPieceType, move: ChessMove, takenType: ChessPieceType)
     case promotion(move: ChessMove, type: ChessPieceType)
     case castling(side: Castling)
+    case checkMate(ChessPieceColor)
 }
 
 public class ChessMoveManager {
@@ -50,6 +51,7 @@ public class ChessMoveManager {
         }
         defer {
             colorOnMove = colorOnMove.other
+            checkForGameOver()
         }
         if promotionMove(piece: piece, move: move) { return }
         if castlingMove(piece: piece, move: move) { return }
@@ -120,5 +122,14 @@ public class ChessMoveManager {
             }
         }
         return false
+    }
+    
+    func checkForGameOver() {
+        for piece in chessboard.getPieces(color: colorOnMove) {
+            if piece.moveCalculator.possibleMoves.count > 0 {
+                return
+            }
+        }
+        eventHandler?(.checkMate(colorOnMove.other))
     }
 }
