@@ -12,14 +12,11 @@ public enum ChessMoveError: Error {
     case canNotMove(type: ChessPieceType, to: BoardSquare)
 }
 
-
-
 public enum ChessMoveEvent {
-    case pieceMoved(type: ChessPieceType, move: ChessMove)
-    case pieceTakes(type: ChessPieceType, move: ChessMove, takenType: ChessPieceType)
-    case promotion(move: ChessMove, type: ChessPieceType)
-    case castling(side: Castling)
-    case checkMate(ChessPieceColor)
+    case pieceMoved(type: ChessPieceType, move: ChessMove, status: ChessGameStatus)
+    case pieceTakes(type: ChessPieceType, move: ChessMove, takenType: ChessPieceType, status: ChessGameStatus)
+    case promotion(move: ChessMove, type: ChessPieceType, status: ChessGameStatus)
+    case castling(side: Castling, status: ChessGameStatus)
 }
 extension ChessMoveEvent: Equatable {}
 
@@ -50,9 +47,6 @@ public class ChessMoveManager {
             print("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
             throw ChessMoveError.canNotMove(type: piece.type, to: to)
         }
-        defer {
-            checkForGameOver()
-        }
         if let event = promotionMove(piece: piece, move: move) {
             consume(event)
             return
@@ -62,10 +56,10 @@ public class ChessMoveManager {
             return
         }
         if let attackedPiece = chessboard[to] {
-            consume(.pieceTakes(type: piece.type, move: move, takenType: attackedPiece.type))
+            consume(.pieceTakes(type: piece.type, move: move, takenType: attackedPiece.type, status: chessboard.status(for: piece.color)))
             print("\(piece.color) \(piece.type.enName) from \(from) took \(attackedPiece)")
         } else {
-            consume(.pieceMoved(type: piece.type, move: move))
+            consume(.pieceMoved(type: piece.type, move: move, status: chessboard.status(for: piece.color)))
             print("\(piece.color) \(piece.type.enName) moved from \(from) to \(to)")
         }
     }
@@ -75,17 +69,17 @@ public class ChessMoveManager {
             switch piece.color {
             case .white:
                 if move.to == "g1" {
-                    return .castling(side: Castling.kingSide(.white))
+                    return .castling(side: Castling.kingSide(.white), status: chessboard.status(for: piece.color))
                 }
                 if move.to == "c1" {
-                    return .castling(side: Castling.queenSide(.white))
+                    return .castling(side: Castling.queenSide(.white), status: chessboard.status(for: piece.color))
                 }
             case .black:
                 if move.to == "g8" {
-                    return .castling(side: Castling.kingSide(.black))
+                    return .castling(side: Castling.kingSide(.black), status: chessboard.status(for: piece.color))
                 }
                 if move.to == "c8" {
-                    return .castling(side: Castling.queenSide(.black))
+                    return .castling(side: Castling.queenSide(.black), status: chessboard.status(for: piece.color))
                 }
             }
             
@@ -98,11 +92,11 @@ public class ChessMoveManager {
             switch piece.color {
             case .white:
                 if move.to.row == 8 {
-                    return .promotion(move: move, type: .queen)
+                    return .promotion(move: move, type: .queen, status: chessboard.status(for: piece.color))
                 }
             case .black:
                 if move.to.row == 1 {
-                    return .promotion(move: move, type: .queen)
+                    return .promotion(move: move, type: .queen, status: chessboard.status(for: piece.color))
                 }
             }
         }
@@ -114,24 +108,16 @@ public class ChessMoveManager {
             colorOnMove = colorOnMove.other
         }
         switch event {
-        case .pieceMoved(_, let move):
+        case .pieceMoved(_, let move, _):
             chessboard.move(move)
-        case .pieceTakes(_, let move, _):
+        case .pieceTakes(_, let move, _, _):
             chessboard.move(move)
-        case .promotion(let move, _):
+        case .promotion(let move, _, _):
             chessboard.remove(move.to, move.from)
             chessboard.add(Queen(colorOnMove, move.to))
-        case .castling(let castling):
+        case .castling(let castling, _):
             castling.moves.forEach { chessboard.move($0) }
-        case .checkMate:
-            break
         }
         eventHandler?(event)
-    }
-    
-    func checkForGameOver() {
-        if chessboard.isCheckMate(for: colorOnMove) {
-            eventHandler?(.checkMate(colorOnMove.other))
-        }
     }
 }

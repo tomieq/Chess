@@ -143,47 +143,58 @@ extension ChessMoveManager {
     func connect(to liveConnection: LiveConnection) {
         self.eventHandler = { event in
             switch event {
-            case .pieceMoved(_, let move):
+            case .pieceMoved(_, let move, let status):
                 let letter = chessBoard[move.to]?.letter
                 liveConnection.notifyClient(.removePiece(move.from))
                 liveConnection.notifyClient(.removePiece(move.to))
                 liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 let piece = chessBoard[move.to]!
-                var text = "\(piece.color) \(piece.type.enName) moved to \(move.to)"
-                if chessBoard.isCheck() { text.append(" with check!") }
+                let text = "\(piece.color) \(piece.type.enName) moved to \(move.to) \(status)"
                 liveConnection.notifyClient(.text(text))
-            case .pieceTakes(_, let move, let takenType):
+                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
+            case .pieceTakes(_, let move, let takenType, let status):
                 let letter = chessBoard[move.to]?.letter
                 liveConnection.notifyClient(.removePiece(move.from))
                 liveConnection.notifyClient(.removePiece(move.to))
                 liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 let piece = chessBoard[move.to]!
-                var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)"
-                if chessBoard.isCheck() { text.append(" with check!") }
+                let text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)\(status)"
                 liveConnection.notifyClient(.text(text))
-            case .promotion(let move, let type):
+                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
+            case .promotion(let move, let type, let status):
                 let letter = chessBoard[move.to]?.letter
                 liveConnection.notifyClient(.removePiece(move.from))
                 liveConnection.notifyClient(.removePiece(move.to))
                 liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-                var text = "Promotion to \(type.enName) on \(move.to)"
-                if chessBoard.isCheck() { text.append(" with check!") }
+                let text = "Promotion to \(type.enName) on \(move.to)\(status)"
                 liveConnection.notifyClient(.text(text))
-            case .castling(let castling):
+                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
+            case .castling(let castling, let status):
                 castling.moves.forEach { move in
                     let letter = chessBoard[move.to]?.letter
                     liveConnection.notifyClient(.removePiece(move.from))
                     liveConnection.notifyClient(.removePiece(move.to))
                     liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 }
-                var text = "Castling"
-                if chessBoard.isCheck() { text.append(" with check!") }
+                let text = "Castling\(status)"
                 liveConnection.notifyClient(.text(text))
-            case .checkMate(let color):
-                let text = "Check mate for \(color)"
-                liveConnection.notifyClient(.text(text))
-                liveConnection.notifyClient(.checkMate)
+                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
             }
         }
     }
+}
+
+extension ChessGameStatus: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .normal:
+            ""
+        case .check:
+            " with check!"
+        case .checkmate:
+            " with checkmate!"
+        }
+    }
+    
+    
 }

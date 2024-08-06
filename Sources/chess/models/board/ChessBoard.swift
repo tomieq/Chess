@@ -15,6 +15,12 @@ enum ChessBoardEvent {
     case pieceRemoved(from: BoardSquare)
 }
 
+public enum ChessGameStatus {
+    case normal
+    case check
+    case checkmate
+}
+
 public class ChessBoard {
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
@@ -99,22 +105,30 @@ public class ChessBoard {
         self.pieces.first { $0.type == .king && $0.color == color }
     }
 
-    public func isCheck() -> Bool {
-        for color in ChessPieceColor.allCases {
-            if let king = king(color: color), !king.moveCalculator.possibleAttackers.isEmpty {
-                return true
-            }
+    func isCheck(for color: ChessPieceColor) -> Bool {
+        if let king = king(color: color), !king.moveCalculator.possibleAttackers.isEmpty {
+            return true
         }
         return false
     }
     
-    public func isCheckMate(for color: ChessPieceColor) -> Bool {
+    func isCheckMate(for color: ChessPieceColor) -> Bool {
         for piece in getPieces(color: color.other) {
             if piece.moveCalculator.possibleMoves.count > 0 {
                 return false
             }
         }
         return true
+    }
+    
+    func status(for color: ChessPieceColor) -> ChessGameStatus {
+        if isCheckMate(for: color) {
+            return .checkmate
+        }
+        if isCheck(for: color) {
+            return .check
+        }
+        return .normal
     }
 
     func isFree(_ square: BoardSquare) -> Bool {

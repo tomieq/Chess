@@ -24,7 +24,6 @@ public class NotationParser {
             .filter { $0.isEmpty.not }
             .filter { $0.contains(".").not }
             .map { $0.replacingOccurrences(of: "?", with: "") }
-            .map { $0.replacingOccurrences(of: "#", with: "") }
     }
 
     @discardableResult
@@ -32,27 +31,22 @@ public class NotationParser {
         print("parsing \(txt)")
         var events: [ChessMoveEvent] = []
         let parts = split(txt)
-        let color = moveManager.colorOnMove
         for part in parts {
             let event = try parseCastling(part) ?? parseSingleMove(part)
             moveManager.consume(event)
             events.append(event)
-            if moveManager.chessboard.isCheckMate(for: color) {
-                events.append(.checkMate(color))
-                moveManager.consume(.checkMate(color))
-            }
         }
         return events
     }
     
     private func parseCastling(_ part: String) -> ChessMoveEvent? {
         let color = moveManager.colorOnMove
-        let withCheck = part.contains("+")
-        let part = part.replacingOccurrences(of: "+", with: "")
+        let status: ChessGameStatus = part.contains("+") ? .check : part.contains("#") ? .checkmate : .normal
+        let part = part.replacingOccurrences(of: "+", with: "").replacingOccurrences(of: "#", with: "")
         if part == "O-O" || part == "0-0"{
-            return .castling(side: Castling.kingSide(color))
+            return .castling(side: Castling.kingSide(color), status: status)
         } else if part == "O-O-O" || part == "0-0-0"{
-            return .castling(side: Castling.queenSide(color))
+            return .castling(side: Castling.queenSide(color), status: status)
         }
         return nil
     }
@@ -61,8 +55,10 @@ public class NotationParser {
         var type: ChessPieceType?
         var to: BoardSquare?
         let takes = part.contains("x")
-        let withCheck = part.contains("+")
-        let part = part.replacingOccurrences(of: "x", with: "").replacingOccurrences(of: "+", with: "")
+        let status: ChessGameStatus = part.contains("+") ? .check : part.contains("#") ? .checkmate : .normal
+        let part = part.replacingOccurrences(of: "x", with: "")
+            .replacingOccurrences(of: "+", with: "")
+            .replacingOccurrences(of: "#", with: "")
         var column: BoardColumn?
         if part.count == 2 {
             type = .pawn
@@ -89,6 +85,6 @@ public class NotationParser {
             throw NotationParserError.parsingError("Ambigious entry \(part)")
         }
         let move = ChessMove(from: piece.square, to: to)
-        return takes ?  ChessMoveEvent.pieceTakes(type: type, move: move, takenType: moveManager.chessboard[to]?.type ?? .pawn) : ChessMoveEvent.pieceMoved(type: type, move: move)
+        return takes ?  ChessMoveEvent.pieceTakes(type: type, move: move, takenType: moveManager.chessboard[to]?.type ?? .pawn, status: status) : ChessMoveEvent.pieceMoved(type: type, move: move, status: status)
     }
 }
