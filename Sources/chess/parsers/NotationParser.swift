@@ -23,7 +23,9 @@ public class NotationParser {
         txt.components(separatedBy: .whitespacesAndNewlines)
             .filter { $0.isEmpty.not }
             .filter { $0.contains(".").not }
-            .map { $0.replacingOccurrences(of: "?", with: "") }
+            // https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs#main
+            .filter { $0.contains("$").not }
+            .map { $0.replacingOccurrences(of: "?", with: "").replacingOccurrences(of: "!", with: "") }
     }
 
     @discardableResult
