@@ -49,6 +49,7 @@ moveManager.eventHandler = { event in
     case .checkMate(let color):
         let text = "Check mate for \(color)"
         LiveConnection.shared.notifyClient("text:\(text)")
+        LiveConnection.shared.notifyClient("checkmate:\(color)")
     }
 }
 
@@ -59,6 +60,7 @@ do {
         let template = BootstrapTemplate()
         template.addCSS(url: "style.css")
         template.addJS(url: "gameController.js")
+        template.addJS(url: "confetti.browser.min.js")
         template.addJS(url: "init.js")
         template.body = Template.load(relativePath: "templates/body.tpl.html")
         return .ok(.html(template))
