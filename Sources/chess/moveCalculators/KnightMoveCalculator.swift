@@ -109,19 +109,6 @@ class KnightMoveCalculator: MoveCalculator {
             }
         }
         
-        for position in allowedSquares {
-            if let piece = chessBoard.piece(at: position) {
-                if piece.color == self.color {
-                    defended.append(position)
-                } else {
-                    possibleVictims.append(position)
-                    possibleMoves.append(position)
-                }
-            } else {
-                possibleMoves.append(position)
-            }
-        }
-        
         // find all knight attackers and defenders
         for position in square.knightMoves {
             if let piece = chessBoard.piece(at: position), piece.type == .knight {
@@ -146,15 +133,32 @@ class KnightMoveCalculator: MoveCalculator {
             }
         }
         
-        // find my king defender
-        if let myKing = chessBoard.king(color: color), myKing.square.neighbours.contains(square) {
-            defenders.append(myKing.square)
-        }
         // find enemy king attacker
         if let enemyKing = chessBoard.king(color: color.other), enemyKing.square.neighbours.contains(square) {
             possibleAttackers.append(enemyKing.square)
         }
+
+        // find my king defender
+        if let myKing = chessBoard.king(color: color), myKing.square.neighbours.contains(square) {
+            defenders.append(myKing.square)
+        }
         
+        for position in allowedSquares {
+            if let piece = chessBoard.piece(at: position) {
+                if piece.color == self.color {
+                    defended.append(position)
+                } else {
+                    possibleVictims.append(position)
+                    possibleMoves.append(position)
+                }
+            } else {
+                possibleMoves.append(position)
+            }
+        }
+        // if king is atacked twice, you cannot cover, so it is king who must escape
+        if let king = chessBoard.king(color: color), king.moveCalculator.possibleAttackers.count > 1 {
+            possibleMoves = []
+        }
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possibleAttackers: possibleAttackers,

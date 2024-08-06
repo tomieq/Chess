@@ -163,5 +163,18 @@ class BishopMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
         XCTAssertEqual(possiblePredators(for: "d1"), ["e1"])
     }
+    
+    func test_kingIsCheckedTwice() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Qe3 Nf6")
+            .load(.black, "Ra8 Nb8 Bc8 Qd8 Ke8 g7 h7")
+        // its double check, so only king can move
+        XCTAssertEqual(possibleMoves(from: "a8"), [])
+        XCTAssertEqual(possibleMoves(from: "b8"), [])
+        XCTAssertEqual(possibleMoves(from: "c8"), [])
+        XCTAssertEqual(possibleMoves(from: "d8"), [])
+        XCTAssertEqual(possibleMoves(from: "g7"), [])
+        XCTAssertEqual(possibleMoves(from: "h7"), [])
+    }
 }
 
