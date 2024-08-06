@@ -29,6 +29,11 @@ moveManager.status = { event in
         var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(killedType.enName) on \(to)"
         if chessboard.isCheck() { text.append(" with check!") }
         LiveConnection.shared.notifyClient("text:\(text)")
+    case .promotion(let from, let to, let type):
+        let letter = chessboard[to]?.letter
+        LiveConnection.shared.notifyClient("remove:\(from)")
+        LiveConnection.shared.notifyClient("remove:\(to)")
+        LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
     }
 }
 

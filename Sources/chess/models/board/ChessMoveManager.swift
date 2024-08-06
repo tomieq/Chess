@@ -41,6 +41,22 @@ public class ChessMoveManager {
         defer {
             colorOnMove = colorOnMove.other
         }
+        if piece.type == .pawn {
+            switch piece.color {
+            case .white:
+                if to.row == 8, let queen = Queen(piece.color, to) {
+                    updateChessboardWithPromotion(from: from, to: to, piece: queen)
+                    share(.promotion(from: from, to: to, type: .queen))
+                    return
+                }
+            case .black:
+                if to.row == 1, let queen = Queen(piece.color, to) {
+                    updateChessboardWithPromotion(from: from, to: to, piece: queen)
+                    share(.promotion(from: from, to: to, type: .queen))
+                    return
+                }
+            }
+        }
         if piece.type == .king, piece.moveCalculator.moveCounter == 0 {
             switch piece.color {
             case .white:
@@ -101,5 +117,10 @@ public class ChessMoveManager {
         let movedPiece = piece.moved(to: to)
         chessboard.pieces.removeAll { [to, from].contains($0.square) }
         chessboard.pieces.append(movedPiece)
+    }
+    
+    func updateChessboardWithPromotion(from: BoardSquare, to: BoardSquare, piece: GamePiece) {
+        chessboard.pieces.removeAll { [to, from].contains($0.square) }
+        chessboard.addPiece(piece)
     }
 }

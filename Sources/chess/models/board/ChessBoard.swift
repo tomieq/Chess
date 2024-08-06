@@ -13,6 +13,7 @@ public enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
     case pieceMoved(from: BoardSquare, to: BoardSquare)
     case pieceTakes(from: BoardSquare, to: BoardSquare, killedType: ChessPieceType)
+    case promotion(from: BoardSquare, to: BoardSquare, type: ChessPieceType)
 }
 
 public class ChessBoard {
