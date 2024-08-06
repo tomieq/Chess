@@ -53,75 +53,77 @@ public class ChessMoveManager {
             colorOnMove = colorOnMove.other
             checkForGameOver()
         }
-        if promotionMove(piece: piece, move: move) { return }
-        if castlingMove(piece: piece, move: move) { return }
-        let event: ChessMoveEvent!
+        if let event = promotionMove(piece: piece, move: move) {
+            consume(event)
+            return
+        }
+        if let event = castlingMove(piece: piece, move: move) {
+            consume(event)
+            return
+        }
         if let attackedPiece = chessboard[to] {
-            event = .pieceTakes(type: piece.type, move: move, takenType: attackedPiece.type)
+            consume(.pieceTakes(type: piece.type, move: move, takenType: attackedPiece.type))
             print("\(piece.color) \(piece.type.enName) from \(from) took \(attackedPiece)")
         } else {
-            event = .pieceMoved(type: piece.type, move: move)
+            consume(.pieceMoved(type: piece.type, move: move))
             print("\(piece.color) \(piece.type.enName) moved from \(from) to \(to)")
         }
-        chessboard.move(move)
-        eventHandler?(event)
     }
     
-    private func castlingMove(piece: ChessPiece, move: ChessMove) -> Bool {
+    private func castlingMove(piece: ChessPiece, move: ChessMove) -> ChessMoveEvent? {
         if piece.type == .king, piece.moveCalculator.moveCounter == 0 {
             switch piece.color {
             case .white:
                 if move.to == "g1" {
-                    let castling = Castling.kingSide(.white)
-                    castling.moves.forEach { chessboard.move($0) }
-                    eventHandler?(.castling(side: castling))
-                    return true
+                    return .castling(side: Castling.kingSide(.white))
                 }
                 if move.to == "c1" {
-                    let castling = Castling.queenSide(.white)
-                    castling.moves.forEach { chessboard.move($0) }
-                    eventHandler?(.castling(side: castling))
-                    return true
+                    return .castling(side: Castling.queenSide(.white))
                 }
             case .black:
                 if move.to == "g8" {
-                    let castling = Castling.kingSide(.black)
-                    castling.moves.forEach { chessboard.move($0) }
-                    eventHandler?(.castling(side: castling))
-                    return true
+                    return .castling(side: Castling.kingSide(.black))
                 }
                 if move.to == "c8" {
-                    let castling = Castling.queenSide(.black)
-                    castling.moves.forEach { chessboard.move($0) }
-                    eventHandler?(.castling(side: castling))
-                    return true
+                    return .castling(side: Castling.queenSide(.black))
                 }
             }
             
         }
-        return false
+        return nil
     }
     
-    private func promotionMove(piece: ChessPiece, move: ChessMove) -> Bool {
+    private func promotionMove(piece: ChessPiece, move: ChessMove) -> ChessMoveEvent? {
         if piece.type == .pawn {
             switch piece.color {
             case .white:
-                if move.to.row == 8, let queen = Queen(piece.color, move.to) {
-                    chessboard.remove(move.to, move.from)
-                    chessboard.add(queen)
-                    eventHandler?(.promotion(move: move, type: .queen))
-                    return true
+                if move.to.row == 8 {
+                    return .promotion(move: move, type: .queen)
                 }
             case .black:
-                if move.to.row == 1, let queen = Queen(piece.color, move.to) {
-                    chessboard.remove(move.to, move.from)
-                    chessboard.add(queen)
-                    eventHandler?(.promotion(move: move, type: .queen))
-                    return true
+                if move.to.row == 1 {
+                    return .promotion(move: move, type: .queen)
                 }
             }
         }
-        return false
+        return nil
+    }
+    
+    private func consume(_ event: ChessMoveEvent) {
+        switch event {
+        case .pieceMoved(_, let move):
+            chessboard.move(move)
+        case .pieceTakes(_, let move, _):
+            chessboard.move(move)
+        case .promotion(let move, _):
+            chessboard.remove(move.to, move.from)
+            chessboard.add(Queen(colorOnMove, move.to))
+        case .castling(let castling):
+            castling.moves.forEach { chessboard.move($0) }
+        case .checkMate:
+            break
+        }
+        eventHandler?(event)
     }
     
     func checkForGameOver() {
