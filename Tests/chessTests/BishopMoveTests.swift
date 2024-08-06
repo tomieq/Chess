@@ -164,6 +164,24 @@ class BishopMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "d1"), ["e1"])
     }
     
+    func test_kingIsCheckedByQueen() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Bc3")
+            .load(.black, "Ke8 Qa2 Qb2")
+        let possibleMoves = possibleMoves(from: "c3")
+        XCTAssertEqual(possibleMoves.count, 2)
+        XCTAssertTrue(possibleMoves.contains("b2"))
+        XCTAssertTrue(possibleMoves.contains("d2"))
+    }
+
+    func test_kingIsCheckedByKnight() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Bc7")
+            .load(.black, "Kg8 Nf4")
+        let possibleMoves = possibleMoves(from: "c7")
+        XCTAssertEqual(possibleMoves, ["f4"])
+    }
+    
     func test_kingIsCheckedTwice() {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke2 Qe3 Nf6")

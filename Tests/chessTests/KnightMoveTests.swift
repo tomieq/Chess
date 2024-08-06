@@ -110,5 +110,24 @@ final class KnightMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
         XCTAssertEqual(possiblePredators(for: "d2"), ["e1"])
     }
+    
+    func test_kingIsCheckedByQueen() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 Nc4")
+            .load(.black, "Kg8 Qe5")
+        let moves = possibleMoves(from: "c4")
+        XCTAssertEqual(moves.count, 2)
+        XCTAssertTrue(moves.contains("e5"))
+        XCTAssertTrue(moves.contains("e3"))
+    }
+    
+    func test_kingIsCheckedByKnight() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 Nd4")
+            .load(.black, "Kg8 Nf3")
+        let moves = possibleMoves(from: "d4")
+        XCTAssertEqual(moves.count, 1)
+        XCTAssertTrue(moves.contains("f3"))
+    }
 }
 

@@ -17,3 +17,9 @@ extension Array where Element: Equatable {
         return uniqueValues
     }
 }
+
+extension Array where Element: Hashable {
+    func commonElements(with other: [Element]) -> [Element] {
+        Array(Set(self).intersection(Set(other)))
+    }
+}

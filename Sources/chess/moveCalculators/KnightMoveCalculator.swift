@@ -155,9 +155,21 @@ class KnightMoveCalculator: MoveCalculator {
                 possibleMoves.append(position)
             }
         }
-        // if king is atacked twice, you cannot cover, so it is king who must escape
-        if let king = chessBoard.king(color: color), king.moveCalculator.possibleAttackers.count > 1 {
-            possibleMoves = []
+        // moves when my king is checked
+        if let king = chessBoard.king(color: color) {
+            if king.moveCalculator.possibleAttackers.count == 1 {
+                // if king is atacked once, you can beat attacker or cover attack path
+                if let attackerSquare = king.moveCalculator.possibleAttackers.first, let attacker = chessBoard[attackerSquare] {
+                    var forcedMoves = [attackerSquare]
+                    if attacker.longDistanceAttackDirections.isEmpty.not {
+                        forcedMoves.append(contentsOf: king.square.path(to: attackerSquare))
+                    }
+                    possibleMoves = possibleMoves.commonElements(with: forcedMoves)
+                }
+            } else if king.moveCalculator.possibleAttackers.count > 1 {
+                // if king is atacked twice, you cannot cover, so it is king who must escape
+                possibleMoves = []
+            }
         }
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,

@@ -141,6 +141,26 @@ class RookMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
         XCTAssertEqual(possiblePredators(for: "d1"), ["e1"])
     }
+    
+    func test_kingIsCheckedByQueenTake() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Rb7")
+            .load(.black, "Kg8 Qa2 Qb2")
+        XCTAssertEqual(possibleMoves(from: "b7"), ["b2"])
+    }
+    
+    func test_kingIsCheckedByQueenBlock() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Rc7")
+            .load(.black, "Kg8 Qa2 Qb2")
+        XCTAssertEqual(possibleMoves(from: "c7"), ["c2"])
+    }
 
+    func test_kingIsCheckedByKnight() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke2 Ra4")
+            .load(.black, "Kg8 Nf4")
+        XCTAssertEqual(possibleMoves(from: "a4"), ["f4"])
+    }
 }
 

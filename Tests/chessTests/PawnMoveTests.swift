@@ -133,5 +133,24 @@ final class PawnMoveTests: MoveTests {
         XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
         XCTAssertEqual(possiblePredators(for: "d2"), ["e1"])
     }
+
+    func test_kingIsCheckedByQueen() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke3 c2")
+            .load(.black, "Kg8 Qa3 Qb3")
+        let moves = possibleMoves(from: "c2")
+        XCTAssertEqual(moves.count, 2)
+        XCTAssertTrue(moves.contains("c3"))
+        XCTAssertTrue(moves.contains("b3"))
+    }
+    
+    func test_kingIsCheckedByKnight() {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ke1 c2")
+            .load(.black, "Kg8 Nd3")
+        let moves = possibleMoves(from: "c2")
+        XCTAssertEqual(moves.count, 1)
+        XCTAssertTrue(moves.contains("d3"))
+    }
 }
 
