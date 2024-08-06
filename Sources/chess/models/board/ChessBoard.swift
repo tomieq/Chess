@@ -101,7 +101,7 @@ public class ChessBoard {
 
     public func isCheck() -> Bool {
         for color in ChessPieceColor.allCases {
-            if let king = king(color: color), !king.moveCalculator.possiblePredators.isEmpty {
+            if let king = king(color: color), !king.moveCalculator.possibleAttackers.isEmpty {
                 return true
             }
         }

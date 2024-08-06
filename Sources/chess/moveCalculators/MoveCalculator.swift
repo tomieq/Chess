@@ -16,7 +16,7 @@ protocol MoveCalculator {
     var possibleVictims: [BoardSquare] { get }
     
     // fields that this piece might get attack from
-    var possiblePredators: [BoardSquare] { get }
+    var possibleAttackers: [BoardSquare] { get }
     
     // fields that are defended by this piece
     var defended: [BoardSquare] { get }

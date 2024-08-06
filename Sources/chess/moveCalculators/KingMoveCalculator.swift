@@ -48,12 +48,12 @@ class KingMoveCalculator: MoveCalculator {
         }
     }
     
-    var possiblePredators: [BoardSquare] {
+    var possibleAttackers: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.possiblePredators
+            return calculatedMoves.possibleAttackers
         }
     }
     
@@ -82,36 +82,36 @@ class KingMoveCalculator: MoveCalculator {
         self.isAnalized = false
     }
     
-    private func predatorsFor(square: BoardSquare) -> [BoardSquare] {
-        var predators: [BoardSquare] = []
-        // find all knight predators and defenders
+    private func attackersFor(square: BoardSquare) -> [BoardSquare] {
+        var attackers: [BoardSquare] = []
+        // find all knight attackers and defenders
         for position in square.knightMoves {
             if let piece = chessBoard.piece(at: position), piece.type == .knight, piece.color == color.other  {
-                predators.append(piece.square)
+                attackers.append(piece.square)
             }
         }
-        // find enemy king predator
+        // find enemy king attacker
         if let enemyKing = chessBoard.king(color: color.other), enemyKing.square.neighbours.contains(square) {
-            predators.append(enemyKing.square)
+            attackers.append(enemyKing.square)
         }
         
-        // find all pawn predators and defenders
+        // find all pawn attackers and defenders
         let enemyPawnSearchDirection: [MoveDirection] = [.downLeft, .downRight, .upLeft, .upRight]
         for direction in enemyPawnSearchDirection {
             if let activePawn = chessBoard.activePawn(at: square.move(direction)), activePawn.color == color.other,
                activePawn.attackedSquares.contains(square) {
-                predators.append(activePawn.square)
+                attackers.append(activePawn.square)
             }
         }
         // check long distance hitters
         for direction in MoveDirection.allCases {
             if let piece = nearestPiece(in: direction, from: square) {
                 if piece.color == color.other, piece.longDistanceAttackDirections.contains(direction.opposite) {
-                    predators.append(piece.square)
+                    attackers.append(piece.square)
                 }
             }
         }
-        return predators
+        return attackers
     }
 
     private func analize() {
@@ -119,7 +119,7 @@ class KingMoveCalculator: MoveCalculator {
         var defended: [BoardSquare] = []
         let defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
-        var possiblePredators: [BoardSquare] = []
+        var possibleAttackers: [BoardSquare] = []
         
         let allowedSquares = square.neighbours
         
@@ -129,17 +129,17 @@ class KingMoveCalculator: MoveCalculator {
                     defended.append(piece.square)
                 } else {
                     possibleVictims.append(piece.square)
-                    if predatorsFor(square: piece.square).isEmpty {
+                    if attackersFor(square: piece.square).isEmpty {
                         possibleMoves.append(piece.square)
                     }
                 }
             } else {
-                if predatorsFor(square: position).isEmpty {
+                if attackersFor(square: position).isEmpty {
                     possibleMoves.append(position)
                 }
             }
         }
-        possiblePredators = predatorsFor(square: square)
+        possibleAttackers = attackersFor(square: square)
         
         // castling
         if moveCounter == 0, square == startingSquare {
@@ -153,7 +153,7 @@ class KingMoveCalculator: MoveCalculator {
         
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
-                                               possiblePredators: possiblePredators,
+                                               possibleAttackers: possibleAttackers,
                                                defended: defended,
                                                defenders: defenders)
         self.isAnalized = true
@@ -187,7 +187,7 @@ class KingMoveCalculator: MoveCalculator {
         guard wayToCrawl.map({ chessBoard.isFree($0) }).allSatisfy({ $0 }) else {
             return false
         }
-        guard wayToCrawl.map( { predatorsFor(square: $0).isEmpty }).allSatisfy( { $0 }) else {
+        guard wayToCrawl.map( { attackersFor(square: $0).isEmpty }).allSatisfy( { $0 }) else {
             return false
         }
         return true

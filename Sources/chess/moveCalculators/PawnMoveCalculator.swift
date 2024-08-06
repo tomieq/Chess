@@ -48,12 +48,12 @@ class PawnMoveCalculator: MoveCalculator {
         }
     }
     
-    var possiblePredators: [BoardSquare] {
+    var possibleAttackers: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.possiblePredators
+            return calculatedMoves.possibleAttackers
         }
     }
     
@@ -87,20 +87,20 @@ class PawnMoveCalculator: MoveCalculator {
         var defended: [BoardSquare] = []
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
-        var possiblePredators: [BoardSquare] = []
+        var possibleAttackers: [BoardSquare] = []
         
-        // find all knight predators and defenders
+        // find all knight attackers and defenders
         for position in square.knightMoves {
             if let piece = chessBoard.piece(at: position), piece.type == .knight {
                 if piece.color == color {
                     defenders.append(piece.square)
                 } else {
-                    possiblePredators.append(piece.square)
+                    possibleAttackers.append(piece.square)
                 }
             }
         }
         
-        // find all pawn predators and defenders
+        // find all pawn attackers and defenders
         let enemyPawnSearchDirection: [MoveDirection] = [.downLeft, .downRight, .upLeft, .upRight]
         for direction in enemyPawnSearchDirection {
             if let activePawn = chessBoard.activePawn(at: square.move(direction)),
@@ -108,13 +108,13 @@ class PawnMoveCalculator: MoveCalculator {
                 if activePawn.color == color {
                     defenders.append(activePawn.square)
                 } else {
-                    possiblePredators.append(activePawn.square)
+                    possibleAttackers.append(activePawn.square)
                 }
             }
         }
         
         var allowedDirections = MoveDirection.allCases
-        // check if move is pinned and update defenders and predators
+        // check if move is pinned and update defenders and attackers
         for direction in MoveDirection.allCases {
             for piece in pieces(in: direction) {
                 guard piece.longDistanceAttackDirections.contains(direction) else {
@@ -123,7 +123,7 @@ class PawnMoveCalculator: MoveCalculator {
                 if piece.color == self.color {
                     defenders.append(piece.square)
                 } else {
-                    possiblePredators.append(piece.square)
+                    possibleAttackers.append(piece.square)
                     if let oppositeDirectionPiece = self.nearestPiece(in: direction.opposite),
                        oppositeDirectionPiece.color == self.color, oppositeDirectionPiece.type == .king {
                         print("pawn at \(square) is pinned by \(piece.square)")
@@ -137,9 +137,9 @@ class PawnMoveCalculator: MoveCalculator {
         if let myKing = chessBoard.king(color: color), myKing.square.neighbours.contains(square) {
             defenders.append(myKing.square)
         }
-        // find enemy king predator
+        // find enemy king attacker
         if let enemyKing = chessBoard.king(color: color.other), enemyKing.square.neighbours.contains(square) {
-            possiblePredators.append(enemyKing.square)
+            possibleAttackers.append(enemyKing.square)
         }
 
         if allowedDirections.contains(crawningDirection) {
@@ -168,7 +168,7 @@ class PawnMoveCalculator: MoveCalculator {
         
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
-                                               possiblePredators: possiblePredators,
+                                               possibleAttackers: possibleAttackers,
                                                defended: defended,
                                                defenders: defenders)
         self.isAnalized = true
