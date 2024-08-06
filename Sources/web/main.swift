@@ -98,7 +98,11 @@ do {
         if text.starts(with: "nextMove") {
             if let move = moves.first {
                 moves.removeFirst()
-                try? parser.apply(move)
+                do {
+                    try parser.apply(move)
+                } catch {
+                    print("Error \(error)")
+                }
             }
             if moves.isEmpty {
                 LiveConnection.shared.notifyClient(.hideNextMoveButton)

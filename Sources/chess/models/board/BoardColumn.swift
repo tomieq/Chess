@@ -42,6 +42,13 @@ extension BoardColumn {
         self = column
     }
 
+    init?(_ letter: String) {
+        guard let column = (BoardColumn.allCases.first{ "\($0.letter)" == letter }) else {
+            return nil
+        }
+        self = column
+    }
+
     var letter: Character {
         switch self {
         case .a:
