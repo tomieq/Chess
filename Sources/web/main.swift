@@ -8,50 +8,8 @@ var chessBoard = ChessBoard()
 chessBoard.setupGame()
 
 var moveManager = ChessMoveManager(chessboard: chessBoard)
-moveManager.eventHandler = { event in
-    switch event {
-    case .pieceMoved(_, let move):
-        let letter = chessBoard[move.to]?.letter
-        LiveConnection.shared.notifyClient("remove:\(move.from)")
-        LiveConnection.shared.notifyClient("remove:\(move.to)")
-        LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
-        let piece = chessBoard[move.to]!
-        var text = "\(piece.color) \(piece.type.enName) moved to \(move.to)"
-        if chessBoard.isCheck() { text.append(" with check!") }
-        LiveConnection.shared.notifyClient("text:\(text)")
-    case .pieceTakes(_, let move, let takenType):
-        let letter = chessBoard[move.to]?.letter
-        LiveConnection.shared.notifyClient("remove:\(move.from)")
-        LiveConnection.shared.notifyClient("remove:\(move.to)")
-        LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
-        let piece = chessBoard[move.to]!
-        var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)"
-        if chessBoard.isCheck() { text.append(" with check!") }
-        LiveConnection.shared.notifyClient("text:\(text)")
-    case .promotion(let move, let type):
-        let letter = chessBoard[move.to]?.letter
-        LiveConnection.shared.notifyClient("remove:\(move.from)")
-        LiveConnection.shared.notifyClient("remove:\(move.to)")
-        LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
-        var text = "Promotion to \(type.enName) on \(move.to)"
-        if chessBoard.isCheck() { text.append(" with check!") }
-        LiveConnection.shared.notifyClient("text:\(text)")
-    case .castling(let castling):
-        castling.moves.forEach { move in
-            let letter = chessBoard[move.to]?.letter
-            LiveConnection.shared.notifyClient("remove:\(move.from)")
-            LiveConnection.shared.notifyClient("remove:\(move.to)")
-            LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
-        }
-        var text = "Castling"
-        if chessBoard.isCheck() { text.append(" with check!") }
-        LiveConnection.shared.notifyClient("text:\(text)")
-    case .checkMate(let color):
-        let text = "Check mate for \(color)"
-        LiveConnection.shared.notifyClient("text:\(text)")
-        LiveConnection.shared.notifyClient("checkmate:\(color)")
-    }
-}
+moveManager.connect(to: LiveConnection.shared)
+
 
 
 do {
@@ -69,6 +27,7 @@ do {
         chessBoard = ChessBoard()
         chessBoard.setupGame()
         moveManager = ChessMoveManager(chessboard: chessBoard)
+        moveManager.connect(to: LiveConnection.shared)
         return .movedTemporarily("/")
     }
     server.get["init.js"] = {  request, _ in
@@ -118,8 +77,8 @@ do {
                     break
                 case .colorOnMove(let color):
                     return .ok(.js(JSCode.showError("Now it is \(color)`s turn")))
-                case .canNotMove(let square):
-                    return .ok(.js(JSCode.showError("You cannot move to \(square)")))
+                case .canNotMove(let type, let square):
+                    return .ok(.js(JSCode.showError("You cannot move \(type.enName) to \(square)")))
                 }
             }
             return .ok(.js(JSCode.showError("\(error)")))
@@ -132,8 +91,10 @@ do {
     }, pong: { (_, _) in
         // Got a pong frame
     }, connected: { socket in
+        print("New websocket connected")
         LiveConnection.shared.addConnection(socket)
     }, disconnected: { socket in
+        print("Websocket disconnected")
         LiveConnection.shared.removeConnection(socket)
     })
     server.middleware.append({ request, _ in
@@ -153,4 +114,54 @@ do {
     dispatchMain()
 } catch {
     print(error)
+}
+
+
+extension ChessMoveManager {
+    func connect(to liveConnection: LiveConnection) {
+        self.eventHandler = { event in
+            switch event {
+            case .pieceMoved(_, let move):
+                let letter = chessBoard[move.to]?.letter
+                liveConnection.notifyClient("remove:\(move.from)")
+                liveConnection.notifyClient("remove:\(move.to)")
+                liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                let piece = chessBoard[move.to]!
+                var text = "\(piece.color) \(piece.type.enName) moved to \(move.to)"
+                if chessBoard.isCheck() { text.append(" with check!") }
+                liveConnection.notifyClient("text:\(text)")
+            case .pieceTakes(_, let move, let takenType):
+                let letter = chessBoard[move.to]?.letter
+                liveConnection.notifyClient("remove:\(move.from)")
+                liveConnection.notifyClient("remove:\(move.to)")
+                liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                let piece = chessBoard[move.to]!
+                var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)"
+                if chessBoard.isCheck() { text.append(" with check!") }
+                liveConnection.notifyClient("text:\(text)")
+            case .promotion(let move, let type):
+                let letter = chessBoard[move.to]?.letter
+                liveConnection.notifyClient("remove:\(move.from)")
+                liveConnection.notifyClient("remove:\(move.to)")
+                liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                var text = "Promotion to \(type.enName) on \(move.to)"
+                if chessBoard.isCheck() { text.append(" with check!") }
+                liveConnection.notifyClient("text:\(text)")
+            case .castling(let castling):
+                castling.moves.forEach { move in
+                    let letter = chessBoard[move.to]?.letter
+                    liveConnection.notifyClient("remove:\(move.from)")
+                    liveConnection.notifyClient("remove:\(move.to)")
+                    liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                }
+                var text = "Castling"
+                if chessBoard.isCheck() { text.append(" with check!") }
+                liveConnection.notifyClient("text:\(text)")
+            case .checkMate(let color):
+                let text = "Check mate for \(color)"
+                liveConnection.notifyClient("text:\(text)")
+                liveConnection.notifyClient("checkmate:\(color)")
+            }
+        }
+    }
 }

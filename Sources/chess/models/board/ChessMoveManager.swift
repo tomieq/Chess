@@ -9,7 +9,7 @@ public enum ChessMoveError: Error {
     case invalidSquare
     case noPiece(at: BoardSquare)
     case colorOnMove(ChessPieceColor)
-    case canNotMove(to: BoardSquare)
+    case canNotMove(type: ChessPieceType, to: BoardSquare)
 }
 
 
@@ -47,7 +47,7 @@ public class ChessMoveManager {
         }
         guard piece.moveCalculator.possibleMoves.contains(to) else {
             print("\(piece) cannot move to \(to). It can move only to \(piece.moveCalculator.possibleMoves)")
-            throw ChessMoveError.canNotMove(to: to)
+            throw ChessMoveError.canNotMove(type: piece.type, to: to)
         }
         defer {
             colorOnMove = colorOnMove.other

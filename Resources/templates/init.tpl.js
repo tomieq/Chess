@@ -4,20 +4,33 @@ function startGame() {
     loadPosition(starterPosition);
     setPieceHoldEvents();
 }
-startGame();
 
-const socket = new WebSocket("ws://{address}/websocket");
+var webSocket;
+$( document ).ready(function() {
+    startGame();
+    webSocket = new WebSocket("ws://{address}/websocket");
+    
+    webSocket.onopen = function (event) {
+        console.log("[webSocket] Connection established");
+    };
+    webSocket.onmessage = function (event) {
+        handleMessage(event.data);
+    }
+    webSocket.onclose = function(event) {
+        if (event.wasClean) {
+            console.log("[webSocket] [close] Connection closed cleanly, code="+event.code + " reason=" + event.reason);
+        } else {
+        // e.g. server process killed or network down
+        // event.code is usually 1006 in this case
+            console.log("[webSocket] [close] Connection closed unexpectedly, code="+event.code + " reason=" + event.reason);
+        }
+    };
 
-// Connection opened
-socket.addEventListener("open", (event) => {
-    console.log("Websocket connected");
+    webSocket.onerror = function(error) {
+        console.log("'[webSocket] [error]" + error.message);
+    };
 });
 
-// Listen for messages
-socket.addEventListener("message", (event) => {
-    console.log("Message from server ", event.data);
-    handleMessage(event.data);
-});
 
 function handleMessage(txt) {
     const parts = txt.split(":");
