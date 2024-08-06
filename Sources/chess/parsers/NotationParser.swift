@@ -23,6 +23,7 @@ public class NotationParser {
         txt.components(separatedBy: .whitespacesAndNewlines)
             .filter { $0.isEmpty.not }
             .filter { $0.contains(".").not }
+            .map { $0.replacingOccurrences(of: "?", with: "") }
     }
 
     @discardableResult
@@ -32,6 +33,8 @@ public class NotationParser {
         for part in parts {
             var type: ChessPieceType?
             var to: BoardSquare?
+            let takes = part.contains("x")
+            let part = part.replacingOccurrences(of: "x", with: "")
             if part.count == 2 {
                 type = .pawn
                 to = BoardSquare(stringLiteral: part)
@@ -49,9 +52,14 @@ public class NotationParser {
             guard pieces.count == 1, let piece = pieces.first else {
                 throw NotationParserError.parsingError("Ambigious entry \(part)")
             }
-            let event = ChessMoveEvent.pieceMoved(type: type, move: ChessMove(from: piece.square, to: to))
+            let move = ChessMove(from: piece.square, to: to)
+            let event = takes ?  ChessMoveEvent.pieceTakes(type: type, move: move, takenType: moveManager.chessboard[to]?.type ?? .pawn) : ChessMoveEvent.pieceMoved(type: type, move: move)
             moveManager.consume(event)
             events.append(event)
+            if moveManager.chessboard.isCheckMate(for: piece.color) {
+                events.append(.checkMate(piece.color))
+                moveManager.consume(.checkMate(piece.color))
+            }
         }
         return events
     }

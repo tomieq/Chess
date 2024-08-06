@@ -107,6 +107,15 @@ public class ChessBoard {
         }
         return false
     }
+    
+    public func isCheckMate(for color: ChessPieceColor) -> Bool {
+        for piece in getPieces(color: color.other) {
+            if piece.moveCalculator.possibleMoves.count > 0 {
+                return false
+            }
+        }
+        return true
+    }
 
     func isFree(_ square: BoardSquare) -> Bool {
         !self.pieces.contains{ $0.square == square }

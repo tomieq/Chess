@@ -130,11 +130,8 @@ public class ChessMoveManager {
     }
     
     func checkForGameOver() {
-        for piece in chessboard.getPieces(color: colorOnMove) {
-            if piece.moveCalculator.possibleMoves.count > 0 {
-                return
-            }
+        if chessboard.isCheckMate(for: colorOnMove) {
+            eventHandler?(.checkMate(colorOnMove.other))
         }
-        eventHandler?(.checkMate(colorOnMove.other))
     }
 }
