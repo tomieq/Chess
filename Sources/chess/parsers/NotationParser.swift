@@ -20,7 +20,8 @@ public class NotationParser {
     }
     
     public func split(_ txt: String) -> [String] {
-        txt.components(separatedBy: .whitespacesAndNewlines)
+        txt.replacingOccurrences(of: ".", with: ". ")
+            .components(separatedBy: .whitespacesAndNewlines)
             .filter { $0.isEmpty.not }
             .filter { $0.contains(".").not }
             // https://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs#main

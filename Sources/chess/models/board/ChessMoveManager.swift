@@ -12,14 +12,6 @@ public enum ChessMoveError: Error {
     case canNotMove(type: ChessPieceType, to: BoardSquare)
 }
 
-public enum ChessMoveEvent {
-    case pieceMoved(type: ChessPieceType, move: ChessMove, status: ChessGameStatus)
-    case pieceTakes(type: ChessPieceType, move: ChessMove, takenType: ChessPieceType, status: ChessGameStatus)
-    case promotion(move: ChessMove, type: ChessPieceType, status: ChessGameStatus)
-    case castling(side: Castling, status: ChessGameStatus)
-}
-extension ChessMoveEvent: Equatable {}
-
 public class ChessMoveManager {
     let chessboard: ChessBoard
     public var colorOnMove: ChessPieceColor = .white

@@ -15,12 +15,6 @@ enum ChessBoardEvent {
     case pieceRemoved(from: BoardSquare)
 }
 
-public enum ChessGameStatus {
-    case normal
-    case check
-    case checkmate
-}
-
 public class ChessBoard {
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []

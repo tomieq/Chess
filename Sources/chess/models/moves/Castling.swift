@@ -29,3 +29,14 @@ public enum Castling {
     }
 }
 extension Castling: Equatable {}
+
+extension Castling {
+    var notation: String {
+        switch self {
+        case .kingSide:
+            "O-O"
+        case .queenSide:
+            "O-O-O"
+        }
+    }
+}
