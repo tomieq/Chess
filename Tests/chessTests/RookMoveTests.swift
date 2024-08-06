@@ -13,7 +13,7 @@ class RookMoveTests: MoveTests {
     
     func testMovesFromA1OnEMptyBoard() throws {
         let rook = Rook(.white, "a1")
-        chessBoard.addPiece(rook)
+        chessBoard.add(rook)
         let basicMoves = possibleMoves(from: rook?.square)
         XCTAssertEqual(basicMoves.count, 14)
         XCTAssertTrue(basicMoves.contains("b1"))
@@ -25,7 +25,7 @@ class RookMoveTests: MoveTests {
 
     func testMovesFromD4OnEMptyBoard() throws {
         let rook = Rook(.white, "d4")
-        chessBoard.addPiece(rook)
+        chessBoard.add(rook)
         let basicMoves = possibleMoves(from: rook?.square)
         XCTAssertEqual(basicMoves.count, 14)
         XCTAssertTrue(basicMoves.contains("d1"))

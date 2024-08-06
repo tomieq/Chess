@@ -3,24 +3,24 @@ import XCTest
 
 final class KingMoveTests: MoveTests {
     func test_kingPossibleMovesFieldsOccupiedByOwnArmy() throws {
-        chessBoard.addPiece(King(.white, "e1"))
+        chessBoard.add(King(.white, "e1"))
         XCTAssertEqual(possibleMoves(from: "e1").count, 5)
-        chessBoard.addPiece(Pawn(.white, "e2"))
+        chessBoard.add(Pawn(.white, "e2"))
         XCTAssertEqual(possibleMoves(from: "e1").count, 4)
-        chessBoard.addPiece(Pawn(.white, "f2"))
+        chessBoard.add(Pawn(.white, "f2"))
         XCTAssertEqual(possibleMoves(from: "e1").count, 3)
-        chessBoard.addPiece(Pawn(.white, "d2"))
+        chessBoard.add(Pawn(.white, "d2"))
         XCTAssertEqual(possibleMoves(from: "e1").count, 2)
-        chessBoard.addPiece(Queen(.white, "d1"))
+        chessBoard.add(Queen(.white, "d1"))
         XCTAssertEqual(possibleMoves(from: "e1").count, 1)
-        chessBoard.addPiece(Bishop(.white, "f1"))
+        chessBoard.add(Bishop(.white, "f1"))
         XCTAssertEqual(possibleMoves(from: "e1").count, 0)
     }
 
     func test_kingCannotApproachEnemyKing() {
-        chessBoard.addPiece(King(.white, "d4"))
+        chessBoard.add(King(.white, "d4"))
         XCTAssertEqual(possibleMoves(from: "d4").contains("d5"), true)
-        chessBoard.addPiece(King(.black, "d6"))
+        chessBoard.add(King(.black, "d6"))
         XCTAssertEqual(possibleMoves(from: "d4").contains("d5"), false)
     }
 
@@ -68,14 +68,14 @@ final class KingMoveTests: MoveTests {
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
         let queenSideRook = Rook(.white, "a1")
-        chessBoard.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.add(king, kingSideRook, queenSideRook)
         XCTAssertEqual(possibleMoves(from: "e1").count, 7)
     }
     
     func test_castlingWhiteQueenSidePossibleMove() {
         let king = King(.white, "e1")
         let queenSideRook = Rook(.white, "a1")
-        chessBoard.addPieces(king, queenSideRook)
+        chessBoard.add(king, queenSideRook)
         
         let moves = possibleMoves(from: "e1")
         XCTAssertEqual(moves.count, 6)
@@ -85,7 +85,7 @@ final class KingMoveTests: MoveTests {
     func test_castlingWhiteKingSidePossibleMove() {
         let king = King(.white, "e1")
         let kingSideRook = Rook(.white, "h1")
-        chessBoard.addPieces(king, kingSideRook)
+        chessBoard.add(king, kingSideRook)
 
         let moves = possibleMoves(from: "e1")
         XCTAssertEqual(moves.count, 6)
@@ -96,14 +96,14 @@ final class KingMoveTests: MoveTests {
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
         let queenSideRook = Rook(.black, "a8")
-        chessBoard.addPieces(king, kingSideRook, queenSideRook)
+        chessBoard.add(king, kingSideRook, queenSideRook)
         XCTAssertEqual(possibleMoves(from: "e8").count, 7)
     }
 
     func test_castlingBlackQueenSidePossibleMove() {
         let king = King(.black, "e8")
         let queenSideRook = Rook(.black, "a8")
-        chessBoard.addPieces(king, queenSideRook)
+        chessBoard.add(king, queenSideRook)
         
         let moves = possibleMoves(from: "e8")
         XCTAssertEqual(moves.count, 6)
@@ -113,7 +113,7 @@ final class KingMoveTests: MoveTests {
     func test_castlingBlackKingSidePossibleMove() {
         let king = King(.black, "e8")
         let kingSideRook = Rook(.black, "h8")
-        chessBoard.addPieces(king, kingSideRook)
+        chessBoard.add(king, kingSideRook)
         
         let moves = possibleMoves(from: "e8")
         XCTAssertEqual(moves.count, 6)

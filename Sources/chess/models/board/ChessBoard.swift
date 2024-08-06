@@ -9,11 +9,10 @@ import Foundation
 
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
-public enum ChessBoardEvent {
+enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
     case pieceMoved(from: BoardSquare, to: BoardSquare)
-    case pieceTakes(from: BoardSquare, to: BoardSquare, killedType: ChessPieceType)
-    case promotion(from: BoardSquare, to: BoardSquare, type: ChessPieceType)
+    case pieceRemoved(from: BoardSquare)
 }
 
 public class ChessBoard {
@@ -32,27 +31,42 @@ public class ChessBoard {
         self.listeners.append(subscriber)
     }
     
-    func broadcast(event: ChessBoardEvent) {
+    private func broadcast(event: ChessBoardEvent) {
         listeners.forEach { $0(event) }
     }
-
+    
     @discardableResult
-    func addPiece(_ piece: GamePiece?, emitChanges: Bool = true) -> ChessBoard {
+    func add(_ piece: GamePiece?) -> ChessBoard {
+        self.addPiece(piece)
+        return self
+    }
+
+    func add(_ pieces: GamePiece?...) {
+        for piece in pieces {
+            self.addPiece(piece, emitChanges: false)
+        }
+        let squares = pieces.compactMap{ $0?.square }
+        broadcast(event: .pieceAdded(at: squares))
+    }
+    
+    func remove(_ square: BoardSquare) {
+        self.pieces = self.pieces.filter{ $0.square != square }
+        broadcast(event: .pieceRemoved(from: square))
+    }
+
+    func move(from: BoardSquare, to: BoardSquare) {
+        guard let movedPiece = piece(at: from)?.moved(to: to) else { return }
+        pieces.removeAll { [to, from].contains($0.square) }
+        pieces.append(movedPiece)
+    }
+    
+    private func addPiece(_ piece: GamePiece?, emitChanges: Bool = true) {
         if let chessPiece = piece?.chessPiece(chessBoard: self) {
             self.pieces.append(chessPiece)
             if emitChanges {
                 broadcast(event: .pieceAdded(at: [chessPiece.square]))
             }
         }
-        return self
-    }
-
-    func addPieces(_ pieces: GamePiece?...) {
-        for piece in pieces {
-            self.addPiece(piece, emitChanges: false)
-        }
-        let squares = pieces.compactMap{ $0?.square }
-        broadcast(event: .pieceAdded(at: squares))
     }
 
     func piece(at square: BoardSquare?) -> ChessPiece? {
@@ -103,9 +117,4 @@ public class ChessBoard {
     func getPieces(color: ChessPieceColor) -> [ChessPiece] {
         self.pieces.filter{ $0.color == color }
     }
-
-//    func remove(_ square: BoardSquare) {
-//        self.pieces = self.pieces.filter{ $0.square != square }
-//        broadcastChanges()
-//    }
 }

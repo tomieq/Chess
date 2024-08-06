@@ -12,7 +12,7 @@ import XCTest
 class ChessBoardTests: XCTestCase {
     func test_addingPieceToGame() {
         let sut = ChessBoard()
-        sut.addPiece(Knight(.black, "c6"))
+        sut.add(Knight(.black, "c6"))
 
         let piece = sut.piece(at: "c6")
         XCTAssertEqual(piece?.type, .knight)
@@ -61,13 +61,13 @@ class ChessBoardTests: XCTestCase {
         XCTAssertTrue(sut.isFree("c7"))
     }
 
-//    func test_move() {
-//        let sut = ChessBoard()
-//        ChessBoardLoader(chessBoads: sut).load(.white, "d2")
-//        XCTAssertFalse(sut.isFree("d2"))
-//        sut.move(source: "d2", to: "d3")
-//        XCTAssertTrue(sut.isFree("d2"))
-//        XCTAssertFalse(sut.isFree("d3"))
-//    }
+    func test_move() {
+        let sut = ChessBoard()
+        ChessBoardLoader(chessBoads: sut).load(.white, "d2")
+        XCTAssertFalse(sut.isFree("d2"))
+        sut.move(from: "d2", to: "d3")
+        XCTAssertTrue(sut.isFree("d2"))
+        XCTAssertFalse(sut.isFree("d3"))
+    }
 }
 

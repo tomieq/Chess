@@ -21,7 +21,7 @@ class ChessBoardLoader {
         let parts = txt.components(separatedBy: .whitespaces)
         for part in parts {
             if part.count == 2 {
-                chessBoads.addPiece(Pawn(color, BoardSquare(stringLiteral: part)))
+                chessBoads.add(Pawn(color, BoardSquare(stringLiteral: part)))
                 continue
             }
             let square = BoardSquare(stringLiteral: part.subString(1, 3))
@@ -30,17 +30,17 @@ class ChessBoardLoader {
             }
             switch type {
             case .king:
-                chessBoads.addPiece(King(color, square))
+                chessBoads.add(King(color, square))
             case .queen:
-                chessBoads.addPiece(Queen(color, square))
+                chessBoads.add(Queen(color, square))
             case .rook:
-                chessBoads.addPiece(Rook(color, square))
+                chessBoads.add(Rook(color, square))
             case .bishop:
-                chessBoads.addPiece(Bishop(color, square))
+                chessBoads.add(Bishop(color, square))
             case .knight:
-                chessBoads.addPiece(Knight(color, square))
+                chessBoads.add(Knight(color, square))
             case .pawn:
-                chessBoads.addPiece(Pawn(color, square))
+                chessBoads.add(Pawn(color, square))
             }
         }
         return self

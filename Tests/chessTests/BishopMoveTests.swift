@@ -13,7 +13,7 @@ class BishopMoveTests: MoveTests {
     
     func testMovesFromA1() throws {
         let bishop = Bishop(.white, "a1")
-        chessBoard.addPiece(bishop)
+        chessBoard.add(bishop)
         let basicMoves = possibleMoves(from: "a1")
         XCTAssertEqual(basicMoves.count, 7)
         XCTAssertTrue(basicMoves.contains("b2"))
@@ -25,7 +25,7 @@ class BishopMoveTests: MoveTests {
 
     func testMovesFromH3() throws {
         let bishop = Bishop(.white, "h3")
-        chessBoard.addPiece(bishop)
+        chessBoard.add(bishop)
         let basicMoves = possibleMoves(from: "h3")
         XCTAssertEqual(basicMoves.count, 7)
         XCTAssertTrue(basicMoves.contains("g2"))
@@ -37,7 +37,7 @@ class BishopMoveTests: MoveTests {
 
     func testMovesFromE5() throws {
         let bishop = Bishop(.white, "e5")
-        chessBoard.addPiece(bishop)
+        chessBoard.add(bishop)
         let basicMoves = possibleMoves(from: "e5")
         XCTAssertEqual(basicMoves.count, 13)
         XCTAssertTrue(basicMoves.contains("f6"))
