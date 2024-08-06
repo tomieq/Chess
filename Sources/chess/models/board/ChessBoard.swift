@@ -11,13 +11,16 @@ typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
 enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
-    case pieceMoved(from: BoardSquare, to: BoardSquare)
+    case pieceMoved(ChessMove)
     case pieceRemoved(from: BoardSquare)
 }
 
 public class ChessBoard {
-    var pieces: [ChessPiece]
+    private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
+    var allPieces: [ChessPiece] {
+        self.pieces
+    }
 
     public init() {
         self.pieces = []
@@ -53,11 +56,18 @@ public class ChessBoard {
         self.pieces = self.pieces.filter{ $0.square != square }
         broadcast(event: .pieceRemoved(from: square))
     }
+    
+    func remove(_ squares: BoardSquare...) {
+        self.pieces = self.pieces.filter{ !squares.contains($0.square) }
+        squares.forEach { broadcast(event: .pieceRemoved(from: $0))  }
+        
+    }
 
-    func move(from: BoardSquare, to: BoardSquare) {
-        guard let movedPiece = piece(at: from)?.moved(to: to) else { return }
-        pieces.removeAll { [to, from].contains($0.square) }
+    func move(_ move: ChessMove) {
+        guard let movedPiece = piece(at: move.from)?.moved(to: move.to) else { return }
+        pieces.removeAll { [move.to, move.from].contains($0.square) }
         pieces.append(movedPiece)
+        broadcast(event: .pieceMoved(move))
     }
     
     private func addPiece(_ piece: GamePiece?, emitChanges: Bool = true) {
@@ -66,6 +76,7 @@ public class ChessBoard {
             if emitChanges {
                 broadcast(event: .pieceAdded(at: [chessPiece.square]))
             }
+            print("Added \(chessPiece)")
         }
     }
 

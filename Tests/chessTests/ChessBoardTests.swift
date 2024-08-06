@@ -24,7 +24,7 @@ class ChessBoardTests: XCTestCase {
         ChessBoardLoader(chessBoads: sut)
             .load(.black, "c7 d7 f7")
             .load(.white, "b2")
-        XCTAssertEqual(sut.pieces.count, 4)
+        XCTAssertEqual(sut.allPieces.count, 4)
         XCTAssertEqual(sut.piece(at: "c7")?.type, .pawn)
         XCTAssertEqual(sut.piece(at: "d7")?.type, .pawn)
         XCTAssertEqual(sut.piece(at: "f7")?.type, .pawn)
@@ -36,7 +36,7 @@ class ChessBoardTests: XCTestCase {
     func test_addingChessPiecesUsingText() {
         let sut = ChessBoard()
         ChessBoardLoader(chessBoads: sut).load(.black, "Ra1 Nb1 Bc1 Qd1 Ke1")
-        XCTAssertEqual(sut.pieces.count, 5)
+        XCTAssertEqual(sut.allPieces.count, 5)
         XCTAssertEqual(sut.piece(at: "a1")?.type, .rook)
         XCTAssertEqual(sut.piece(at: "b1")?.type, .knight)
         XCTAssertEqual(sut.piece(at: "c1")?.type, .bishop)
@@ -60,12 +60,24 @@ class ChessBoardTests: XCTestCase {
         sut.remove("c7")
         XCTAssertTrue(sut.isFree("c7"))
     }
+    
+    func test_removeMultiple() {
+        let sut = ChessBoard()
+        ChessBoardLoader(chessBoads: sut).load(.white, "d2 e2 f2")
+        XCTAssertFalse(sut.isFree("d2"))
+        XCTAssertFalse(sut.isFree("e2"))
+        XCTAssertFalse(sut.isFree("f2"))
+        sut.remove("d2", "e2")
+        XCTAssertTrue(sut.isFree("d2"))
+        XCTAssertTrue(sut.isFree("e2"))
+        XCTAssertFalse(sut.isFree("f2"))
+    }
 
     func test_move() {
         let sut = ChessBoard()
         ChessBoardLoader(chessBoads: sut).load(.white, "d2")
         XCTAssertFalse(sut.isFree("d2"))
-        sut.move(from: "d2", to: "d3")
+        sut.move(ChessMove(from: "d2", to: "d3"))
         XCTAssertTrue(sut.isFree("d2"))
         XCTAssertFalse(sut.isFree("d3"))
     }

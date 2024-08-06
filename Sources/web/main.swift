@@ -7,33 +7,44 @@ import chess
 var chessboard = ChessBoard()
 chessboard.setupGame()
 var moveManager = ChessMoveManager(chessboard: chessboard)
-moveManager.status = { event in
+moveManager.eventHandler = { event in
     switch event {
-    case .pieceMoved(let from, let to):
-        let letter = chessboard[to]?.letter
-        LiveConnection.shared.notifyClient("remove:\(from)")
-        LiveConnection.shared.notifyClient("remove:\(to)")
-        LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
-        let piece = chessboard[to]!
-        var text = "\(piece.color) \(piece.type.enName) moved to \(to)"
+    case .pieceMoved(_, let move):
+        let letter = chessboard[move.to]?.letter
+        LiveConnection.shared.notifyClient("remove:\(move.from)")
+        LiveConnection.shared.notifyClient("remove:\(move.to)")
+        LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
+        let piece = chessboard[move.to]!
+        var text = "\(piece.color) \(piece.type.enName) moved to \(move.to)"
         if chessboard.isCheck() { text.append(" with check!") }
         LiveConnection.shared.notifyClient("text:\(text)")
-    case .pieceAdded(let square):
-        break
-    case .pieceTakes(let from, let to, let killedType):
-        let letter = chessboard[to]?.letter
-        LiveConnection.shared.notifyClient("remove:\(from)")
-        LiveConnection.shared.notifyClient("remove:\(to)")
-        LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
-        let piece = chessboard[to]!
-        var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(killedType.enName) on \(to)"
+    case .pieceTakes(_, let move, let takenType):
+        let letter = chessboard[move.to]?.letter
+        LiveConnection.shared.notifyClient("remove:\(move.from)")
+        LiveConnection.shared.notifyClient("remove:\(move.to)")
+        LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
+        let piece = chessboard[move.to]!
+        var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)"
         if chessboard.isCheck() { text.append(" with check!") }
         LiveConnection.shared.notifyClient("text:\(text)")
-    case .promotion(let from, let to, let type):
-        let letter = chessboard[to]?.letter
-        LiveConnection.shared.notifyClient("remove:\(from)")
-        LiveConnection.shared.notifyClient("remove:\(to)")
-        LiveConnection.shared.notifyClient("add:\(letter!):\(to)")
+    case .promotion(let move, let type):
+        let letter = chessboard[move.to]?.letter
+        LiveConnection.shared.notifyClient("remove:\(move.from)")
+        LiveConnection.shared.notifyClient("remove:\(move.to)")
+        LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
+        var text = "Promotion to \(type.enName) on \(move.to)"
+        if chessboard.isCheck() { text.append(" with check!") }
+        LiveConnection.shared.notifyClient("text:\(text)")
+    case .castling(let castling):
+        castling.moves.forEach { move in
+            let letter = chessboard[move.to]?.letter
+            LiveConnection.shared.notifyClient("remove:\(move.from)")
+            LiveConnection.shared.notifyClient("remove:\(move.to)")
+            LiveConnection.shared.notifyClient("add:\(letter!):\(move.to)")
+        }
+        var text = "Castling"
+        if chessboard.isCheck() { text.append(" with check!") }
+        LiveConnection.shared.notifyClient("text:\(text)")
     }
 }
 

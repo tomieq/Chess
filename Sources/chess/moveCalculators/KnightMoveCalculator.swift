@@ -72,9 +72,9 @@ class KnightMoveCalculator: MoveCalculator {
     
     private func gameChanged(_ event: ChessBoardEvent) {
         switch event {
-        case .pieceMoved(let from, let to):
-            if self.square == from {
-                self.square = to
+        case .pieceMoved(let move):
+            if self.square == move.from {
+                self.square = move.to
             }
         default:
             break
