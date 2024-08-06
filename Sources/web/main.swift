@@ -101,7 +101,7 @@ do {
                 try? parser.apply(move)
             }
             if moves.isEmpty {
-                LiveConnection.shared.notifyClient("noMoreMoves:")
+                LiveConnection.shared.notifyClient(.hideNextMoveButton)
             }
         }
     }, binary: { (session, binary) in
@@ -141,44 +141,44 @@ extension ChessMoveManager {
             switch event {
             case .pieceMoved(_, let move):
                 let letter = chessBoard[move.to]?.letter
-                liveConnection.notifyClient("remove:\(move.from)")
-                liveConnection.notifyClient("remove:\(move.to)")
-                liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                liveConnection.notifyClient(.removePiece(move.from))
+                liveConnection.notifyClient(.removePiece(move.to))
+                liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 let piece = chessBoard[move.to]!
                 var text = "\(piece.color) \(piece.type.enName) moved to \(move.to)"
                 if chessBoard.isCheck() { text.append(" with check!") }
-                liveConnection.notifyClient("text:\(text)")
+                liveConnection.notifyClient(.text(text))
             case .pieceTakes(_, let move, let takenType):
                 let letter = chessBoard[move.to]?.letter
-                liveConnection.notifyClient("remove:\(move.from)")
-                liveConnection.notifyClient("remove:\(move.to)")
-                liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                liveConnection.notifyClient(.removePiece(move.from))
+                liveConnection.notifyClient(.removePiece(move.to))
+                liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 let piece = chessBoard[move.to]!
                 var text = "\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)"
                 if chessBoard.isCheck() { text.append(" with check!") }
-                liveConnection.notifyClient("text:\(text)")
+                liveConnection.notifyClient(.text(text))
             case .promotion(let move, let type):
                 let letter = chessBoard[move.to]?.letter
-                liveConnection.notifyClient("remove:\(move.from)")
-                liveConnection.notifyClient("remove:\(move.to)")
-                liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                liveConnection.notifyClient(.removePiece(move.from))
+                liveConnection.notifyClient(.removePiece(move.to))
+                liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 var text = "Promotion to \(type.enName) on \(move.to)"
                 if chessBoard.isCheck() { text.append(" with check!") }
-                liveConnection.notifyClient("text:\(text)")
+                liveConnection.notifyClient(.text(text))
             case .castling(let castling):
                 castling.moves.forEach { move in
                     let letter = chessBoard[move.to]?.letter
-                    liveConnection.notifyClient("remove:\(move.from)")
-                    liveConnection.notifyClient("remove:\(move.to)")
-                    liveConnection.notifyClient("add:\(letter!):\(move.to)")
+                    liveConnection.notifyClient(.removePiece(move.from))
+                    liveConnection.notifyClient(.removePiece(move.to))
+                    liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
                 }
                 var text = "Castling"
                 if chessBoard.isCheck() { text.append(" with check!") }
-                liveConnection.notifyClient("text:\(text)")
+                liveConnection.notifyClient(.text(text))
             case .checkMate(let color):
                 let text = "Check mate for \(color)"
-                liveConnection.notifyClient("text:\(text)")
-                liveConnection.notifyClient("checkmate:\(color)")
+                liveConnection.notifyClient(.text(text))
+                liveConnection.notifyClient(.checkMate)
             }
         }
     }

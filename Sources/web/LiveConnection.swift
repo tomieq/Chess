@@ -18,7 +18,7 @@ class LiveConnection {
         websockets.removeAll { $0 == socket }
         print("Active connections: \(websockets.count)")
     }
-    func notifyClient(_ text: String) {
-        websockets.forEach { $0.writeText(text) }
+    func notifyClient(_ command: WebSocketCommand) {
+        websockets.forEach { $0.writeText(command.raw) }
     }
 }
