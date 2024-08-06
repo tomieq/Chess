@@ -9,12 +9,6 @@ import Foundation
 
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
-enum ChessBoardEvent {
-    case pieceAdded(at: [BoardSquare])
-    case pieceMoved(ChessMove)
-    case pieceRemoved(from: BoardSquare)
-}
-
 public class ChessBoard {
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
