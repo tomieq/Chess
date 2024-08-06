@@ -48,10 +48,10 @@ public class ChessMoveManager {
             return
         }
         if let attackedPiece = chessboard[to] {
-            consume(.pieceTakes(type: piece.type, move: move, takenType: attackedPiece.type, status: chessboard.status(for: piece.color)))
+            consume(.pieceTakes(type: piece.type, move: move, takenType: attackedPiece.type, status: .notReady))
             print("\(piece.color) \(piece.type.enName) from \(from) took \(attackedPiece)")
         } else {
-            consume(.pieceMoved(type: piece.type, move: move, status: chessboard.status(for: piece.color)))
+            consume(.pieceMoved(type: piece.type, move: move, status: .notReady))
             print("\(piece.color) \(piece.type.enName) moved from \(from) to \(to)")
         }
     }
@@ -61,17 +61,17 @@ public class ChessMoveManager {
             switch piece.color {
             case .white:
                 if move.to == "g1" {
-                    return .castling(side: Castling.kingSide(.white), status: chessboard.status(for: piece.color))
+                    return .castling(side: Castling.kingSide(.white), status: .notReady)
                 }
                 if move.to == "c1" {
-                    return .castling(side: Castling.queenSide(.white), status: chessboard.status(for: piece.color))
+                    return .castling(side: Castling.queenSide(.white), status: .notReady)
                 }
             case .black:
                 if move.to == "g8" {
-                    return .castling(side: Castling.kingSide(.black), status: chessboard.status(for: piece.color))
+                    return .castling(side: Castling.kingSide(.black), status: .notReady)
                 }
                 if move.to == "c8" {
-                    return .castling(side: Castling.queenSide(.black), status: chessboard.status(for: piece.color))
+                    return .castling(side: Castling.queenSide(.black), status: .notReady)
                 }
             }
             
@@ -84,11 +84,11 @@ public class ChessMoveManager {
             switch piece.color {
             case .white:
                 if move.to.row == 8 {
-                    return .promotion(move: move, type: .queen, status: chessboard.status(for: piece.color))
+                    return .promotion(move: move, type: .queen, status: .notReady)
                 }
             case .black:
                 if move.to.row == 1 {
-                    return .promotion(move: move, type: .queen, status: chessboard.status(for: piece.color))
+                    return .promotion(move: move, type: .queen, status: .notReady)
                 }
             }
         }
@@ -100,7 +100,7 @@ public class ChessMoveManager {
             colorOnMove = colorOnMove.other
         }
         switch event {
-        case .pieceMoved(_, let move, _):
+        case .pieceMoved(_, let move, let status):
             chessboard.move(move)
         case .pieceTakes(_, let move, _, _):
             chessboard.move(move)
@@ -110,6 +110,6 @@ public class ChessMoveManager {
         case .castling(let castling, _):
             castling.moves.forEach { chessboard.move($0) }
         }
-        eventHandler?(event)
+        eventHandler?(event.with(status: chessboard.status(for: colorOnMove)))
     }
 }

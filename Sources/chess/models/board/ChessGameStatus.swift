@@ -6,14 +6,18 @@
 //
 
 public enum ChessGameStatus {
+    case notReady
     case normal
     case check
     case checkmate
 }
+extension ChessGameStatus: Equatable {}
 
 extension ChessGameStatus {
     var notation: String {
         switch self {
+        case .notReady:
+            ""
         case .normal:
             ""
         case .check:

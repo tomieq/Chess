@@ -82,7 +82,7 @@ do {
                 switch moveError {
                 case .invalidSquare:
                     break
-                case .noPiece(let square):
+                case .noPiece:
                     break
                 case .colorOnMove(let color):
                     return .ok(.js(JSCode.showError("Now it is \(color)`s turn")))
@@ -148,20 +148,20 @@ extension ChessMoveManager {
                 liveConnection.notifyClient(.removePiece(move.from))
                 liveConnection.notifyClient(.removePiece(move.to))
                 liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-                let piece = chessBoard[move.to]!
+//                let piece = chessBoard[move.to]!
                 let text = event.notation//"\(piece.color) \(piece.type.enName) moved to \(move.to) \(status)"
                 liveConnection.notifyClient(.text(text))
                 if status == .checkmate { liveConnection.notifyClient(.checkMate) }
-            case .pieceTakes(_, let move, let takenType, let status):
+            case .pieceTakes(_, let move, _, let status):
                 let letter = chessBoard[move.to]?.letter
                 liveConnection.notifyClient(.removePiece(move.from))
                 liveConnection.notifyClient(.removePiece(move.to))
                 liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-                let piece = chessBoard[move.to]!
+//                let piece = chessBoard[move.to]!
                 let text = event.notation//"\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)\(status)"
                 liveConnection.notifyClient(.text(text))
                 if status == .checkmate { liveConnection.notifyClient(.checkMate) }
-            case .promotion(let move, let type, let status):
+            case .promotion(let move, _, let status):
                 let letter = chessBoard[move.to]?.letter
                 liveConnection.notifyClient(.removePiece(move.from))
                 liveConnection.notifyClient(.removePiece(move.to))
@@ -184,30 +184,3 @@ extension ChessMoveManager {
     }
 }
 
-extension ChessGameStatus: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .normal:
-            ""
-        case .check:
-            " with check!"
-        case .checkmate:
-            " with checkmate!"
-        }
-    }
-    
-    
-}
-
-extension Castling: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .kingSide(let chessPieceColor):
-            "King side castling"
-        case .queenSide(let chessPieceColor):
-            "Queen side castling"
-        }
-    }
-    
-    
-}
