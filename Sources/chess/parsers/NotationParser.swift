@@ -32,11 +32,19 @@ public class NotationParser {
         var events: [ChessMoveEvent] = []
         let parts = split(txt)
         for part in parts {
+            if isFinished(part) { break }
             let event = try parseCastling(part) ?? parseSingleMove(part)
             moveManager.consume(event)
             events.append(event)
         }
         return events
+    }
+    
+    private func isFinished(_ part: String) -> Bool {
+        if ["1-0", "0-1", "½-½", "0.5-0.5", "*", "+/-", "-/-", "-/+"].contains(part) {
+            return true
+        }
+        return false
     }
     
     private func parseCastling(_ part: String) -> ChessMoveEvent? {
