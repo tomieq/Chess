@@ -4,6 +4,9 @@
 //
 //  Created by Tomasz Kucharski on 06/08/2024.
 //
+
+// NotationParser reads game notation moves and applies them to game
+
 import Foundation
 
 enum NotationParserError: Error {
@@ -11,12 +14,10 @@ enum NotationParserError: Error {
 }
 
 public class NotationParser {
-    let moveManager: ChessMoveManager
-    private let language: Language
+    private let moveExecutor: ChessMoveExecutor
 
-    public init(moveManager: ChessMoveManager, language: Language = .english) {
-        self.moveManager = moveManager
-        self.language = language
+    public init(moveExecutor: ChessMoveExecutor) {
+        self.moveExecutor = moveExecutor
     }
     
     public func split(_ txt: String) -> [String] {
@@ -29,18 +30,15 @@ public class NotationParser {
             .map { $0.replacingOccurrences(of: "?", with: "").replacingOccurrences(of: "!", with: "") }
     }
 
-    @discardableResult
-    public func apply(_ txt: String) throws -> [ChessMoveEvent] {
+    public func process(_ txt: String) throws {
         print("parsing \(txt)")
-        var events: [ChessMoveEvent] = []
+        let language: Language = txt.contains("H") || txt.contains("S") || txt.contains("W") || txt.contains("G") ? .polish : .english
         let parts = split(txt)
         for part in parts {
             if isFinished(part) { break }
-            let event = try parseCastling(part) ?? parseSingleMove(part)
-            moveManager.consume(event)
-            events.append(event)
+            let command = try parseCastling(part) ?? parseSingleMove(part, language: language)
+            moveExecutor.process(command)
         }
-        return events
     }
     
     private func isFinished(_ part: String) -> Bool {
@@ -50,23 +48,21 @@ public class NotationParser {
         return false
     }
     
-    private func parseCastling(_ part: String) -> ChessMoveEvent? {
-        let color = moveManager.colorOnMove
-        let status: ChessGameStatus = part.contains("+") ? .check : part.contains("#") ? .checkmate : .normal
+    private func parseCastling(_ part: String) -> ChessMoveCommand? {
+        let color = moveExecutor.chessboard.colorOnMove
         let part = part.replacingOccurrences(of: "+", with: "").replacingOccurrences(of: "#", with: "")
         if part == "O-O" || part == "0-0"{
-            return .castling(side: Castling.kingSide(color), status: status)
+            return .castling(Castling.kingSide(color))
         } else if part == "O-O-O" || part == "0-0-0"{
-            return .castling(side: Castling.queenSide(color), status: status)
+            return .castling(Castling.queenSide(color))
         }
         return nil
     }
 
-    private func parseSingleMove(_ part: String) throws -> ChessMoveEvent {
+    private func parseSingleMove(_ part: String, language: Language) throws -> ChessMoveCommand {
         var type: ChessPieceType?
         var to: BoardSquare?
         let takes = part.contains("x")
-        let status: ChessGameStatus = part.contains("+") ? .check : part.contains("#") ? .checkmate : .normal
         let part = part.replacingOccurrences(of: "x", with: "")
             .replacingOccurrences(of: "+", with: "")
             .replacingOccurrences(of: "#", with: "")
@@ -85,8 +81,8 @@ public class NotationParser {
         guard let type = type, let to = to else {
             throw NotationParserError.parsingError("Invalid entry \(part)")
         }
-        var pieces = moveManager.chessboard
-            .getPieces(color: moveManager.colorOnMove)
+        var pieces = moveExecutor.chessboard
+            .getPieces(color: moveExecutor.chessboard.colorOnMove)
             .filter { $0.type == type }
             .filter { $0.moveCalculator.possibleMoves.contains(to)}
         if let column = column {
@@ -96,6 +92,6 @@ public class NotationParser {
             throw NotationParserError.parsingError("Ambigious entry \(part)")
         }
         let move = ChessBoardMove(from: piece.square, to: to)
-        return takes ?  ChessMoveEvent.pieceTakes(type: type, move: move, takenType: moveManager.chessboard[to]?.type ?? .pawn, status: status) : ChessMoveEvent.pieceMoved(type: type, move: move, status: status)
+        return takes ? .take(move, promotion: nil) : .move(move, promotion: nil)
     }
 }

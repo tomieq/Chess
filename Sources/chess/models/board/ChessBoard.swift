@@ -10,6 +10,7 @@ import Foundation
 typealias GamePiece = DetachedChessPiece & ChessPieceConvertible
 
 public class ChessBoard {
+    public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
     var allPieces: [ChessPiece] {

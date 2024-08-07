@@ -11,45 +11,37 @@ import XCTest
 
 class NotationParserTests: XCTestCase {
     
-    var moveManager: ChessMoveManager {
+    var moveExecutor: ChessMoveExecutor {
         let board = ChessBoard()
         board.setupGame()
-        let manager = ChessMoveManager(chessboard: board)
-        return manager
+        return ChessMoveExecutor(chessboard: board)
     }
     
     func test_basicMoves() throws {
-        let sut = NotationParser(moveManager: moveManager)
-        let events = try sut.apply("""
+        let executor = moveExecutor
+        let sut = NotationParser(moveExecutor: executor)
+        try sut.process("""
         1. e4 e5
         2. Nf3 Nc6
         3. Bc4
         """)
-        XCTAssertEqual(events, [
-            .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e2", to: "e4"), status: .normal),
-            .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e7", to: "e5"), status: .normal),
-            .pieceMoved(type: .knight, move: ChessBoardMove(from: "g1", to: "f3"), status: .normal),
-            .pieceMoved(type: .knight, move: ChessBoardMove(from: "b8", to: "c6"), status: .normal),
-            .pieceMoved(type: .bishop, move: ChessBoardMove(from: "f1", to: "c4"), status: .normal),
-                               ])
+        XCTAssertEqual(executor.chessboard["e4"]?.type, .pawn)
+        XCTAssertEqual(executor.chessboard["e5"]?.type, .pawn)
+        XCTAssertEqual(executor.chessboard["f3"]?.type, .knight)
+        XCTAssertEqual(executor.chessboard["c6"]?.type, .knight)
+        XCTAssertEqual(executor.chessboard["c4"]?.type, .bishop)
     }
     
     func test_quickCheckMate() throws {
-        let sut = NotationParser(moveManager: moveManager, language: .polish)
-        let events = try sut.apply("""
+        let executor = moveExecutor
+        let sut = NotationParser(moveExecutor: executor)
+        try sut.process("""
         e4 e5
         Hh5? Sc6
         Gc4 Sf6??
         Hxf7#
         """)
-        XCTAssertEqual(events[0], .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e2", to: "e4"), status: .normal))
-        XCTAssertEqual(events[1], .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e7", to: "e5"), status: .normal))
-        XCTAssertEqual(events[2], .pieceMoved(type: .queen, move: ChessBoardMove(from: "d1", to: "h5"), status: .normal))
-        XCTAssertEqual(events[3], .pieceMoved(type: .knight, move: ChessBoardMove(from: "b8", to: "c6"), status: .normal))
-        XCTAssertEqual(events[4], .pieceMoved(type: .bishop, move: ChessBoardMove(from: "f1", to: "c4"), status: .normal))
-        XCTAssertEqual(events[5], .pieceMoved(type: .knight, move: ChessBoardMove(from: "g8", to: "f6"), status: .normal))
-        XCTAssertEqual(events[6], .pieceTakes(type: .queen, move: ChessBoardMove(from: "h5", to: "f7"), takenType: .pawn, status: .checkmate))
-                            
+        XCTAssertEqual(executor.chessboard.status(for: .white), .checkmate)
     }
 }
 

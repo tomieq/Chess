@@ -13,20 +13,6 @@ public enum ChessMoveEvent {
 }
 extension ChessMoveEvent: Equatable {}
 
-extension ChessMoveEvent {
-    func with(status new: ChessGameStatus) -> ChessMoveEvent {
-        switch self {
-        case .pieceMoved(let type, let move, _):
-            return .pieceMoved(type: type, move: move, status: new)
-        case .pieceTakes(let type, let move, let takenType, _):
-            return .pieceTakes(type: type, move: move, takenType: takenType, status: new)
-        case .promotion(let move, let type, _):
-            return .promotion(move: move, type: type, status: new)
-        case .castling(let side, _):
-            return .castling(side: side, status: new)
-        }
-    }
-}
 
 extension ChessMoveEvent {
     public var notation: String {

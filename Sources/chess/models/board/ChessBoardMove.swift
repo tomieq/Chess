@@ -9,4 +9,11 @@ public struct ChessBoardMove {
     public let from: BoardSquare
     public let to: BoardSquare
 }
+
 extension ChessBoardMove: Equatable {}
+
+extension ChessBoardMove: CustomStringConvertible {
+    public var description: String {
+        "from \(from) to \(to)"
+    }
+}

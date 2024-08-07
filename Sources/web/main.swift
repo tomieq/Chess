@@ -7,10 +7,11 @@ import chess
 var chessBoard = ChessBoard()
 chessBoard.setupGame()
 
-var moveManager = ChessMoveManager(chessboard: chessBoard)
-moveManager.connect(to: LiveConnection.shared)
+var commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+var moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
+moveExecutor.connect(to: LiveConnection.shared)
 
-let parser = NotationParser(moveManager: moveManager)
+var parser = NotationParser(moveExecutor: moveExecutor)
 var moves = parser.split("""
                         1. e4 e5
                         2. Nf3 Nc6
@@ -35,8 +36,10 @@ do {
     server.get["new"] = { _, _ in
         chessBoard = ChessBoard()
         chessBoard.setupGame()
-        moveManager = ChessMoveManager(chessboard: chessBoard)
-        moveManager.connect(to: LiveConnection.shared)
+        commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+        moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
+        moveExecutor.connect(to: LiveConnection.shared)
+        parser = NotationParser(moveExecutor: moveExecutor)
         return .movedTemporarily("/")
     }
     server.get["init.js"] = {  request, _ in
@@ -66,10 +69,11 @@ do {
             let move: Movement = try request.queryParams.decode()
             let from = BoardSquare(stringLiteral: move.from)
             let to = BoardSquare(stringLiteral: move.to)
-            try moveManager.move(from: from, to: to)
+            let command = try commandFactory.make(from: from, to: to)
+            moveExecutor.process(command)
             return .ok(.js(""))
         } catch {
-            if let moveError = error as? ChessMoveError {
+            if let moveError = error as? ChessMoveCommandFactoryError {
                 switch moveError {
                 case .invalidSquare:
                     break
@@ -90,7 +94,7 @@ do {
             if let move = moves.first {
                 moves.removeFirst()
                 do {
-                    try parser.apply(move)
+                    try parser.process(move)
                 } catch {
                     print("Error \(error)")
                 }
@@ -130,46 +134,23 @@ do {
 }
 
 
-extension ChessMoveManager {
+extension ChessMoveExecutor {
     func connect(to liveConnection: LiveConnection) {
-        self.eventHandler = { event in
-            switch event {
-            case .pieceMoved(_, let move, let status):
-                let letter = chessBoard[move.to]?.letter
-                liveConnection.notifyClient(.removePiece(move.from))
-                liveConnection.notifyClient(.removePiece(move.to))
-                liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-//                let piece = chessBoard[move.to]!
-                let text = event.notation//"\(piece.color) \(piece.type.enName) moved to \(move.to) \(status)"
-                liveConnection.notifyClient(.text(text))
-                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
-            case .pieceTakes(_, let move, _, let status):
-                let letter = chessBoard[move.to]?.letter
-                liveConnection.notifyClient(.removePiece(move.from))
-                liveConnection.notifyClient(.removePiece(move.to))
-                liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-//                let piece = chessBoard[move.to]!
-                let text = event.notation//"\(piece.color) \(piece.type.enName) takes \(piece.color.other) \(takenType.enName) on \(move.to)\(status)"
-                liveConnection.notifyClient(.text(text))
-                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
-            case .promotion(let move, _, let status):
-                let letter = chessBoard[move.to]?.letter
-                liveConnection.notifyClient(.removePiece(move.from))
-                liveConnection.notifyClient(.removePiece(move.to))
-                liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-                let text = event.notation//"Promotion to \(type.enName) on \(move.to)\(status)"
-                liveConnection.notifyClient(.text(text))
-                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
-            case .castling(let castling, let status):
-                castling.moves.forEach { move in
+        self.moveListener = { event in
+            event.changes.forEach { change in
+                switch change {
+                case .move(let move):
                     let letter = chessBoard[move.to]?.letter
                     liveConnection.notifyClient(.removePiece(move.from))
                     liveConnection.notifyClient(.removePiece(move.to))
                     liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
+                case .remove(_, let square):
+                    liveConnection.notifyClient(.removePiece(square))
+                case .add(_, let square):
+                    let letter = chessBoard[square]?.letter
+                    liveConnection.notifyClient(.addPiece(square, letter: letter!))
                 }
-                let text = event.notation//"\(castling)\(status)"
-                liveConnection.notifyClient(.text(text))
-                if status == .checkmate { liveConnection.notifyClient(.checkMate) }
+                
             }
         }
     }
