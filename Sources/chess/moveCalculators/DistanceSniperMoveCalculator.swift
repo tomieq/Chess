@@ -30,12 +30,12 @@ class DistanceSniperMoveCalculator: MoveCalculator {
         }
     }
     
-    var defended: [BoardSquare] {
+    var defends: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.defended
+            return calculatedMoves.defends
         }
     }
     
@@ -86,7 +86,7 @@ class DistanceSniperMoveCalculator: MoveCalculator {
     
     private func analize() {
         var possibleMoves: [BoardSquare] = []
-        var defended: [BoardSquare] = []
+        var defends: [BoardSquare] = []
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
@@ -147,7 +147,7 @@ class DistanceSniperMoveCalculator: MoveCalculator {
             for position in square.squares(to: direction) {
                 if let piece = chessBoard.piece(at: position) {
                     if piece.color == self.color {
-                        defended.append(position)
+                        defends.append(position)
                     } else {
                         possibleVictims.append(position)
                         possibleMoves.append(position)
@@ -177,7 +177,7 @@ class DistanceSniperMoveCalculator: MoveCalculator {
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possibleAttackers: possibleAttackers,
-                                               defended: defended,
+                                               defends: defends,
                                                defenders: defenders)
         self.isAnalized = true
     }

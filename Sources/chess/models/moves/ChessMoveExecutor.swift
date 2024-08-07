@@ -13,15 +13,14 @@ public class ChessMoveExecutor {
     let chessboard: ChessBoard
     public var moveListener: ((ChessMove) -> Void)?
     var moveStack: [ChessMove] = []
+    private var notationFactory: NotationFactory
     
     public init(chessboard: ChessBoard) {
         self.chessboard = chessboard
+        self.notationFactory = NotationFactory(chessBoard: chessboard)
     }
 
     public func process(_ command: ChessMoveCommand) {
-        defer {
-            chessboard.colorOnMove = chessboard.colorOnMove.other
-        }
         let color = chessboard.colorOnMove
         switch command {
         case .move(let move, let promotion):
@@ -43,9 +42,9 @@ public class ChessMoveExecutor {
             }
             // store history
             register(ChessMove(color: color,
-                               notation: "",
+                               notation: self.notationFactory.make(from: command),
                                changes: changes,
-                               status: chessboard.status(for: color)))
+                               status: chessboard.status))
         case .take(let move, let promotion):
             print("\(chessboard[move.from]!) take \(chessboard[move.from]!.type) on \(move)")
             var changes: [ChessMove.Change] = []
@@ -66,19 +65,20 @@ public class ChessMoveExecutor {
                 chessboard.move(move)
             }
             register(ChessMove(color: color,
-                               notation: "",
+                               notation:  self.notationFactory.make(from: command),
                                changes: changes,
-                               status: chessboard.status(for: color)))
+                               status: chessboard.status))
 
         case .castling(let castling):
             // update the local board
             castling.moves.forEach { chessboard.move($0) }
             // store history
             register(ChessMove(color: color,
-                               notation: "",
+                               notation:  self.notationFactory.make(from: command),
                                changes: castling.moves.map { .move($0) },
-                               status: chessboard.status(for: color)))
+                               status: chessboard.status))
         }
+        chessboard.colorOnMove = chessboard.colorOnMove.other
     }
     
     private func register(_ move: ChessMove) {

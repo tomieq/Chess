@@ -102,7 +102,7 @@ public class ChessBoard {
     }
     
     func isCheckMate(for color: ChessPieceColor) -> Bool {
-        for piece in getPieces(color: color.other) {
+        for piece in getPieces(color: color) {
             if piece.moveCalculator.possibleMoves.count > 0 {
                 return false
             }
@@ -110,12 +110,16 @@ public class ChessBoard {
         return true
     }
     
-    func status(for color: ChessPieceColor) -> ChessGameStatus {
-        if isCheckMate(for: color) {
-            return .checkmate
-        }
-        if isCheck(for: color) {
-            return .check
+    var status: ChessGameStatus {
+        for color in ChessPieceColor.allCases {
+            if isCheckMate(for: color) {
+                print("It is checkmate for \(color)")
+                return .checkmate
+            }
+            if isCheck(for: color) {
+                print("It is check for \(color) possible moves: \(getPieces(color: color).filter{ $0.moveCalculator.possibleMoves.isEmpty.not }.map{ "\($0) moves: \($0.moveCalculator.possibleMoves)" }.joined(separator: ", "))")
+                return .check
+            }
         }
         return .normal
     }

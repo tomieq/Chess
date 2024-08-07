@@ -155,6 +155,7 @@ extension ChessMoveExecutor {
                     liveConnection.notifyClient(.addPiece(square, letter: letter!))
                 }
             }
+            liveConnection.notifyClient(.text(event.notation))
             if event.status != .normal {
                 liveConnection.notifyClient(.text("\(event.status)"))
             }

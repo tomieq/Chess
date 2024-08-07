@@ -18,7 +18,7 @@ class MoveTests: XCTestCase {
     }
     
     func defended(from square: BoardSquare?) -> [BoardSquare] {
-        chessBoard.piece(at: square)?.moveCalculator.defended ?? []
+        chessBoard.piece(at: square)?.moveCalculator.defends ?? []
     }
     
     func defenders(for square: BoardSquare?) -> [BoardSquare] {

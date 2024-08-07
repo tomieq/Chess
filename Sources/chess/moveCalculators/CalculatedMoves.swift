@@ -11,7 +11,7 @@ struct CalculatedMoves {
     let possibleMoves: [BoardSquare]
     let possibleVictims: [BoardSquare]
     let possibleAttackers: [BoardSquare]
-    let defended: [BoardSquare]
+    let defends: [BoardSquare]
     let defenders: [BoardSquare]
     
     
@@ -19,7 +19,7 @@ struct CalculatedMoves {
         CalculatedMoves(possibleMoves: [],
                         possibleVictims: [],
                         possibleAttackers: [],
-                        defended: [],
+                        defends: [],
                         defenders: [])
     }
 }

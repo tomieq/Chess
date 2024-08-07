@@ -30,12 +30,12 @@ class PawnMoveCalculator: MoveCalculator {
         }
     }
     
-    var defended: [BoardSquare] {
+    var defends: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.defended
+            return calculatedMoves.defends
         }
     }
     
@@ -84,7 +84,7 @@ class PawnMoveCalculator: MoveCalculator {
     
     private func analize() {
         var possibleMoves: [BoardSquare] = []
-        var defended: [BoardSquare] = []
+        var defends: [BoardSquare] = []
         var defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
@@ -161,7 +161,7 @@ class PawnMoveCalculator: MoveCalculator {
                     possibleMoves.append(attackedSquare)
                     possibleVictims.append(attackedSquare)
                 } else {
-                    defended.append(attackedSquare)
+                    defends.append(attackedSquare)
                 }
             }
         }
@@ -185,7 +185,7 @@ class PawnMoveCalculator: MoveCalculator {
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possibleAttackers: possibleAttackers,
-                                               defended: defended,
+                                               defends: defends,
                                                defenders: defenders)
         self.isAnalized = true
     }

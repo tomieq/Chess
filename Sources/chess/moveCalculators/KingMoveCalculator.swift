@@ -30,12 +30,12 @@ class KingMoveCalculator: MoveCalculator {
         }
     }
     
-    var defended: [BoardSquare] {
+    var defends: [BoardSquare] {
         get {
             if !isAnalized {
                 analize()
             }
-            return calculatedMoves.defended
+            return calculatedMoves.defends
         }
     }
     
@@ -116,7 +116,7 @@ class KingMoveCalculator: MoveCalculator {
 
     private func analize() {
         var possibleMoves: [BoardSquare] = []
-        var defended: [BoardSquare] = []
+        var defends: [BoardSquare] = []
         let defenders: [BoardSquare] = []
         var possibleVictims: [BoardSquare] = []
         var possibleAttackers: [BoardSquare] = []
@@ -126,7 +126,7 @@ class KingMoveCalculator: MoveCalculator {
         for position in allowedSquares {
             if let piece = chessBoard.piece(at: position) {
                 if piece.color == color {
-                    defended.append(piece.square)
+                    defends.append(piece.square)
                 } else {
                     possibleVictims.append(piece.square)
                     if attackersFor(square: piece.square).isEmpty {
@@ -154,7 +154,7 @@ class KingMoveCalculator: MoveCalculator {
         self.calculatedMoves = CalculatedMoves(possibleMoves: possibleMoves,
                                                possibleVictims: possibleVictims,
                                                possibleAttackers: possibleAttackers,
-                                               defended: defended,
+                                               defends: defends,
                                                defenders: defenders)
         self.isAnalized = true
     }

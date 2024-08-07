@@ -18,8 +18,8 @@ protocol MoveCalculator {
     // fields that this piece might get attack from
     var possibleAttackers: [BoardSquare] { get }
     
-    // fields that are defended by this piece
-    var defended: [BoardSquare] { get }
+    // fields that are defends by this piece
+    var defends: [BoardSquare] { get }
     
     // fields that defend this piece
     var defenders: [BoardSquare] { get }

@@ -41,7 +41,7 @@ class NotationParserTests: XCTestCase {
         Gc4 Sf6??
         Hxf7#
         """)
-        XCTAssertEqual(executor.chessboard.status(for: .white), .checkmate)
+        XCTAssertEqual(executor.chessboard.status, .checkmate)
     }
 }
 
