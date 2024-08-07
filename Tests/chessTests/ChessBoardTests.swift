@@ -77,7 +77,7 @@ class ChessBoardTests: XCTestCase {
         let sut = ChessBoard()
         ChessBoardLoader(chessBoads: sut).load(.white, "d2")
         XCTAssertFalse(sut.isFree("d2"))
-        sut.move(ChessMove(from: "d2", to: "d3"))
+        sut.move(ChessBoardMove(from: "d2", to: "d3"))
         XCTAssertTrue(sut.isFree("d2"))
         XCTAssertFalse(sut.isFree("d3"))
     }

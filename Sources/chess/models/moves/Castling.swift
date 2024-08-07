@@ -9,21 +9,21 @@ public enum Castling {
     case kingSide(ChessPieceColor)
     case queenSide(ChessPieceColor)
     
-    public var moves: [ChessMove] {
+    public var moves: [ChessBoardMove] {
         switch self {
         case .kingSide(let color):
             switch color {
             case .white:
-                [ChessMove(from: "e1", to: "g1"), ChessMove(from: "h1", to: "f1")]
+                [ChessBoardMove(from: "e1", to: "g1"), ChessBoardMove(from: "h1", to: "f1")]
             case .black:
-                [ChessMove(from: "e8", to: "g8"), ChessMove(from: "h8", to: "f8")]
+                [ChessBoardMove(from: "e8", to: "g8"), ChessBoardMove(from: "h8", to: "f8")]
             }
         case .queenSide(let color):
             switch color {
             case .white:
-                [ChessMove(from: "e1", to: "c1"), ChessMove(from: "a1", to: "d1")]
+                [ChessBoardMove(from: "e1", to: "c1"), ChessBoardMove(from: "a1", to: "d1")]
             case .black:
-                [ChessMove(from: "e8", to: "c8"), ChessMove(from: "a8", to: "d8")]
+                [ChessBoardMove(from: "e8", to: "c8"), ChessBoardMove(from: "a8", to: "d8")]
             }
         }
     }

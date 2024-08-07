@@ -6,9 +6,9 @@
 //
 
 public enum ChessMoveEvent {
-    case pieceMoved(type: ChessPieceType, move: ChessMove, status: ChessGameStatus)
-    case pieceTakes(type: ChessPieceType, move: ChessMove, takenType: ChessPieceType, status: ChessGameStatus)
-    case promotion(move: ChessMove, type: ChessPieceType, status: ChessGameStatus)
+    case pieceMoved(type: ChessPieceType, move: ChessBoardMove, status: ChessGameStatus)
+    case pieceTakes(type: ChessPieceType, move: ChessBoardMove, takenType: ChessPieceType, status: ChessGameStatus)
+    case promotion(move: ChessBoardMove, type: ChessPieceType, status: ChessGameStatus)
     case castling(side: Castling, status: ChessGameStatus)
 }
 extension ChessMoveEvent: Equatable {}

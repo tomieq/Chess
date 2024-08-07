@@ -26,11 +26,11 @@ class NotationParserTests: XCTestCase {
         3. Bc4
         """)
         XCTAssertEqual(events, [
-            .pieceMoved(type: .pawn, move: ChessMove(from: "e2", to: "e4")),
-            .pieceMoved(type: .pawn, move: ChessMove(from: "e7", to: "e5")),
-            .pieceMoved(type: .knight, move: ChessMove(from: "g1", to: "f3")),
-            .pieceMoved(type: .knight, move: ChessMove(from: "b8", to: "c6")),
-            .pieceMoved(type: .bishop, move: ChessMove(from: "f1", to: "c4")),
+            .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e2", to: "e4")),
+            .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e7", to: "e5")),
+            .pieceMoved(type: .knight, move: ChessBoardMove(from: "g1", to: "f3")),
+            .pieceMoved(type: .knight, move: ChessBoardMove(from: "b8", to: "c6")),
+            .pieceMoved(type: .bishop, move: ChessBoardMove(from: "f1", to: "c4")),
                                ])
     }
     
@@ -42,13 +42,13 @@ class NotationParserTests: XCTestCase {
         Gc4 Sf6??
         Hxf7#
         """)
-        XCTAssertEqual(events[0], .pieceMoved(type: .pawn, move: ChessMove(from: "e2", to: "e4")))
-        XCTAssertEqual(events[1], .pieceMoved(type: .pawn, move: ChessMove(from: "e7", to: "e5")))
-        XCTAssertEqual(events[2], .pieceMoved(type: .queen, move: ChessMove(from: "d1", to: "h5")))
-        XCTAssertEqual(events[3], .pieceMoved(type: .knight, move: ChessMove(from: "b8", to: "c6")))
-        XCTAssertEqual(events[4], .pieceMoved(type: .bishop, move: ChessMove(from: "f1", to: "c4")))
-        XCTAssertEqual(events[5], .pieceMoved(type: .knight, move: ChessMove(from: "g8", to: "f6")))
-        XCTAssertEqual(events[6], .pieceTakes(type: .queen, move: ChessMove(from: "h5", to: "f7"), takenType: .pawn))
+        XCTAssertEqual(events[0], .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e2", to: "e4")))
+        XCTAssertEqual(events[1], .pieceMoved(type: .pawn, move: ChessBoardMove(from: "e7", to: "e5")))
+        XCTAssertEqual(events[2], .pieceMoved(type: .queen, move: ChessBoardMove(from: "d1", to: "h5")))
+        XCTAssertEqual(events[3], .pieceMoved(type: .knight, move: ChessBoardMove(from: "b8", to: "c6")))
+        XCTAssertEqual(events[4], .pieceMoved(type: .bishop, move: ChessBoardMove(from: "f1", to: "c4")))
+        XCTAssertEqual(events[5], .pieceMoved(type: .knight, move: ChessBoardMove(from: "g8", to: "f6")))
+        XCTAssertEqual(events[6], .pieceTakes(type: .queen, move: ChessBoardMove(from: "h5", to: "f7"), takenType: .pawn))
         XCTAssertEqual(events[7], .checkMate(.white))
                             
     }

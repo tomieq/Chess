@@ -1,12 +1,12 @@
 //
-//  ChessMove.swift
+//  ChessBoardMove.swift
 //  chess
 //
 //  Created by Tomasz Kucharski on 06/08/2024.
 //
 
-public struct ChessMove {
+public struct ChessBoardMove {
     public let from: BoardSquare
     public let to: BoardSquare
 }
-extension ChessMove: Equatable {}
+extension ChessBoardMove: Equatable {}

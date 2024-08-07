@@ -95,7 +95,7 @@ public class NotationParser {
         guard pieces.count == 1, let piece = pieces.first else {
             throw NotationParserError.parsingError("Ambigious entry \(part)")
         }
-        let move = ChessMove(from: piece.square, to: to)
+        let move = ChessBoardMove(from: piece.square, to: to)
         return takes ?  ChessMoveEvent.pieceTakes(type: type, move: move, takenType: moveManager.chessboard[to]?.type ?? .pawn, status: status) : ChessMoveEvent.pieceMoved(type: type, move: move, status: status)
     }
 }

@@ -26,7 +26,7 @@ public class ChessMoveManager {
             print("Invalid square")
             throw ChessMoveError.invalidSquare
         }
-        let move = ChessMove(from: from, to: to)
+        let move = ChessBoardMove(from: from, to: to)
         guard let piece = chessboard[from] else {
             print("No piece at \(from)")
             throw ChessMoveError.noPiece(at: from)
@@ -56,7 +56,7 @@ public class ChessMoveManager {
         }
     }
     
-    private func castlingMove(piece: ChessPiece, move: ChessMove) -> ChessMoveEvent? {
+    private func castlingMove(piece: ChessPiece, move: ChessBoardMove) -> ChessMoveEvent? {
         if piece.type == .king, piece.moveCalculator.moveCounter == 0 {
             switch piece.color {
             case .white:
@@ -79,7 +79,7 @@ public class ChessMoveManager {
         return nil
     }
     
-    private func promotionMove(piece: ChessPiece, move: ChessMove) -> ChessMoveEvent? {
+    private func promotionMove(piece: ChessPiece, move: ChessBoardMove) -> ChessMoveEvent? {
         if piece.type == .pawn {
             switch piece.color {
             case .white:

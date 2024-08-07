@@ -57,7 +57,7 @@ public class ChessBoard {
         
     }
 
-    func move(_ move: ChessMove) {
+    func move(_ move: ChessBoardMove) {
         guard let movedPiece = piece(at: move.from)?.moved(to: move.to) else { return }
         pieces.removeAll { [move.to, move.from].contains($0.square) }
         pieces.append(movedPiece)

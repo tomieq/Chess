@@ -9,6 +9,6 @@ import Foundation
 
 enum ChessBoardEvent {
     case pieceAdded(at: [BoardSquare])
-    case pieceMoved(ChessMove)
+    case pieceMoved(ChessBoardMove)
     case pieceRemoved(from: BoardSquare)
 }
