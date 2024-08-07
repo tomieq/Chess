@@ -30,11 +30,11 @@ public class ChessMoveExecutor {
             // with promotion
             if let promotedType = promotion {
                 // build changes
-                changes.append(.remove(.pawn, from: move.from))
-                changes.append(.add(promotedType, to: move.to))
+                changes.append(.remove(.pawn, color, from: move.from))
+                changes.append(.add(promotedType, color, to: move.to))
                 // update the local board
                 chessboard.remove(move.from)
-                chessboard.add(Queen(chessboard.colorOnMove, move.to))
+                chessboard.add(promotedType.gamePiece(color: color, square: move.to))
             } else {
                 // build changes
                 changes.append(.move(move))
@@ -49,13 +49,13 @@ public class ChessMoveExecutor {
         case .take(let move, let promotion):
             print("\(chessboard[move.from]!) take \(chessboard[move.from]!.type) on \(move)")
             var changes: [ChessMove.Change] = []
-            if let removedPieceType = chessboard[move.to]?.type {
-                changes.append(.remove(removedPieceType, from: move.to))
+            if let removedPiece = chessboard[move.to] {
+                changes.append(.remove(removedPiece.type, removedPiece.color, from: move.to))
             }
             if let promotedType = promotion {
                 // build changes
-                changes.append(.remove(.pawn, from: move.from))
-                changes.append(.add(promotedType, to: move.to))
+                changes.append(.remove(.pawn, color, from: move.from))
+                changes.append(.add(promotedType, color, to: move.to))
                 // update the local board
                 chessboard.remove(move.to, move.from)
                 chessboard.add(Queen(chessboard.colorOnMove, move.to))
@@ -86,5 +86,29 @@ public class ChessMoveExecutor {
         self.moveStack.append(move)
         // send event to sync UI
         moveListener?(move)
+    }
+    
+    public func revert() {
+        guard let move = moveStack.last else { return }
+        moveStack.removeLast()
+        defer {
+            chessboard.colorOnMove = chessboard.colorOnMove.other
+        }
+        let revertedChanges = move.changes.map { $0.reverted }.reversed().map { $0 }
+        for change in revertedChanges {
+            switch change {
+            case .move(let move):
+                chessboard.move(move)
+            case .remove(_, _, let square):
+                chessboard.remove(square)
+            case .add(let type, let color, to: let square):
+                chessboard.add(type.gamePiece(color: color, square: square))
+            }
+        }
+        let reverseMove = ChessMove(color: move.color,
+                                    notation: move.notation,
+                                    changes: revertedChanges,
+                                    status: move.status)
+        moveListener?(reverseMove)
     }
 }

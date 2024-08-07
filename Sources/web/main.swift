@@ -30,6 +30,7 @@ do {
         if moves.isEmpty.not {
             body.assign([:], inNest: "nextMoveButton")
         }
+        body.assign([:], inNest: "revertMoveButton")
         template.body = body
         return .ok(.html(template))
     }
@@ -103,6 +104,9 @@ do {
                 LiveConnection.shared.notifyClient(.hideNextMoveButton)
             }
         }
+        if text.starts(with: "revertMove") {
+            moveExecutor.revert()
+        }
     }, binary: { (session, binary) in
         session.writeBinary(binary)
     }, pong: { (_, _) in
@@ -144,13 +148,18 @@ extension ChessMoveExecutor {
                     liveConnection.notifyClient(.removePiece(move.from))
                     liveConnection.notifyClient(.removePiece(move.to))
                     liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
-                case .remove(_, let square):
+                case .remove(_, _, let square):
                     liveConnection.notifyClient(.removePiece(square))
-                case .add(_, let square):
+                case .add(_, _, let square):
                     let letter = chessBoard[square]?.letter
                     liveConnection.notifyClient(.addPiece(square, letter: letter!))
                 }
-                
+            }
+            if event.status != .normal {
+                liveConnection.notifyClient(.text("\(event.status)"))
+            }
+            if event.status == .checkmate {
+                liveConnection.notifyClient(.checkMate)
             }
         }
     }

@@ -17,6 +17,25 @@ public  enum ChessPieceType: CaseIterable {
 }
 
 extension ChessPieceType {
+    func gamePiece(color: ChessPieceColor, square: BoardSquare) -> GamePiece? {
+        switch self {
+        case .king:
+            return King(color, square)
+        case .queen:
+            return Queen(color, square)
+        case .rook:
+            return Rook(color, square)
+        case .bishop:
+            return Bishop(color, square)
+        case .knight:
+            return Knight(color, square)
+        case .pawn:
+            return Pawn(color, square)
+        }
+    }
+}
+
+extension ChessPieceType {
     public var enName: String {
         switch self {
         case .king:
