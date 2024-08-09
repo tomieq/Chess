@@ -33,7 +33,7 @@ class RookMoveTests: MoveTests {
         XCTAssertTrue(basicMoves.contains("d3"))
         XCTAssertTrue(basicMoves.contains("a4"))
         XCTAssertFalse(basicMoves.contains("c3"))
-        XCTAssertEqual(possiblePredators(for: "d4"), [])
+        XCTAssertEqual(possibleAttackers(for: "d4"), [])
         XCTAssertEqual(possibleVictims(for: "d4"), [])
     }
 
@@ -46,7 +46,7 @@ class RookMoveTests: MoveTests {
         chessboardLoader.load(.black, "g1")
         XCTAssertEqual(possibleVictims(for: "a1").first, "g1")
         XCTAssertEqual(defended(from: "a1").first, "a2")
-        XCTAssertEqual(possiblePredators(for: "d4"), [])
+        XCTAssertEqual(possibleAttackers(for: "d4"), [])
         XCTAssertEqual(possibleVictims(for: "d4"), [])
     }
     
@@ -57,7 +57,7 @@ class RookMoveTests: MoveTests {
         chessboardLoader.load(.black, "d3")
         XCTAssertEqual(possibleMoves(from: "d1").count, 9)
         XCTAssertEqual(possibleVictims(for: "d1").first, "d3")
-        XCTAssertEqual(possiblePredators(for: "d1"), [])
+        XCTAssertEqual(possibleAttackers(for: "d1"), [])
     }
     
     func test_support() {
@@ -73,7 +73,7 @@ class RookMoveTests: MoveTests {
             .load(.black, "Kh8 Re7")
         XCTAssertEqual(possibleMoves(from: "e2").count, 5)
         XCTAssertEqual(possibleVictims(for: "e2"), ["e7"])
-        XCTAssertEqual(possiblePredators(for: "e2"), ["e7"])
+        XCTAssertEqual(possibleAttackers(for: "e2"), ["e7"])
     }
     
     func test_possibleMovesWhenPinnedByBishop() {
@@ -82,7 +82,7 @@ class RookMoveTests: MoveTests {
             .load(.black, "Ke8 Ba5")
         XCTAssertEqual(possibleMoves(from: "d2").count, 0)
         XCTAssertEqual(possibleVictims(for: "d2").count, 0)
-        XCTAssertEqual(possiblePredators(for: "d2"), ["a5"])
+        XCTAssertEqual(possibleAttackers(for: "d2"), ["a5"])
     }
 
     func test_defendKing() {
@@ -95,7 +95,7 @@ class RookMoveTests: MoveTests {
         XCTAssertEqual(moves.contains("b2"), true)
         XCTAssertEqual(moves.contains("c2"), true)
         XCTAssertEqual(possibleVictims(for: "d2"), ["a2"])
-        XCTAssertEqual(possiblePredators(for: "d2"), ["a2"])
+        XCTAssertEqual(possibleAttackers(for: "d2"), ["a2"])
     }
     
     func test_rookIsDefendedByKnight() {
@@ -105,7 +105,7 @@ class RookMoveTests: MoveTests {
         XCTAssertEqual(defenders(for: "d4"), ["f5"])
         XCTAssertEqual(defended(from: "d4").count, 0)
         XCTAssertEqual(possibleVictims(for: "d4").count, 0)
-        XCTAssertEqual(possiblePredators(for: "d4"), ["b5"])
+        XCTAssertEqual(possibleAttackers(for: "d4"), ["b5"])
     }
     
     func test_rookIsmultipleDefended() {
@@ -115,14 +115,14 @@ class RookMoveTests: MoveTests {
         XCTAssertEqual(defenders(for: "c3").count, 4)
         XCTAssertEqual(defended(from: "c3"), ["g3"])
         XCTAssertEqual(possibleVictims(for: "c3"), ["c7"])
-        XCTAssertEqual(possiblePredators(for: "c3").count, 3)
+        XCTAssertEqual(possibleAttackers(for: "c3").count, 3)
     }
     
     func test_pawnDefendsAndAttacks() {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1 d3 Rc4")
             .load(.black, "Ke8 d5")
-        XCTAssertEqual(possiblePredators(for: "c4"), ["d5"])
+        XCTAssertEqual(possibleAttackers(for: "c4"), ["d5"])
         XCTAssertEqual(defenders(for: "c4"), ["d3"])
     }
     
@@ -138,8 +138,8 @@ class RookMoveTests: MoveTests {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Kh1 Rd1 Rf2")
             .load(.black, "Ke1 d5")
-        XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
-        XCTAssertEqual(possiblePredators(for: "d1"), ["e1"])
+        XCTAssertEqual(possibleAttackers(for: "f2"), ["e1"])
+        XCTAssertEqual(possibleAttackers(for: "d1"), ["e1"])
     }
     
     func test_kingIsCheckedByQueenTake() {

@@ -53,7 +53,7 @@ final class KingMoveTests: MoveTests {
         ChessBoardLoader(chessBoads: chessBoard).load(.black, "e2 Kh8")
         XCTAssertEqual(possibleMoves(from: "e1").count, 3)
         XCTAssertEqual(possibleVictims(for: "e1"), ["e2"])
-        XCTAssertEqual(possiblePredators(for: "e1").count, 0)
+        XCTAssertEqual(possibleAttackers(for: "e1").count, 0)
     }
     
     func test_enemyPawnAttackingKing() {
@@ -61,7 +61,7 @@ final class KingMoveTests: MoveTests {
         ChessBoardLoader(chessBoads: chessBoard).load(.black, "d2 Kh8")
         XCTAssertEqual(possibleMoves(from: "e1").count, 5)
         XCTAssertEqual(possibleVictims(for: "e1"), ["d2"])
-        XCTAssertEqual(possiblePredators(for: "e1"), ["d2"])
+        XCTAssertEqual(possibleAttackers(for: "e1"), ["d2"])
     }
 
     func test_castlingWhiteKingPossibleMoves() {
@@ -219,7 +219,7 @@ final class KingMoveTests: MoveTests {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke2 Bc3")
             .load(.black, "Ke8 Qa2 Qb2")
-        XCTAssertEqual(possiblePredators(for: "e2"), ["b2"])
+        XCTAssertEqual(possibleAttackers(for: "e2"), ["b2"])
     }
 }
 

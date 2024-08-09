@@ -29,7 +29,7 @@ class MoveTests: XCTestCase {
         chessBoard.piece(at: square)?.moveCalculator.possibleVictims ?? []
     }
     
-    func possiblePredators(for square: BoardSquare?) -> [BoardSquare] {
+    func possibleAttackers(for square: BoardSquare?) -> [BoardSquare] {
         chessBoard.piece(at: square)?.moveCalculator.possibleAttackers ?? []
     }
 }

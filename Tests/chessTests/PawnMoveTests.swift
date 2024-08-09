@@ -65,7 +65,7 @@ final class PawnMoveTests: MoveTests {
         XCTAssertEqual(defenders(for: "d4"), ["f5"])
         XCTAssertEqual(defended(from: "d4").count, 0)
         XCTAssertEqual(possibleVictims(for: "d4").count, 0)
-        XCTAssertEqual(possiblePredators(for: "d4"), ["b5"])
+        XCTAssertEqual(possibleAttackers(for: "d4"), ["b5"])
     }
 
     func test_pawnIsMultipleDefended() {
@@ -75,7 +75,7 @@ final class PawnMoveTests: MoveTests {
         XCTAssertEqual(defenders(for: "c3").count, 4)
         XCTAssertEqual(defended(from: "c3").count, 0)
         XCTAssertEqual(possibleVictims(for: "c3").count, 0)
-        XCTAssertEqual(possiblePredators(for: "c3").count, 3)
+        XCTAssertEqual(possibleAttackers(for: "c3").count, 3)
     }
 
     func test_exposeKing() {
@@ -106,7 +106,7 @@ final class PawnMoveTests: MoveTests {
             .load(.black, "Ke8 e5")
         XCTAssertEqual(possibleMoves(from: "d4"), ["d5", "e5"])
         XCTAssertEqual(possibleVictims(for: "d4"), ["e5"])
-        XCTAssertEqual(possiblePredators(for: "d4"), ["e5"])
+        XCTAssertEqual(possibleAttackers(for: "d4"), ["e5"])
         XCTAssertEqual(possibleMoves(from: "e4").count, 0)
     }
     
@@ -114,7 +114,7 @@ final class PawnMoveTests: MoveTests {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Ke1 d3 c4")
             .load(.black, "Ke8 d5")
-        XCTAssertEqual(possiblePredators(for: "c4"), ["d5"])
+        XCTAssertEqual(possibleAttackers(for: "c4"), ["d5"])
         XCTAssertEqual(defenders(for: "c4"), ["d3"])
     }
     
@@ -130,8 +130,8 @@ final class PawnMoveTests: MoveTests {
         ChessBoardLoader(chessBoads: chessBoard)
             .load(.white, "Kh1 d2 f2")
             .load(.black, "Ke1 d5")
-        XCTAssertEqual(possiblePredators(for: "f2"), ["e1"])
-        XCTAssertEqual(possiblePredators(for: "d2"), ["e1"])
+        XCTAssertEqual(possibleAttackers(for: "f2"), ["e1"])
+        XCTAssertEqual(possibleAttackers(for: "d2"), ["e1"])
     }
 
     func test_kingIsCheckedByQueen() {
