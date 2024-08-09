@@ -75,6 +75,7 @@ class KnightMoveCalculator: MoveCalculator {
         case .pieceMoved(let move):
             if self.square == move.from {
                 self.square = move.to
+                moveCounter += 1
             }
         default:
             break
