@@ -13,6 +13,8 @@ enum WebSocketCommand {
     case hideNextMoveButton
     case reloadBoard
     case text(String)
+    case whiteDump(String)
+    case blackDump(String)
     
     var raw: String {
         switch self {
@@ -28,6 +30,10 @@ enum WebSocketCommand {
             "reloadBoard:"
         case .text(let txt):
             "text:\(txt)"
+        case .whiteDump(let txt):
+            "white:\(txt)"
+        case .blackDump(let txt):
+            "black:\(txt)"
         }
     }
 }

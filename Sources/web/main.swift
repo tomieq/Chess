@@ -162,6 +162,8 @@ extension ChessMoveExecutor {
             if event.status == .checkmate {
                 liveConnection.notifyClient(.checkMate)
             }
+            liveConnection.notifyClient(.whiteDump(chessBoard.dump(color: .white)))
+            liveConnection.notifyClient(.blackDump(chessBoard.dump(color: .black)))
         }
     }
 }

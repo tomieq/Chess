@@ -46,10 +46,19 @@ function handleMessage(txt) {
             break;
         case "checkmate":
             checkMate();
+            break;
         case "noMoreMoves":
             $("#nextMove").remove();
+            break;
         case "reloadBoard":
             runScripts(["reload.js"]);
+            break;
+        case "white":
+            $("#whitePieces").val(parts[1]);
+            break;
+        case "black":
+            $("#blackPieces").val(parts[1]);
+            break;
     }
 }
 

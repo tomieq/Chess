@@ -143,4 +143,11 @@ public class ChessBoard {
     func getPieces(color: ChessPieceColor) -> [ChessPiece] {
         self.pieces.filter{ $0.color == color }
     }
+
+    public func dump(color: ChessPieceColor) -> String {
+        self.pieces
+            .filter{ $0.color == color }
+            .map { "\($0.type.enLetter)\($0.square)" }
+            .joined(separator: " ")
+    }
 }
