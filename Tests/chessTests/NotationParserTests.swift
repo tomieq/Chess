@@ -43,6 +43,19 @@ class NotationParserTests: XCTestCase {
         """)
         XCTAssertEqual(executor.chessboard.status, .checkmate)
     }
+    
+    func test_enPassant() throws {
+        let executor = moveExecutor
+        let sut = NotationParser(moveExecutor: executor)
+        try sut.process("""
+        e4 h6
+        e5 d5
+        exd6
+        """)
+        let lastMove = executor.chessboard.movesHistory.last
+        XCTAssertEqual(lastMove?.notation, "exd6")
+        XCTAssertEqual(lastMove?.changes.contains(.remove(.pawn, .black, from: "d5")), true)
+    }
 }
 
 

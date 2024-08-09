@@ -17,6 +17,8 @@ public struct ChessMove {
     public let status: ChessGameStatus
 }
 
+extension ChessMove.Change: Equatable {}
+
 extension ChessMove.Change {
     var reverted: ChessMove.Change {
         switch self {

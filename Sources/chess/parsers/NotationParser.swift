@@ -68,13 +68,16 @@ public class NotationParser {
             .replacingOccurrences(of: "#", with: "")
         var column: BoardColumn?
         if part.count == 2 {
+            // it's a pawn move
             type = .pawn
             to = BoardSquare(stringLiteral: part)
         } else if part.count == 4 {
+            // it's a piece move when there is piece letter and source square added
             to = BoardSquare(stringLiteral: part.subString(2, 4))
             type = ChessPieceType.make(letter: part.subString(0, 1), language: language) ?? .pawn
             column = BoardColumn(part.subString(1, 2))
         } else {
+            // it's a piece move
             to = BoardSquare(stringLiteral: part.subString(1, 3))
             type = ChessPieceType.make(letter: part.subString(0, 1), language: language) ?? .pawn
         }
@@ -92,6 +95,13 @@ public class NotationParser {
             throw NotationParserError.parsingError("Ambigious entry \(part)")
         }
         let move = ChessBoardMove(from: piece.square, to: to)
+        if piece.type == .pawn, takes, moveExecutor.chessboard[to].isNil {
+            let pawn = PawnUtils(square: move.from, color: moveExecutor.chessboard.colorOnMove)
+            if let enPassantSquare = (pawn.enPassantSquares.first { $0 == move.to }),
+               let takenSquare = enPassantSquare.move(pawn.crawlingDirection.opposite) {
+                return .enPassant(move, taken: takenSquare)
+            }
+        }
         return takes ? .take(move, promotion: nil) : .move(move, promotion: nil)
     }
 }
