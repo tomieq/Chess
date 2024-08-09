@@ -51,9 +51,11 @@ public class ChessMoveCommandFactory {
     
     private func enPassantMove(piece: ChessPiece, move: ChessBoardMove)  -> ChessMoveCommand? {
         guard piece.type == .pawn else { return nil }
+        guard chessboard[move.to].isNil else { return nil }
         let pawn = PawnUtils(square: piece.square, color: piece.color)
         if let enPassantSquare = (pawn.enPassantSquares.filter { $0 == move.to }.first),
-           let taken = enPassantSquare.move(pawn.crawlingDirection.opposite){
+           let taken = enPassantSquare.move(pawn.crawlingDirection.opposite) {
+            print("en passant move \(move)")
             return .enPassant(move, taken: taken)
         }
         return nil

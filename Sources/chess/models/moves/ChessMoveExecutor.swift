@@ -97,6 +97,7 @@ public class ChessMoveExecutor {
     public func revert() {
         guard let move = chessboard.movesHistory.last else { return }
         chessboard.movesHistory.removeLast()
+        print("Reverted move \(move.notation)")
         defer {
             chessboard.colorOnMove = chessboard.colorOnMove.other
         }
