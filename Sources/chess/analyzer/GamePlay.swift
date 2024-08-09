@@ -32,7 +32,8 @@ enum GamePlayLoader {
                 pgn.append(contentsOf: entries)
                 continue
             }
-            tips[pgn.joined(separator: " ").md5] = line
+            tips[pgn.joined(separator: " ").md5, default: ""].append("\n\(line)")
+            tips[pgn.joined(separator: " ").md5] = tips[pgn.joined(separator: " ").md5]?.trimming("\n")
         }
         return GamePlay(title: title, pgn: pgn, pgnFlat: pgn.joined(separator: " "), tips: tips)
     }
