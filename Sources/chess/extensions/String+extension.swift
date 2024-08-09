@@ -26,3 +26,19 @@ extension String {
         return String(format: self, arguments: elems.map{ $0.description })
     }
 }
+
+extension String {
+    func split(_ splitter: String) -> [String] {
+        self.components(separatedBy: splitter)
+    }
+}
+
+extension String {
+    func trimming(_ characters: String) -> String {
+        return self.trimmingCharacters(in: CharacterSet(charactersIn: characters))
+    }
+
+    var trimmed: String {
+        self.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
