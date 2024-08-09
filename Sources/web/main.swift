@@ -145,15 +145,21 @@ extension ChessMoveExecutor {
             event.changes.forEach { change in
                 switch change {
                 case .move(let move):
-                    let letter = chessBoard[move.to]?.letter
+                    guard let letter = chessBoard[move.to]?.letter else {
+                        print("ERROR-move: At \(move.to) there is no piece!")
+                        return
+                    }
                     liveConnection.notifyClient(.removePiece(move.from))
                     liveConnection.notifyClient(.removePiece(move.to))
-                    liveConnection.notifyClient(.addPiece(move.to, letter: letter!))
+                    liveConnection.notifyClient(.addPiece(move.to, letter: letter))
                 case .remove(_, _, let square):
                     liveConnection.notifyClient(.removePiece(square))
                 case .add(_, _, let square):
-                    let letter = chessBoard[square]?.letter
-                    liveConnection.notifyClient(.addPiece(square, letter: letter!))
+                    guard let letter = chessBoard[square]?.letter else {
+                        print("ERROR-add: At \(square) there is no piece!")
+                        return
+                    }
+                    liveConnection.notifyClient(.addPiece(square, letter: letter))
                 }
             }
             if event.status == .checkmate {
@@ -167,9 +173,7 @@ extension ChessMoveExecutor {
                 .map { "\($0.offset + 1). \($0.element.joined(separator: " "))" }
             liveConnection.notifyClient(.pgn(notations.joined(separator: "\n")))
             let tips = db.getTips(to: chessBoard.pgnFlat)
-            if tips.isEmpty.not {
-                liveConnection.notifyClient(.tip(tips.joined(separator: "<br>")))
-            }
+            liveConnection.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
         }
     }
 }
