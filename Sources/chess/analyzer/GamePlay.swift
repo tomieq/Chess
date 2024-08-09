@@ -7,17 +7,18 @@
 
 import Foundation
 
-struct GamePlay {
-    let title: String
-    let pgn: [String]
-    let tips: [Int:String]
+public struct GamePlay {
+    public let title: String
+    public let pgn: [String]
+    public let pgnFlat: String
+    public let tips: [String:String]
 }
 
 enum GamePlayLoader {
     static func make(from content: String) -> GamePlay {
         var title = ""
         var pgn: [String] = []
-        var tips: [Int:String] = [:]
+        var tips: [String:String] = [:]
         let lines = content.split("\n").map { $0.trimmed }.filter { $0.isEmpty.not }
         for line in lines {
             if line.starts(with: "title:") {
@@ -31,9 +32,9 @@ enum GamePlayLoader {
                 pgn.append(contentsOf: entries)
                 continue
             }
-            tips[pgn.count.decremented] = line
+            tips[pgn.joined(separator: " ").md5] = line
         }
-        return GamePlay(title: title, pgn: pgn, tips: tips)
+        return GamePlay(title: title, pgn: pgn, pgnFlat: pgn.joined(separator: " "), tips: tips)
     }
 }
 

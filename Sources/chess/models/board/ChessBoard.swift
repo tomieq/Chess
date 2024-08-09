@@ -17,6 +17,9 @@ public class ChessBoard {
     public var pgn: [String] {
         movesHistory.map { $0.notation }
     }
+    public var pgnFlat: String {
+        pgn.joined(separator: " ")
+    }
 
     var allPieces: [ChessPiece] {
         self.pieces

@@ -22,7 +22,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "chess",
-            dependencies: []),
+            dependencies: [ .product(name: "Template", package: "Template.swift")]),
         .executableTarget(name: "web",
                           dependencies: ["chess",
                                          .product(name: "BootstrapTemplate", package: "BootstrapStarter"),

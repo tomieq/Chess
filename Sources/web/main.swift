@@ -4,6 +4,7 @@ import Template
 import BootstrapTemplate
 import chess
 
+let db = GamePlayDatabase()
 var chessBoard = ChessBoard()
 chessBoard.setupGame()
 
@@ -165,6 +166,10 @@ extension ChessMoveExecutor {
                 .enumerated()
                 .map { "\($0.offset + 1). \($0.element.joined(separator: " "))" }
             liveConnection.notifyClient(.pgn(notations.joined(separator: "\n")))
+            let tips = db.getTips(to: chessBoard.pgnFlat)
+            if tips.isEmpty.not {
+                liveConnection.notifyClient(.tip(tips.joined(separator: "<br>")))
+            }
         }
     }
 }
