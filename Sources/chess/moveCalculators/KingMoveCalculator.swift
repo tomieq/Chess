@@ -142,7 +142,7 @@ class KingMoveCalculator: MoveCalculator {
         possibleAttackers = attackersFor(square: square)
         
         // castling
-        if moveCounter == 0, square == startingSquare {
+        if moveCounter == 0, square == startingSquare, possibleAttackers.isEmpty {
             if rookCanCastle(at: BoardSquare(.a, square.row)) {
                 possibleMoves.append(BoardSquare(.c, square.row)!)
             }
