@@ -141,12 +141,15 @@ class PawnMoveCalculator: MoveCalculator {
         if let enemyKing = chessBoard.king(color: color.other), enemyKing.square.neighbours.contains(square) {
             possibleAttackers.append(enemyKing.square)
         }
+        
+        let pawn = PawnUtils(square: square, color: color)
+        let crawlingDirection = pawn.crawlingDirection
 
-        if allowedDirections.contains(crawningDirection) {
-            if let oneMove = square.move(crawningDirection) {
+        if allowedDirections.contains(crawlingDirection) {
+            if let oneMove = square.move(crawlingDirection) {
                 if chessBoard.isFree(oneMove) {
                     possibleMoves.append(oneMove)
-                    if isAtStartingSquare, let doubleMove = oneMove.move(crawningDirection) {
+                    if pawn.isAtStartingSquare, let doubleMove = oneMove.move(crawlingDirection) {
                         if chessBoard.isFree(doubleMove) {
                             possibleMoves.append(doubleMove)
                         }
@@ -154,7 +157,7 @@ class PawnMoveCalculator: MoveCalculator {
                 }
             }
         }
-        for attackDirection in attackDirections where allowedDirections.contains(attackDirection) {
+        for attackDirection in pawn.attackDirections where allowedDirections.contains(attackDirection) {
             if let attackedSquare = square.move(attackDirection),
                let piece = chessBoard.piece(at: attackedSquare) {
                 if piece.color == color.other {
@@ -166,12 +169,12 @@ class PawnMoveCalculator: MoveCalculator {
             }
         }
         // en passant
-        for direction in enPassantDirections where allowedDirections.contains(direction) {
+        for direction in pawn.enPassantDirections where allowedDirections.contains(direction) {
             if let possibleSquare = square.move(direction),
-               let enemyPawsSqare = possibleSquare.move(crawningDirection.opposite),
+               let enemyPawsSqare = possibleSquare.move(crawlingDirection.opposite),
                let enemyPawn = chessBoard[enemyPawsSqare], enemyPawn.color == color.other, enemyPawn.type == .pawn,
                let lastMove = chessBoard.movesHistory.last?.rawMove,
-               let enemyStartingSqaure = enemyPawsSqare.move(crawningDirection)?.move(crawningDirection),
+               let enemyStartingSqaure = enemyPawsSqare.move(crawlingDirection)?.move(crawlingDirection),
                lastMove == ChessBoardMove(from: enemyStartingSqaure, to: enemyPawsSqare) {
                 possibleMoves.append(possibleSquare)
             }
@@ -218,45 +221,5 @@ class PawnMoveCalculator: MoveCalculator {
             }
         }
         return pieces
-    }
-    
-    var isAtStartingSquare: Bool {
-        switch self.color {
-        case .white:
-            return self.square.row == 2
-        case .black:
-            return self.square.row == 7
-        }
-    }
-    
-    var crawningDirection: MoveDirection {
-        switch self.color {
-        case .white:
-            return .up
-        case .black:
-            return .down
-        }
-    }
-    
-    var enPassantDirections: [MoveDirection] {
-        var directions: [MoveDirection?] = []
-        switch self.color {
-        case .white:
-            guard square.row == 5 else { return [] }
-            directions = [.upRight, .upLeft]
-        case .black:
-            guard square.row == 4 else { return [] }
-            directions = [.downRight, .downLeft]
-        }
-        return directions.compactMap { $0 }
-    }
-
-    var attackDirections: [MoveDirection] {
-        switch self.color {
-        case .white:
-            return [.upLeft, .upRight]
-        case .black:
-            return [.downLeft, .downRight]
-        }
     }
 }

@@ -40,9 +40,8 @@ public class ChessMoveCommandFactory {
             throw ChessMoveCommandFactoryError.canNotMove(type: piece.type, to: to)
         }
 
-        if let event = castlingMove(piece: piece, move: move) {
-            return event
-        }
+        if let event = castlingMove(piece: piece, move: move) { return event }
+        if let event = enPassantMove(piece: piece, move: move) { return event }
         if let _ = chessboard[to] {
             return .take(move, promotion: promotionType(piece: piece, move: move))
         } else {
@@ -50,6 +49,16 @@ public class ChessMoveCommandFactory {
         }
     }
     
+    private func enPassantMove(piece: ChessPiece, move: ChessBoardMove)  -> ChessMoveCommand? {
+        guard piece.type == .pawn else { return nil }
+        let pawn = PawnUtils(square: piece.square, color: piece.color)
+        if let enPassantSquare = (pawn.enPassantSquares.filter { $0 == move.to }.first),
+           let taken = enPassantSquare.move(pawn.crawlingDirection.opposite){
+            return .enPassant(move, taken: taken)
+        }
+        return nil
+    }
+
     private func castlingMove(piece: ChessPiece, move: ChessBoardMove) -> ChessMoveCommand? {
         if piece.type == .king, piece.moveCalculator.moveCounter == 0 {
             switch piece.color {

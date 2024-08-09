@@ -62,6 +62,8 @@ class NotationFactory {
             }
         case .castling(let castling):
             notation.append(castling.notation)
+        case .enPassant(let move, _):
+            notation.append("\(move.from.column.letter)x\(move.to)")
         }
         notation.append(chessBoard.status.notation)
         print(notation)

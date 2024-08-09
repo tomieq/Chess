@@ -76,6 +76,13 @@ public class ChessMoveExecutor {
                                notation:  self.notationFactory.make(from: command),
                                changes: castling.moves.map { .move($0) },
                                status: chessboard.status))
+        case .enPassant(let move, let takenSquare):
+            chessboard.move(move)
+            chessboard.remove(takenSquare)
+            register(ChessMove(color: color,
+                               notation:  self.notationFactory.make(from: command),
+                               changes: [.move(move), .remove(.pawn, color.other, from: takenSquare)],
+                               status: chessboard.status))
         }
         chessboard.colorOnMove = chessboard.colorOnMove.other
     }

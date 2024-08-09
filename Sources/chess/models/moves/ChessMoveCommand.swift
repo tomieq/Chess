@@ -9,4 +9,5 @@ public enum ChessMoveCommand: Equatable {
     case move(ChessBoardMove, promotion: ChessPieceType?)
     case take(ChessBoardMove, promotion: ChessPieceType?)
     case castling(Castling)
+    case enPassant(ChessBoardMove, taken: BoardSquare)
 }
