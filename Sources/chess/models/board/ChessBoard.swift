@@ -42,42 +42,42 @@ public class ChessBoard {
     }
     
     @discardableResult
-    func add(_ piece: GamePiece?) -> ChessBoard {
-        self.addPiece(piece)
+    func add(_ piece: GamePiece?, _ mode: ChessMoveMode = .normal) -> ChessBoard {
+        self.addPiece(piece, mode)
         return self
     }
 
-    func add(_ pieces: GamePiece?...) {
+    func add(_ pieces: GamePiece?..., mode: ChessMoveMode = .normal) {
         for piece in pieces {
             self.addPiece(piece, emitChanges: false)
         }
         let squares = pieces.compactMap{ $0?.square }
-        broadcast(event: .pieceAdded(at: squares))
+        broadcast(event: ChessBoardEvent(change: .pieceAdded(at: squares), mode: mode))
     }
     
-    func remove(_ square: BoardSquare) {
+    func remove(_ square: BoardSquare, _ mode: ChessMoveMode = .normal) {
         self.pieces = self.pieces.filter{ $0.square != square }
-        broadcast(event: .pieceRemoved(from: square))
+        broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: square), mode: mode))
     }
     
-    func remove(_ squares: BoardSquare...) {
+    func remove(_ squares: BoardSquare..., mode: ChessMoveMode = .normal) {
         self.pieces = self.pieces.filter{ !squares.contains($0.square) }
-        squares.forEach { broadcast(event: .pieceRemoved(from: $0))  }
+            squares.forEach { broadcast(event: ChessBoardEvent(change: .pieceRemoved(from: $0), mode: mode))  }
         
     }
 
-    func move(_ move: ChessBoardMove) {
+    func move(_ move: ChessBoardMove, _ mode: ChessMoveMode = .normal) {
         guard let movedPiece = piece(at: move.from)?.moved(to: move.to) else { return }
         pieces.removeAll { [move.to, move.from].contains($0.square) }
         pieces.append(movedPiece)
-        broadcast(event: .pieceMoved(move))
+        broadcast(event: ChessBoardEvent(change: .pieceMoved(move), mode: mode))
     }
     
-    private func addPiece(_ piece: GamePiece?, emitChanges: Bool = true) {
+    private func addPiece(_ piece: GamePiece?, emitChanges: Bool = true, _ mode: ChessMoveMode = .normal) {
         if let chessPiece = piece?.chessPiece(chessBoard: self) {
             self.pieces.append(chessPiece)
             if emitChanges {
-                broadcast(event: .pieceAdded(at: [chessPiece.square]))
+                broadcast(event: ChessBoardEvent(change: .pieceAdded(at: [chessPiece.square]), mode: mode))
             }
         }
     }
@@ -144,7 +144,7 @@ public class ChessBoard {
             .load(.white, "a2 b2 c2 d2 e2 f2 g2 h2")
             .load(.black, "Ra8 Nb8 Bc8 Qd8 Ke8 Bf8 Ng8 Rh8")
             .load(.black, "a7 b7 c7 d7 e7 f7 g7 h7")
-        broadcast(event: .pieceAdded(at: []))
+        broadcast(event: ChessBoardEvent(change: .pieceAdded(at: []), mode: .normal))
         return self
     }
 

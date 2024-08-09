@@ -105,11 +105,11 @@ public class ChessMoveExecutor {
         for change in revertedChanges {
             switch change {
             case .move(let move):
-                chessboard.move(move)
+                chessboard.move(move, .revert)
             case .remove(_, _, let square):
-                chessboard.remove(square)
+                chessboard.remove(square, .revert)
             case .add(let type, let color, to: let square):
-                chessboard.add(type.gamePiece(color: color, square: square))
+                chessboard.add(type.gamePiece(color: color, square: square), .revert)
             }
         }
         let reverseMove = ChessMove(color: move.color,
