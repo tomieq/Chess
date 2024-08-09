@@ -152,5 +152,37 @@ final class PawnMoveTests: MoveTests {
         XCTAssertEqual(moves.count, 1)
         XCTAssertTrue(moves.contains("d3"))
     }
+    
+    func test_enPassantMoveWhite1() throws {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ra1 Nb1 Bc1 Qd1 Ke1 Bf1 Ng1 Rh1 a2 b2 c2 d2 f2 g2 h2 e5")
+            .load(.black, "Ra8 Bc8 Qd8 Ke8 Bf8 Ng8 Rh8 a7 b7 c7 d7 e7 g7 h7 Nc6 f7")
+        chessBoard.colorOnMove = .black
+        let factory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let command = try factory.make(from: "f7", to: "f5")
+        let executor = ChessMoveExecutor(chessboard: chessBoard)
+        executor.process(command)
+        let moves = possibleMoves(from: "e5")
+        XCTAssertEqual(moves.count, 2)
+        XCTAssertTrue(moves.contains("e6"))
+        XCTAssertTrue(moves.contains("f6"))
+        //XCTAssertEqual(possibleAttackers(for: "f5"), ["e5"])
+    }
+    
+    func test_enPassantMoveWhite2() throws {
+        ChessBoardLoader(chessBoads: chessBoard)
+            .load(.white, "Ra1 Nb1 Bc1 Qd1 Ke1 Bf1 Ng1 Rh1 a2 b2 c2 d2 f2 g2 h2 e5")
+            .load(.black, "Ra8 Bc8 Qd8 Ke8 Bf8 Ng8 Rh8 a7 b7 c7 d7 e7 g7 h7 Nc6 f7")
+        chessBoard.colorOnMove = .black
+        let factory = ChessMoveCommandFactory(chessboard: chessBoard)
+        let command = try factory.make(from: "d7", to: "d5")
+        let executor = ChessMoveExecutor(chessboard: chessBoard)
+        executor.process(command)
+        let moves = possibleMoves(from: "e5")
+        XCTAssertEqual(moves.count, 2)
+        XCTAssertTrue(moves.contains("e6"))
+        XCTAssertTrue(moves.contains("d6"))
+        //XCTAssertEqual(possibleAttackers(for: "f5"), ["e5"])
+    }
 }
 

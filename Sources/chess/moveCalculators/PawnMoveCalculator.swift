@@ -165,6 +165,17 @@ class PawnMoveCalculator: MoveCalculator {
                 }
             }
         }
+        // en passant
+        for direction in enPassantDirections where allowedDirections.contains(direction) {
+            if let possibleSquare = square.move(direction),
+               let enemyPawsSqare = possibleSquare.move(crawningDirection.opposite),
+               let enemyPawn = chessBoard[enemyPawsSqare], enemyPawn.color == color.other, enemyPawn.type == .pawn,
+               let lastMove = chessBoard.movesHistory.last?.rawMove,
+               let enemyStartingSqaure = enemyPawsSqare.move(crawningDirection)?.move(crawningDirection),
+               lastMove == ChessBoardMove(from: enemyStartingSqaure, to: enemyPawsSqare) {
+                possibleMoves.append(possibleSquare)
+            }
+        }
         // moves when my king is checked
         if let king = chessBoard.king(color: color) {
             if king.moveCalculator.possibleAttackers.count == 1 {
@@ -227,6 +238,19 @@ class PawnMoveCalculator: MoveCalculator {
         }
     }
     
+    var enPassantDirections: [MoveDirection] {
+        var directions: [MoveDirection?] = []
+        switch self.color {
+        case .white:
+            guard square.row == 5 else { return [] }
+            directions = [.upRight, .upLeft]
+        case .black:
+            guard square.row == 4 else { return [] }
+            directions = [.downRight, .downLeft]
+        }
+        return directions.compactMap { $0 }
+    }
+
     var attackDirections: [MoveDirection] {
         switch self.color {
         case .white:

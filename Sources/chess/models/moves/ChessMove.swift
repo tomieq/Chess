@@ -29,3 +29,16 @@ extension ChessMove.Change {
         }
     }
 }
+
+extension ChessMove {
+    var rawMove: ChessBoardMove? {
+        changes.compactMap { change -> ChessBoardMove? in
+            switch change {
+            case .move(let chessBoardMove):
+                return chessBoardMove
+            default:
+                return nil
+            }
+        }.first
+    }
+}
