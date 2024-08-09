@@ -41,8 +41,11 @@ function handleMessage(txt) {
         case "add":
             addPiece(parts[1], parts[2]);
             break;
-        case "text":
-            $("#tips").append("<br>" + parts[1]);
+        case "pgn":
+            $("#pgn").val(parts[1]);
+            break;
+        case "tip":
+            $("#tip").html(parts[1]);
             break;
         case "checkmate":
             checkMate();

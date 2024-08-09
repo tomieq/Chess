@@ -155,15 +155,16 @@ extension ChessMoveExecutor {
                     liveConnection.notifyClient(.addPiece(square, letter: letter!))
                 }
             }
-            liveConnection.notifyClient(.text(event.notation))
-            if event.status != .normal {
-                liveConnection.notifyClient(.text("\(event.status)"))
-            }
             if event.status == .checkmate {
                 liveConnection.notifyClient(.checkMate)
             }
             liveConnection.notifyClient(.whiteDump(chessBoard.dump(color: .white)))
             liveConnection.notifyClient(.blackDump(chessBoard.dump(color: .black)))
+            let notations = chessBoard.pgn
+                .chunked(by: 2)
+                .enumerated()
+                .map { "\($0.offset + 1). \($0.element.joined(separator: " "))" }
+            liveConnection.notifyClient(.pgn(notations.joined(separator: "\n")))
         }
     }
 }

@@ -12,7 +12,8 @@ enum WebSocketCommand {
     case checkMate
     case hideNextMoveButton
     case reloadBoard
-    case text(String)
+    case pgn(String)
+    case tip(String)
     case whiteDump(String)
     case blackDump(String)
     
@@ -28,8 +29,10 @@ enum WebSocketCommand {
             "noMoreMoves:"
         case .reloadBoard:
             "reloadBoard:"
-        case .text(let txt):
-            "text:\(txt)"
+        case .pgn(let txt):
+            "pgn:\(txt)"
+        case .tip(let txt):
+            "tip:\(txt)"
         case .whiteDump(let txt):
             "white:\(txt)"
         case .blackDump(let txt):
