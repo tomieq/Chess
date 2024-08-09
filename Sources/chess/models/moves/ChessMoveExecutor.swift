@@ -12,7 +12,6 @@
 public class ChessMoveExecutor {
     let chessboard: ChessBoard
     public var moveListener: ((ChessMove) -> Void)?
-    var moveStack: [ChessMove] = []
     private var notationFactory: NotationFactory
     
     public init(chessboard: ChessBoard) {
@@ -83,14 +82,14 @@ public class ChessMoveExecutor {
     
     private func register(_ move: ChessMove) {
         // store move
-        self.moveStack.append(move)
+        chessboard.movesHistory.append(move)
         // send event to sync UI
         moveListener?(move)
     }
     
     public func revert() {
-        guard let move = moveStack.last else { return }
-        moveStack.removeLast()
+        guard let move = chessboard.movesHistory.last else { return }
+        chessboard.movesHistory.removeLast()
         defer {
             chessboard.colorOnMove = chessboard.colorOnMove.other
         }

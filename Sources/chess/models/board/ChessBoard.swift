@@ -13,6 +13,8 @@ public class ChessBoard {
     public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
+    var movesHistory: [ChessMove] = []
+
     var allPieces: [ChessPiece] {
         self.pieces
     }
