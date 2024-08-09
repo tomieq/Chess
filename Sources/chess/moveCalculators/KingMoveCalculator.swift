@@ -168,7 +168,7 @@ class KingMoveCalculator: MoveCalculator {
 
     private func nearestPiece(in direction: MoveDirection, from square: BoardSquare) -> ChessPiece? {
         for position in square.squares(to: direction) {
-            if let piece = chessBoard[position] {
+            if let piece = chessBoard[position], piece.square != self.square {
                 return piece
             }
         }
