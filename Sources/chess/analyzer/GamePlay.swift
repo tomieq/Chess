@@ -8,6 +8,7 @@
 import Foundation
 
 public struct GamePlay {
+    public let filename: String
     public let title: String
     public let pgn: [String]
     public let pgnFlat: String
@@ -15,7 +16,7 @@ public struct GamePlay {
 }
 
 enum GamePlayLoader {
-    static func make(from content: String) -> GamePlay {
+    static func make(from content: String, filename: String) -> GamePlay {
         var title = ""
         var pgn: [String] = []
         var tips: [String:String] = [:]
@@ -38,7 +39,7 @@ enum GamePlayLoader {
             tips[pgn.joined(separator: " ").md5, default: ""].append("\n\(line)")
             tips[pgn.joined(separator: " ").md5] = tips[pgn.joined(separator: " ").md5]?.trimming("\n")
         }
-        return GamePlay(title: title, pgn: pgn, pgnFlat: pgn.joined(separator: " "), tips: tips)
+        return GamePlay(filename: filename, title: title, pgn: pgn, pgnFlat: pgn.joined(separator: " "), tips: tips)
     }
 }
 

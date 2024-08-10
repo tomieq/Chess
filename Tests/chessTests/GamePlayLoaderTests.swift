@@ -29,7 +29,7 @@ class GamePlayLoaderTests: XCTestCase {
         
         To jest podpucha, bo nadal grożą widły na wieżę i hetmana
         """
-        let gamePlay = GamePlayLoader.make(from: content)
+        let gamePlay = GamePlayLoader.make(from: content, filename: "test")
         XCTAssertEqual(gamePlay.title, "Smażona wątróbka z pułapką czarnych")
         XCTAssertEqual(gamePlay.pgn, "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nd4 d6 Qxd6".split(" "))
         XCTAssertEqual(gamePlay.tips["e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5".md5], "Zamiast odbijać skoczkiem z f (Nxd5) idziemy skoczkiem z c!")

@@ -18,7 +18,7 @@ public class GamePlayDatabase {
             guard let content = try? String(contentsOfFile: folderPath + "/" + file, encoding: .utf8) else {
                 continue
             }
-            gamePlays.append(GamePlayLoader.make(from: content))
+            gamePlays.append(GamePlayLoader.make(from: content, filename: file))
         }
         print("Loaded \(gamePlays.count) games")
         plays = gamePlays
@@ -30,6 +30,9 @@ public class GamePlayDatabase {
     
     public func getTips(to pgn: String) -> [String] {
         let key = pgn.md5
-        return findMatching(to: pgn).compactMap { $0.tips[key] }
+        return findMatching(to: pgn).compactMap { gamePlay in
+            guard let tip = gamePlay.tips[key] else { return nil }
+            return tip + " (\(gamePlay.filename))"
+        }
     }
 }
