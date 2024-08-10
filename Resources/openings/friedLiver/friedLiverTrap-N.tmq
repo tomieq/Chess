@@ -6,7 +6,7 @@ title: Smażona wątróbka z pułapką na białych
 5. exd5 Nd4
 6. d6 Qxd6
 7. Nxf7
-Biały wziął piona skoczkiem i zrobił widełki. O to chodziło. Hetman musi iśc na c6
+Biały wziął piona skoczkiem i zrobił widełki. O to chodziło. Hetman musi iść na c6
 7. ... Qc6
 Biały widzi, że wisi mu goniec, ale wzięcie wieży jest bardzo kuszące, o to przecież chodziło w tym ataku
 8. Nxh8
@@ -17,7 +17,8 @@ Jest tylko jeden ruch, aby uratować wieżę.
 Zaczyna się pułapka. Czarne dają szacha hetmanem
 9. ... Qe4+
 Król nie ma gdzie uciekać. Białe mogą zasłonić się hetmanem i go stracić albo zasłonić się gońcem
-10. Be2
-Akcja się udała. Jest mat w jednym!
-10. ... Nf3#
-Gratulacje!
+
+// warianty:
+// 10. Be2:     friedLiverTrap-2.B
+// 10. Qe2:     friedLiverTrap-2.Q
+

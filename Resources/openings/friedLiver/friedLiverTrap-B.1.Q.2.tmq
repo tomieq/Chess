@@ -19,7 +19,6 @@ Biały może zasłonić pionem f
 Czarny zbija pionem
 13. ... exf3
 Biały może odbić pionem lub skoczkiem
-14. gxf3
-Teraz czarna wieża wchodzi do akcji i atakuje związanego hetmana. Pułapka się udałą.
-14. ... Re8
-I po białym hetmanie!
+// dalsze warianty
+// 14. Nxf3     friedLiverTrap-B.1.Q.2.N
+// 14. gxf3     friedLiverTrap-B.1.Q.2.p

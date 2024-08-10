@@ -1,4 +1,4 @@
-title: Smażona wątróbka z pułapką na białych
+title: Smażona wątróbka z odrzuconą pułapką na białych
 1. e4 e5
 2. Nf3 Nc6
 3. Bc4 Nf6
@@ -26,4 +26,8 @@ Białe muszą roszować, aby bronić piona g2
 11. O-O
 Rozwijamy ostatniego gońca z atakiem na skrzydło królewskie
 11. ... Bb7
-Grozi szach-mat na g2. Jeśli białe zagrają g3, osłabią białe pola przy królu. Czarny hetman może ustawiać się w baterię z białopolakiem lub można zaczynać szturm pionem z h. Wystarczy zrobić długą roszadę i można zaczynać atak.
+Grozi szach-mat na g2. Białe mogą się bronić pchając piona z f albo g
+
+// dalsze warianty
+// 12. g3       friedLiverRejected-g
+// 12. f3       friedLiverRejected-f

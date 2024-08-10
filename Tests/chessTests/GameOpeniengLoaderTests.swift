@@ -1,5 +1,5 @@
 //
-//  GamePlayLoaderTests.swift
+//  GameOpeniengLoaderTests.swift
 //  chess
 //
 //  Created by Tomasz KUCHARSKI on 09/08/2024.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import chess
 
-class GamePlayLoaderTests: XCTestCase {
+class GameOpeniengLoaderTests: XCTestCase {
     func test_load() {
         let content = """
         title: Smażona wątróbka z pułapką czarnych
@@ -29,7 +29,7 @@ class GamePlayLoaderTests: XCTestCase {
         
         To jest podpucha, bo nadal grożą widły na wieżę i hetmana
         """
-        let gamePlay = GamePlayLoader.make(from: content, filename: "test")
+        let gamePlay = GameOpeningLoader.make(from: content, filename: "test")
         XCTAssertEqual(gamePlay.title, "Smażona wątróbka z pułapką czarnych")
         XCTAssertEqual(gamePlay.pgn, "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5 Nd4 d6 Qxd6".split(" "))
         XCTAssertEqual(gamePlay.tips["e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5 d5 exd5".md5], "Zamiast odbijać skoczkiem z f (Nxd5) idziemy skoczkiem z c!")

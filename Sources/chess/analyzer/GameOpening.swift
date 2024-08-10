@@ -1,5 +1,5 @@
 //
-//  GamePlay.swift
+//  GameOpening.swift
 //  chess
 //
 //  Created by Tomasz Kucharski on 09/08/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct GamePlay {
+public struct GameOpening {
     public let filename: String
     public let title: String
     public let pgn: [String]
@@ -15,8 +15,8 @@ public struct GamePlay {
     public let tips: [String:String]
 }
 
-enum GamePlayLoader {
-    static func make(from content: String, filename: String) -> GamePlay {
+enum GameOpeningLoader {
+    static func make(from content: String, filename: String) -> GameOpening {
         var title = ""
         var pgn: [String] = []
         var tips: [String:String] = [:]
@@ -39,7 +39,7 @@ enum GamePlayLoader {
             tips[pgn.joined(separator: " ").md5, default: ""].append("\n\(line)")
             tips[pgn.joined(separator: " ").md5] = tips[pgn.joined(separator: " ").md5]?.trimming("\n")
         }
-        return GamePlay(filename: filename, title: title, pgn: pgn, pgnFlat: pgn.joined(separator: " "), tips: tips)
+        return GameOpening(filename: filename, title: title, pgn: pgn, pgnFlat: pgn.joined(separator: " "), tips: tips)
     }
 }
 
