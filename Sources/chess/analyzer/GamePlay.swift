@@ -21,6 +21,9 @@ enum GamePlayLoader {
         var tips: [String:String] = [:]
         let lines = content.split("\n").map { $0.trimmed }.filter { $0.isEmpty.not }
         for line in lines {
+            if line.starts(with: "//") {
+                continue
+            }
             if line.starts(with: "title:") {
                 title = line.replacingOccurrences(of: "title:", with: "").trimmed
                 continue

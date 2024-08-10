@@ -12,6 +12,7 @@ class GamePlayLoaderTests: XCTestCase {
     func test_load() {
         let content = """
         title: Smażona wątróbka z pułapką czarnych
+        // komentarz
         1. e4 e5
         2. Nf3 Nc6
         3. Bc4 Nf6
