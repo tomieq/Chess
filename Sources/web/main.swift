@@ -42,18 +42,19 @@ do {
         moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
         moveExecutor.connect(to: LiveConnection.shared)
         parser = NotationParser(moveExecutor: moveExecutor)
+        LiveConnection.shared.notifyClient(.reloadBoard)
         return .movedTemporarily("/")
     }
     server.get["init.js"] = {  request, _ in
         let template = Template.load(relativePath: "templates/init.tpl.js")
         
-        template["matrix"] = chessBoard.matrix
+        template["startingPositionDictionary"] = "{" + chessBoard.jsPosition.map{ " '\($0.key)':'\($0.value)'"}.joined(separator: ", ") + "}"
         template["address"] = request.headers.get("host")
         return .ok(.js(template))
     }
     server.get["reload.js"] = { _, _ in
         let template = Template.load(relativePath: "templates/reloadBoard.tpl.js")
-        template["matrix"] = chessBoard.matrix
+        template["startingPositionDictionary"] = "{" + chessBoard.jsPosition.map{ " '\($0.key)':'\($0.value)'"}.joined(separator: ", ") + "}"
         template["random"] = UUID().uuidString.components(separatedBy: "-").first
         return .ok(.js(template))
     }
@@ -179,23 +180,11 @@ extension ChessMoveExecutor {
 }
 
 extension ChessBoard {
-    var matrix: [[String]] {
-        var left: BoardSquare? = "a8"
-        var matrix: [[String]] = []
-        while let line = left {
-            var elems: [String] = []
-            var square: BoardSquare? = line
-            while square != nil {
-                if let piece = chessBoard[square] {
-                    elems.append(piece.letter)
-                } else {
-                    elems.append(".")
-                }
-                square = square?.move(.right)
-            }
-            matrix.append(elems)
-            left = left?.move(.down)
+    var jsPosition: [String:String] {
+        var position: [String:String] = [:]
+        for piece in self.allPieces {
+            position[piece.square.description] = piece.letter
         }
-        return matrix
+        return position
     }
 }

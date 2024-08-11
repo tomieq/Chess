@@ -21,7 +21,7 @@ public class ChessBoard {
         pgn.joined(separator: " ")
     }
 
-    var allPieces: [ChessPiece] {
+    public var allPieces: [ChessPiece] {
         self.pieces
     }
 

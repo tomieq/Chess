@@ -1,47 +1,25 @@
-let curBoard;
 
-let curHeldPiece;
-let curHeldPieceStartingPosition;
-
+let movingPiece;
+let pieceStartingSquare;
 
 let mouseX, mouseY = 0;
 let movePieceInterval;
 let hasIntervalStarted = false;
 
-function startGame() {
-    const starterPosition = [['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
-    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.'],
-    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r']];
-
-    loadPosition(starterPosition);
-}
-
-function loadPosition(position) {
-    curBoard = position;
-
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            if (position[i][j] != '.') {
-                loadPiece(position[i][j], [i, j]);
-            }
-        }
+function loadPosition(positions) {
+    for(var square in positions) {
+        var piece = positions[square];
+        loadPiece(piece, square);
     }
 }
 
-function loadPiece(piece, position) {
-    const squareElement = document.getElementById(`${position[0] + 1}${position[1] + 1}`);
-
+function loadPiece(piece, square) {
+    const squareElement = document.getElementById(square);
     const pieceElement = document.createElement('img');
     pieceElement.classList.add('piece');
     pieceElement.id = piece;
     pieceElement.draggable = false;
     pieceElement.src = getPieceImageSource(piece);
-
     squareElement.appendChild(pieceElement);
 }
 
@@ -62,8 +40,18 @@ function getPieceImageSource(piece) {
     }
 }
 
-function setPieceHoldEvents() {
+function squareFromReleaseCoordinates(x, y) {
     
+    if(rotated) {
+        const columns = "hgfedcba";
+        return columns[x] + (1 + y);
+    } else {
+        const columns = "abcdefgh";
+        return columns[x] + (8 - y);
+    }
+}
+
+function setPieceHoldEvents() {
     document.addEventListener('mousemove', function(event) {
         mouseX = event.clientX;
         mouseY = event.clientY;
@@ -78,7 +66,7 @@ function setPieceHoldEvents() {
     document.addEventListener('mouseup', function(event) {
         window.clearInterval(movePieceInterval);
 
-        if (curHeldPiece != null) {
+        if (movingPiece != null) {
             const boardElement = document.querySelector('.board');
 
             if ((event.clientX > boardElement.offsetLeft - window.scrollX && event.clientX < boardElement.offsetLeft + boardElement.offsetWidth - window.scrollX) &&
@@ -93,16 +81,17 @@ function setPieceHoldEvents() {
                     const xPosition = Math.floor((mousePositionOnBoardX - boardBorderSize) / document.getElementsByClassName('square')[0].offsetWidth);
                     const yPosition = Math.floor((mousePositionOnBoardY - boardBorderSize) / document.getElementsByClassName('square')[0].offsetHeight);
 
-                    const pieceReleasePosition = [yPosition, xPosition];
+                    const pieceReleaseSquare = squareFromReleaseCoordinates(xPosition, yPosition);
 
-                    if (!(pieceReleasePosition[0] == curHeldPieceStartingPosition[0] && pieceReleasePosition[1] == curHeldPieceStartingPosition[1])) {
-                        tryMove(curHeldPiece, curHeldPieceStartingPosition, pieceReleasePosition);
+                    if (pieceStartingSquare != pieceReleaseSquare) {
+                        tryMove(pieceStartingSquare, pieceReleaseSquare);
                     }
                 }
 
-            curHeldPiece.style.position = 'static';
-            curHeldPiece = null;
-            curHeldPieceStartingPosition = null;
+            movingPiece.style.position = 'static';
+            movingPiece = null;
+            movingPieceStartingPosition = null;
+            pieceStartingSquare = null;
         }
     
         hasIntervalStarted = false;
@@ -117,10 +106,8 @@ function registerPieceMove(piece) {
         if (hasIntervalStarted === false) {
             piece.style.position = 'absolute';
 
-            curHeldPiece = piece;
-            const curHeldPieceStringPosition = piece.parentElement.id.split('');
-
-            curHeldPieceStartingPosition = [parseInt(curHeldPieceStringPosition[0]) - 1, parseInt(curHeldPieceStringPosition[1]) - 1];
+            movingPiece = piece;
+            pieceStartingSquare = piece.parentElement.id;
 
             movePieceInterval = setInterval(function() {
                 piece.style.top = mouseY - piece.offsetHeight / 2 + window.scrollY + 'px';
@@ -132,11 +119,10 @@ function registerPieceMove(piece) {
     });
 }
 
-function tryMove(piece, startingPosition, endingPosition) {
-    const boardPiece = curBoard[startingPosition[0]][startingPosition[1]];
-    console.log("Move from " + serverSquareName(startingPosition)+ " to " + serverSquareName(endingPosition));
+function tryMove(fromSquare, toSquare) {
+    console.log("Move from " + fromSquare + " to " + toSquare);
 
-    $.getScript( "move?from=" + serverSquareName(startingPosition) + "&to=" + serverSquareName(endingPosition) )
+    $.getScript( "move?from=" + fromSquare + "&to=" + toSquare )
       .done(function( script, textStatus ) {
       })
       .fail(function( jqxhr, settings, exception ) {
@@ -144,25 +130,13 @@ function tryMove(piece, startingPosition, endingPosition) {
     });
 }
 
-function serverSquareName(position) {
-    let files = "abcdefgh";
-    return files[position[1]] + "" + (8 - [position[0]]);
-}
-
-function clientPosition(square) {
-    return [-1 * (Number(square[1]) - 8), (square.charCodeAt(0) - 97)];
-}
-
 function removePieceFrom(square) {
-    var position = clientPosition(square);
-    const destinationSquare = document.getElementById(`${position[0] + 1}${position[1] + 1}`);
-    destinationSquare.textContent = '';
+    $("#"+square).html("");
 }
 
 function addPiece(piece, square) {
-    var position = clientPosition(square);
-    loadPiece(piece, position);
+    loadPiece(piece, square);
     
-    const domPiece = document.getElementById(`${position[0] + 1}${position[1] + 1}`).firstChild;
+    const domPiece = document.getElementById(square).firstChild;
     registerPieceMove(domPiece)
 }

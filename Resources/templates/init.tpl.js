@@ -1,5 +1,7 @@
+var rotated = false;
+
 function startGame() {
-    const starterPosition = {matrix};
+    const starterPosition = {startingPositionDictionary};
 
     loadPosition(starterPosition);
     setPieceHoldEvents();
@@ -94,4 +96,15 @@ function removeAllPieces() {
     $( ".chessRow > div" ).each(function() {
         $(this).html('');
     });
+}
+
+function rotateBoard() {
+    var board = $('#chessBoard');
+    var rows = board.children('div');
+    board.html(rows.get().reverse());
+    $( ".chessRow" ).each(function() {
+        var squares = $(this).children('div');
+        $(this).html(squares.get().reverse());
+    });
+    rotated = !rotated;
 }

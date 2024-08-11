@@ -1,5 +1,5 @@
 removeAllPieces();
-const position{random} = {matrix};
+const position{random} = {startingPositionDictionary};
 loadPosition(position{random});
 setPieceHoldEvents();
 

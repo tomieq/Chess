@@ -11,7 +11,7 @@ import Foundation
 public struct ChessPiece {
     public let type: ChessPieceType
     public let color: ChessPieceColor
-    let square: BoardSquare
+    public let square: BoardSquare
     let longDistanceAttackDirections: [MoveDirection]
     let moveCalculator: MoveCalculator
 
