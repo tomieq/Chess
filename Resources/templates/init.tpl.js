@@ -49,6 +49,9 @@ function handleMessage(txt) {
         case "tip":
             $("#tip").html(parts[1]);
             break;
+        case "comment":
+            $("#comment").val(parts[1]);
+            break;
         case "fen":
             $("#fen").val(parts[1]);
             break;

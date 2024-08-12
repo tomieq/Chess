@@ -7,6 +7,7 @@ import chess
 print("To load learning resources provide absolute path fo tmq files with tmq={path}")
 let folder = ArgumentParser.getValue("tmq") ?? FileManager.default.currentDirectoryPath
 let db = GameOpeningDatabase(folder: folder)
+let db2 = CommentDatabase()
 let chessBoard = ChessBoard()
 chessBoard.setupGame()
 let fenGenerator = FenGenerator(chessboard: chessBoard)
@@ -34,8 +35,16 @@ do {
             body.assign([:], inNest: "nextMoveButton")
         }
         body.assign([:], inNest: "revertMoveButton")
+        body["addCommentUrl"] = "addComment.js"
         template.body = body
         return .ok(.html(template))
+    }
+    server.post["addComment.js"] = { request, _ in
+        guard let comment = request.formData.get("comment"), comment.isEmpty.not else {
+            return .ok(.js(JSCode.showError("Missing comment")))
+        }
+        db2.add(positionID: fenGenerator.fenPosition, colorOnMove: chessBoard.colorOnMove, comment: comment)
+        return .ok(.js(""))
     }
     server.get["new"] = { _, _ in
         chessBoard.setupGame()

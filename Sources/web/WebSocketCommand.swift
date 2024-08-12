@@ -15,6 +15,7 @@ enum WebSocketCommand {
     case pgn(String)
     case fen(String)
     case tip(String)
+    case comment(String)
     case error(CustomStringConvertible)
     case whiteDump(String)
     case blackDump(String)
@@ -37,6 +38,8 @@ enum WebSocketCommand {
             "fen:\(txt)"
         case .tip(let txt):
             "tip:\(txt)"
+        case .comment(let txt):
+            "comment:\(txt)"
         case .error(let txt):
             "error:\(txt)"
         case .whiteDump(let txt):

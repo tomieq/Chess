@@ -16,7 +16,7 @@ public class FenGenerator {
         var result = ""
         // board piece positions
         
-        result.append(fenPosition.joined(separator: "/"))
+        result.append(fenPosition)
         result.append(" \(chessboard.colorOnMove.fenLetter)")
         // castling possibilities
         var castling = ""
@@ -52,7 +52,7 @@ public class FenGenerator {
         return result
     }
     
-    public var fenPosition: [String] {
+    public var fenPosition: String {
         var position: [String] = []
         for row in (1...8).reversed() {
             var emptyCounter = 0
@@ -73,6 +73,6 @@ public class FenGenerator {
             }
             position.append(rowFen)
         }
-        return position
+        return position.joined(separator: "/")
     }
 }
