@@ -33,6 +33,16 @@ public struct ChessPiece {
     }
 }
 
+extension ChessPiece {
+    public var fenLetter: String {
+        var letter = self.type == .pawn ? "P" : self.type.enLetter
+        if self.color == .black {
+            letter = letter.lowercased()
+        }
+        return letter
+    }
+}
+
 extension ChessPiece: Equatable {
     public static func == (lhs: ChessPiece, rhs: ChessPiece) -> Bool {
         lhs.color == rhs.color && lhs.square == rhs.square && lhs.type == rhs.type

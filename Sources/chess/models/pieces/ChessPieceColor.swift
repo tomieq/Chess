@@ -40,4 +40,13 @@ extension ChessPieceColor {
             return "black"
         }
     }
+    
+    var fenLetter: String {
+        switch self {
+        case .white:
+            return "w"
+        case .black:
+            return "b"
+        }
+    }
 }
