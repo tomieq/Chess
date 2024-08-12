@@ -24,7 +24,7 @@ extension ChessPieceColor {
 }
 
 extension ChessPieceColor {
-    var plName: String {
+    public var plName: String {
         switch self {
         case .white:
             return "biały"
@@ -32,7 +32,7 @@ extension ChessPieceColor {
             return "czarny"
         }
     }
-    var enName: String {
+    public var enName: String {
         switch self {
         case .white:
             return "white"

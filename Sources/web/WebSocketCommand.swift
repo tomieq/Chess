@@ -19,6 +19,7 @@ enum WebSocketCommand {
     case error(CustomStringConvertible)
     case whiteDump(String)
     case blackDump(String)
+    case debug(String)
     
     var raw: String {
         switch self {
@@ -46,6 +47,8 @@ enum WebSocketCommand {
             "white:\(txt)"
         case .blackDump(let txt):
             "black:\(txt)"
+        case .debug(let txt):
+            "debug:\(txt)"
         }
     }
 }

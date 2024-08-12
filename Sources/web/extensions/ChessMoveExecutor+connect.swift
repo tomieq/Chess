@@ -45,10 +45,12 @@ extension ChessMoveExecutor {
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.100) {
                 liveConnection.notifyClient(.fen(fenGenerator.fen))
             }
-            if let comment = db2.get(fenPosition: fenGenerator.fenPosition) {
+            if let (comment, color) = db2.get(fenPosition: fenGenerator.fenPosition) {
                 liveConnection.notifyClient(.comment(comment))
+                liveConnection.notifyClient(.debug("Kolej \(color.plName)"))
             } else {
                 liveConnection.notifyClient(.comment(""))
+                liveConnection.notifyClient(.debug(""))
             }
         }
     }

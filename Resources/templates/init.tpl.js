@@ -51,6 +51,8 @@ function handleMessage(txt) {
             break;
         case "comment":
             $("#comment").val(parts[1]);
+        case "debug":
+            $("#debug").html(parts[1]);
             break;
         case "fen":
             $("#fen").val(parts[1]);

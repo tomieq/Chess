@@ -15,8 +15,11 @@ public class CommentDatabase {
         try? Comment.createTable(db: db)
     }
     
-    public func get(fenPosition: String) -> String? {
-        Comment.getComment(db: db, positionID: fenPosition)
+    public func get(fenPosition: String) -> (String, ChessPieceColor)? {
+        guard let (comment, color) = Comment.getComment(db: db, positionID: fenPosition) else {
+            return nil
+        }
+        return (comment, color.color)
     }
     
     public func add(positionID: String, colorOnMove: ChessPieceColor, comment: String) {

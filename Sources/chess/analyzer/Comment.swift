@@ -11,6 +11,15 @@ import SQLite
 enum ColorOnMove: Int {
     case white
     case black
+    
+    var color: ChessPieceColor {
+        switch self {
+        case .white:
+            .white
+        case .black:
+            .black
+        }
+    }
 }
 
 extension ColorOnMove {
@@ -47,12 +56,12 @@ extension Comment {
         try db.run(Comment.table.createIndex(Comment.parentPositionID, ifNotExists: true))
     }
     
-    static func getComment(db: Connection, positionID: String) -> String? {
-        let query = Comment.table.select([Comment.comment])
+    static func getComment(db: Connection, positionID: String) -> (String, ColorOnMove)? {
+        let query = Comment.table.select([Comment.comment, Comment.colorOnMove])
             .filter(Comment.positionID == positionID)
             .limit(1)
         if let data = try? db.pluck(query) {
-            return data[Comment.comment]
+            return (data[Comment.comment], ColorOnMove(rawValue: data[Comment.colorOnMove])! )
         }
         return nil
     }
