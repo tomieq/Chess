@@ -4,7 +4,9 @@ import Template
 import BootstrapTemplate
 import chess
 
-let db = GamePlayDatabase()
+print("To load learning resources provide absolute path fo tmq files with tmq={path}")
+let folder = ArgumentParser.getValue("tmq") ?? FileManager.default.currentDirectoryPath
+let db = GameOpeningDatabase(folder: folder)
 var chessBoard = ChessBoard()
 chessBoard.setupGame()
 

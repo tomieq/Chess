@@ -8,24 +8,27 @@ import Foundation
 import Template
 
 public class GameOpeningDatabase {
-    let openings: [GameOpening]
+    var openings: [GameOpening] = []
     
-    public init() {
-        var gamePlays: [GameOpening] = []
-        let rootPath = Resource().absolutePath(for: "openings")
-        let folders = try? FileManager.default.contentsOfDirectory(atPath: rootPath)
-        for folder in folders ?? [] {
-            let folderPath = "\(rootPath)/\(folder)/"
-            let files = try? FileManager.default.contentsOfDirectory(atPath: folderPath)
-            for file in files ?? [] {
-                guard let content = try? String(contentsOfFile: folderPath + file, encoding: .utf8) else {
-                    continue
-                }
-                gamePlays.append(GameOpeningLoader.make(from: content, filename: "\(folder)/\(file)"))
+    public init(folder: String) {
+        loadFromFolder(folder: folder)
+        print("Loaded \(openings.count) opening variants")
+    }
+    
+    private func loadFromFolder(folder: String) {
+        let files = try? FileManager.default.contentsOfDirectory(atPath: folder)
+        print("Loading from \(folder)")
+        for file in files ?? [] {
+            let path = folder + "/" + file
+            if let hasFiles = try? FileManager.default.contentsOfDirectory(atPath: path) {
+                loadFromFolder(folder: path)
+                continue
             }
+            guard let content = try? String(contentsOfFile: path, encoding: .utf8) else {
+                continue
+            }
+            openings.append(GameOpeningLoader.make(from: content, filename: "\(folder)/\(file)"))
         }
-        print("Loaded \(gamePlays.count) opening variants")
-        openings = gamePlays
     }
     
     public func findMatching(to pgn: String) -> [GameOpening] {
