@@ -138,6 +138,9 @@ public class ChessBoard {
 
     @discardableResult
     public func setupGame() -> ChessBoard {
+        pieces.removeAll()
+        colorOnMove = .white
+        movesHistory = []
         let chessboardLoader = ChessBoardLoader(chessBoads: self)
         chessboardLoader
             .load(.white, "Ra1 Nb1 Bc1 Qd1 Ke1 Bf1 Ng1 Rh1")

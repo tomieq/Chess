@@ -7,14 +7,14 @@ import chess
 print("To load learning resources provide absolute path fo tmq files with tmq={path}")
 let folder = ArgumentParser.getValue("tmq") ?? FileManager.default.currentDirectoryPath
 let db = GameOpeningDatabase(folder: folder)
-var chessBoard = ChessBoard()
+let chessBoard = ChessBoard()
 chessBoard.setupGame()
 
-var commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
-var moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
+let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
+let moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
 moveExecutor.connect(to: LiveConnection.shared)
 
-var parser = NotationParser(moveExecutor: moveExecutor)
+let parser = NotationParser(moveExecutor: moveExecutor)
 var moves = parser.split("""
                         1. e4 e5
                         2. Nf3 Nc6
@@ -38,12 +38,7 @@ do {
         return .ok(.html(template))
     }
     server.get["new"] = { _, _ in
-        chessBoard = ChessBoard()
         chessBoard.setupGame()
-        commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
-        moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
-        moveExecutor.connect(to: LiveConnection.shared)
-        parser = NotationParser(moveExecutor: moveExecutor)
         LiveConnection.shared.notifyClient(.reloadBoard)
         return .movedTemporarily("/")
     }
