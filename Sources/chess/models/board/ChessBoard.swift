@@ -138,6 +138,7 @@ public class ChessBoard {
 
     @discardableResult
     public func setupGame() -> ChessBoard {
+        print("Setup new game")
         pieces.removeAll()
         colorOnMove = .white
         movesHistory = []

@@ -110,6 +110,17 @@ do {
     }, connected: { socket in
         print("New websocket connected")
         LiveConnection.shared.addConnection(socket)
+        
+        LiveConnection.shared.notifyClient(.whiteDump(chessBoard.dump(color: .white)))
+        LiveConnection.shared.notifyClient(.blackDump(chessBoard.dump(color: .black)))
+        let notations = chessBoard.pgn
+            .chunked(by: 2)
+            .enumerated()
+            .map { "\($0.offset + 1). \($0.element.joined(separator: " "))" }
+        LiveConnection.shared.notifyClient(.pgn(notations.joined(separator: "\n")))
+        let tips = db.getTips(to: chessBoard.pgnFlat)
+        LiveConnection.shared.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
+        LiveConnection.shared.notifyClient(.fen(fenGenerator.fen))
     }, disconnected: { socket in
         print("Websocket disconnected")
         LiveConnection.shared.removeConnection(socket)

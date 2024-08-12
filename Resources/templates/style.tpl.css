@@ -6,6 +6,17 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: #947065;
+    color: white;
+}
+
+input, textarea {
+    background-color: #947065;
+    color: white;
+    border: 1px solid black;
+}
+
 .board {
     width: min-content;
     margin: 32px auto 0;
