@@ -49,6 +49,9 @@ function handleMessage(txt) {
         case "tip":
             $("#tip").html(parts[1]);
             break;
+        case "fen":
+            $("#fen").val(parts[1]);
+            break;
         case "error":
             showError(parts[1]);
             break;

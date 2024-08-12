@@ -5,6 +5,7 @@
 //  Created by Tomasz Kucharski on 12/08/2024.
 //
 import chess
+import Foundation
 
 extension ChessMoveExecutor {
     func connect(to liveConnection: LiveConnection) {
@@ -41,6 +42,10 @@ extension ChessMoveExecutor {
             liveConnection.notifyClient(.pgn(notations.joined(separator: "\n")))
             let tips = db.getTips(to: chessBoard.pgnFlat)
             liveConnection.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
+            print("color on move: \(chessBoard.colorOnMove)")
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.100) {
+                liveConnection.notifyClient(.fen(fenGenerator.fen))
+            }
         }
     }
 }

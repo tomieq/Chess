@@ -9,7 +9,7 @@ let folder = ArgumentParser.getValue("tmq") ?? FileManager.default.currentDirect
 let db = GameOpeningDatabase(folder: folder)
 let chessBoard = ChessBoard()
 chessBoard.setupGame()
-
+let fenGenerator = FenGenerator(chessboard: chessBoard)
 let commandFactory = ChessMoveCommandFactory(chessboard: chessBoard)
 let moveExecutor = ChessMoveExecutor(chessboard: chessBoard)
 moveExecutor.connect(to: LiveConnection.shared)

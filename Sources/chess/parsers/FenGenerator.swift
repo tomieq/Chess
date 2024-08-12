@@ -5,14 +5,14 @@
 //  Created by Tomasz Kucharski on 12/08/2024.
 //
 
-class FenGenerator {
+public class FenGenerator {
     let chessboard: ChessBoard
     
-    init(chessboard: ChessBoard) {
+    public init(chessboard: ChessBoard) {
         self.chessboard = chessboard
     }
     
-    var fen: String {
+    public var fen: String {
         var result = ""
         // board piece positions
         var position: [String] = []
