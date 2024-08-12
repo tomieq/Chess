@@ -8,11 +8,12 @@ import Foundation
 import Template
 
 public class GameOpeningDatabase {
+    private let folder: String
     var openings: [GameOpening] = []
     
     public init(folder: String) {
-        loadFromFolder(folder: folder)
-        print("Loaded \(openings.count) opening variants")
+        self.folder = folder
+        reload()
     }
     
     private func loadFromFolder(folder: String) {
@@ -27,8 +28,15 @@ public class GameOpeningDatabase {
             guard let content = try? String(contentsOfFile: path, encoding: .utf8) else {
                 continue
             }
-            openings.append(GameOpeningLoader.make(from: content, filename: "\(folder)/\(file)"))
+            let filename = "\(folder)/\(file)".replacingOccurrences(of: self.folder, with: "")
+            openings.append(GameOpeningLoader.make(from: content, filename: filename))
         }
+    }
+    
+    public func reload() {
+        openings = []
+        loadFromFolder(folder: folder)
+        print("Loaded \(openings.count) opening variants")
     }
     
     public func findMatching(to pgn: String) -> [GameOpening] {

@@ -15,27 +15,8 @@ public class FenGenerator {
     public var fen: String {
         var result = ""
         // board piece positions
-        var position: [String] = []
-        for row in (1...8).reversed() {
-            var emptyCounter = 0
-            var rowFen = ""
-            for column in BoardColumn.allCases {
-                if let piece = chessboard[BoardSquare(column, row)] {
-                    if emptyCounter > 0 {
-                        rowFen.append("\(emptyCounter)")
-                        emptyCounter = 0
-                    }
-                    rowFen.append(piece.fenLetter)
-                } else {
-                    emptyCounter += 1
-                }
-            }
-            if emptyCounter > 0 {
-                rowFen.append("\(emptyCounter)")
-            }
-            position.append(rowFen)
-        }
-        result.append(position.joined(separator: "/"))
+        
+        result.append(fenPosition.joined(separator: "/"))
         result.append(" \(chessboard.colorOnMove.fenLetter)")
         // castling possibilities
         var castling = ""
@@ -69,5 +50,29 @@ public class FenGenerator {
         // number of full moves
         result.append(" \(chessboard.pgn.count / 2 + 1)")
         return result
+    }
+    
+    public var fenPosition: [String] {
+        var position: [String] = []
+        for row in (1...8).reversed() {
+            var emptyCounter = 0
+            var rowFen = ""
+            for column in BoardColumn.allCases {
+                if let piece = chessboard[BoardSquare(column, row)] {
+                    if emptyCounter > 0 {
+                        rowFen.append("\(emptyCounter)")
+                        emptyCounter = 0
+                    }
+                    rowFen.append(piece.fenLetter)
+                } else {
+                    emptyCounter += 1
+                }
+            }
+            if emptyCounter > 0 {
+                rowFen.append("\(emptyCounter)")
+            }
+            position.append(rowFen)
+        }
+        return position
     }
 }

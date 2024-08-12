@@ -57,7 +57,7 @@ do {
     }
     server.get["style.css"] = { _, _ in
         let template = Template.load(relativePath: "templates/style.tpl.css")
-        template["squareSize"] = 60
+        template["squareSize"] = 65
         return .ok(.css(template))
     }
     server["/websocket"] = websocket(text: { (session, text) in
@@ -76,6 +76,9 @@ do {
         }
         if text.starts(with: "revertMove") {
             moveExecutor.revert()
+        }
+        if text.starts(with: "reload") {
+            db.reload()
         }
         if text.starts(with: "move:") {
             let parts = text.split(separator: ":", maxSplits: 2).map{ "\($0)" }

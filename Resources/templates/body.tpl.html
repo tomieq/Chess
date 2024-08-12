@@ -1,6 +1,6 @@
 
 <div class="row" id="main">
-    <div class="col-6">
+    <div class="col-8">
         <div class="board" id="chessBoard">
             <div class="chessRow">
                 <div id="a8" class="square white"></div>
@@ -84,6 +84,7 @@
             </div>
         </div>
         <div class="d-flex p-2">
+            <button class="btn btn-sm btn-outline-info" onclick="send('reload');" id="nextMove">Reload DB</button>
             [START nextMoveButton]
             <button class="btn btn-sm btn-outline-info" onclick="send('nextMove');" id="nextMove">Next move</button>
             [END nextMoveButton]
@@ -110,8 +111,8 @@
             <input type="text" id="blackPieces" class="w-100"/>
         </div>
     </div>
-    <div class="col-6">
-        <div style="float: right; margin-right: 30px; width: 100%;" id="tip" class="mt-5 pt-4">
+    <div class="col-4">
+        <div style="float: right; margin-right: 30px; width: 100%;" id="tip" class="mt-5">
         </div>
     </div>
 </div>
