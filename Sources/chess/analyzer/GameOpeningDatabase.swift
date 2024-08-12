@@ -20,7 +20,7 @@ public class GameOpeningDatabase {
         print("Loading from \(folder)")
         for file in files ?? [] {
             let path = folder + "/" + file
-            if let hasFiles = try? FileManager.default.contentsOfDirectory(atPath: path) {
+            if let _ = try? FileManager.default.contentsOfDirectory(atPath: path) {
                 loadFromFolder(folder: path)
                 continue
             }

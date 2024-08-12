@@ -14,6 +14,7 @@ enum WebSocketCommand {
     case reloadBoard
     case pgn(String)
     case tip(String)
+    case error(CustomStringConvertible)
     case whiteDump(String)
     case blackDump(String)
     
@@ -33,6 +34,8 @@ enum WebSocketCommand {
             "pgn:\(txt)"
         case .tip(let txt):
             "tip:\(txt)"
+        case .error(let txt):
+            "error:\(txt)"
         case .whiteDump(let txt):
             "white:\(txt)"
         case .blackDump(let txt):

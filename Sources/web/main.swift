@@ -57,37 +57,8 @@ do {
     }
     server.get["style.css"] = { _, _ in
         let template = Template.load(relativePath: "templates/style.tpl.css")
-        template["squareSize"] = 50
+        template["squareSize"] = 60
         return .ok(.css(template))
-    }
-    server.get["move"] = { request, _ in
-        struct Movement: Codable {
-            let from: String
-            let to: String
-        }
-        do {
-            let move: Movement = try request.queryParams.decode()
-            let from = BoardSquare(stringLiteral: move.from)
-            let to = BoardSquare(stringLiteral: move.to)
-            let command = try commandFactory.make(from: from, to: to)
-            moveExecutor.process(command)
-            return .ok(.js(""))
-        } catch {
-            if let moveError = error as? ChessMoveCommandFactoryError {
-                switch moveError {
-                case .invalidSquare:
-                    break
-                case .noPiece:
-                    break
-                case .colorOnMove(let color):
-                    return .ok(.js(JSCode.showError("Now it is \(color)`s turn")))
-                case .canNotMove(let type, let square):
-                    return .ok(.js(JSCode.showError("You cannot move \(type.enName) to \(square)")))
-                }
-            }
-            return .ok(.js(JSCode.showError("\(error)")))
-        }
-        
     }
     server["/websocket"] = websocket(text: { (session, text) in
         if text.starts(with: "nextMove") {
@@ -105,6 +76,32 @@ do {
         }
         if text.starts(with: "revertMove") {
             moveExecutor.revert()
+        }
+        if text.starts(with: "move:") {
+            let parts = text.split(separator: ":", maxSplits: 2).map{ "\($0)" }
+            guard parts.count == 3 else {
+                print("Invalid move command \(text)")
+                return
+            }
+            do {
+                let from = BoardSquare(stringLiteral: parts[1])
+                let to = BoardSquare(stringLiteral: parts[2])
+                let command = try commandFactory.make(from: from, to: to)
+                moveExecutor.process(command)
+            } catch {
+                if let moveError = error as? ChessMoveCommandFactoryError {
+                    switch moveError {
+                    case .invalidSquare:
+                        break
+                    case .noPiece:
+                        break
+                    case .colorOnMove(let color):
+                        LiveConnection.shared.notifyClient(.error("Now it is \(color)`s turn"))
+                    case .canNotMove(let type, let square):
+                        LiveConnection.shared.notifyClient(.error("You cannot move \(type.enName) to \(square)"))
+                    }
+                }
+            }
         }
     }, binary: { (session, binary) in
         session.writeBinary(binary)
@@ -134,54 +131,4 @@ do {
     dispatchMain()
 } catch {
     print(error)
-}
-
-
-extension ChessMoveExecutor {
-    func connect(to liveConnection: LiveConnection) {
-        self.moveListener = { event in
-            event.changes.forEach { change in
-                switch change {
-                case .move(let move):
-                    guard let letter = chessBoard[move.to]?.letter else {
-                        print("ERROR-move: At \(move.to) there is no piece!")
-                        return
-                    }
-                    liveConnection.notifyClient(.removePiece(move.from))
-                    liveConnection.notifyClient(.removePiece(move.to))
-                    liveConnection.notifyClient(.addPiece(move.to, letter: letter))
-                case .remove(_, _, let square):
-                    liveConnection.notifyClient(.removePiece(square))
-                case .add(_, _, let square):
-                    guard let letter = chessBoard[square]?.letter else {
-                        print("ERROR-add: At \(square) there is no piece!")
-                        return
-                    }
-                    liveConnection.notifyClient(.addPiece(square, letter: letter))
-                }
-            }
-            if event.status == .checkmate {
-                liveConnection.notifyClient(.checkMate)
-            }
-            liveConnection.notifyClient(.whiteDump(chessBoard.dump(color: .white)))
-            liveConnection.notifyClient(.blackDump(chessBoard.dump(color: .black)))
-            let notations = chessBoard.pgn
-                .chunked(by: 2)
-                .enumerated()
-                .map { "\($0.offset + 1). \($0.element.joined(separator: " "))" }
-            liveConnection.notifyClient(.pgn(notations.joined(separator: "\n")))
-            let tips = db.getTips(to: chessBoard.pgnFlat)
-            liveConnection.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
-        }
-    }
-}
-
-extension ChessBoard {
-    var jsPosition: [String:String] {
-        var position: [String:String] = [:]
-        for piece in self.allPieces {
-            position[piece.square.description] = piece.letter
-        }
-        return position
-    }
 }

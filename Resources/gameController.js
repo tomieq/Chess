@@ -121,13 +121,7 @@ function registerPieceMove(piece) {
 
 function tryMove(fromSquare, toSquare) {
     console.log("Move from " + fromSquare + " to " + toSquare);
-
-    $.getScript( "move?from=" + fromSquare + "&to=" + toSquare )
-      .done(function( script, textStatus ) {
-      })
-      .fail(function( jqxhr, settings, exception ) {
-          
-    });
+    send("move:" + fromSquare + ":" + toSquare);
 }
 
 function removePieceFrom(square) {
