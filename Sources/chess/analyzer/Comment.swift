@@ -65,13 +65,21 @@ extension Comment {
         }
         return nil
     }
-    
-    
+
     static func addComment(db: Connection, positionID: String, colorOnMove: ColorOnMove, comment: String) throws {
-        try db.run(Comment.table.insert(
-            Comment.positionID <- positionID,
-            Comment.colorOnMove <- colorOnMove.rawValue,
-            Comment.comment <- comment
-        ))
+        let entry = Comment.table.filter(Comment.positionID == positionID)
+        let exists = try db.scalar(entry.count) > 0
+        switch exists {
+        case true:
+            try db.run(entry.update(
+                Comment.comment <- comment
+            ))
+        case false:
+            try db.run(Comment.table.insert(
+                Comment.positionID <- positionID,
+                Comment.colorOnMove <- colorOnMove.rawValue,
+                Comment.comment <- comment
+            ))
+        }
     }
 }

@@ -23,6 +23,10 @@ public class CommentDatabase {
     }
     
     public func add(positionID: String, colorOnMove: ChessPieceColor, comment: String) {
-        try? Comment.addComment(db: db, positionID: positionID, colorOnMove: ColorOnMove.from(colorOnMove), comment: comment)
+        do {
+            try Comment.addComment(db: db, positionID: positionID, colorOnMove: ColorOnMove.from(colorOnMove), comment: comment)
+        } catch {
+            print("Error saving comment")
+        }
     }
 }
