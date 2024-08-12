@@ -86,9 +86,6 @@ do {
         if text.starts(with: "revertMove") {
             moveExecutor.revert()
         }
-        if text.starts(with: "reload") {
-            db.reload()
-        }
         if text.starts(with: "move:") {
             let parts = text.split(separator: ":", maxSplits: 2).map{ "\($0)" }
             guard parts.count == 3 else {
