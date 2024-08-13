@@ -84,7 +84,11 @@ do {
             }
         }
         if text.starts(with: "revertMove") {
-            moveExecutor.revert()
+            let parts = text.components(separatedBy: ":")
+            guard parts.count == 2, let amount = Int(parts[1]), amount > 0 else { return }
+            for _ in (1...amount) {
+                moveExecutor.revert()
+            }
         }
         if text.starts(with: "move:") {
             let parts = text.split(separator: ":", maxSplits: 2).map{ "\($0)" }
