@@ -35,11 +35,7 @@ extension ChessMoveExecutor {
             }
             liveConnection.notifyClient(.whiteDump(chessBoard.dump(color: .white)))
             liveConnection.notifyClient(.blackDump(chessBoard.dump(color: .black)))
-            let notations = chessBoard.pgn
-                .chunked(by: 2)
-                .enumerated()
-                .map { "\($0.offset + 1). \($0.element.joined(separator: " "))" }
-            liveConnection.notifyClient(.pgn(notations.joined(separator: "\n")))
+            LiveConnection.shared.notifyClient(.pgn(PgnUIView.html(chessBoard: chessBoard)))
             let tips = db.getTips(to: chessBoard.pgnFlat)
             liveConnection.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.100) {

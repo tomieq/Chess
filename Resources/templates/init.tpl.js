@@ -44,7 +44,7 @@ function handleMessage(txt) {
             addPiece(parts[1], parts[2]);
             break;
         case "pgn":
-            $("#pgn").val(parts[1]);
+            $("#pgn").html(txt.slice(4));
             break;
         case "tip":
             $("#tip").html(parts[1]);

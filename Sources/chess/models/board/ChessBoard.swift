@@ -13,7 +13,7 @@ public class ChessBoard {
     public var colorOnMove: ChessPieceColor = .white
     private var pieces: [ChessPiece]
     private var listeners: [(ChessBoardEvent) -> Void] = []
-    var movesHistory: [ChessMove] = []
+    public var movesHistory: [ChessMove] = []
     public var pgn: [String] {
         movesHistory.map { $0.notation }
     }

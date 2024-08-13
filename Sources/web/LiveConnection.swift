@@ -4,11 +4,13 @@
 //
 //  Created by Tomasz Kucharski on 05/08/2024.
 //
+import Foundation
 import Swifter
 
 class LiveConnection {
     static let shared = LiveConnection()
     private var websockets: [WebSocketSession] = []
+    private let queue = DispatchQueue.main
     
     func addConnection(_ socket: WebSocketSession) {
         self.websockets.append(socket)
@@ -19,6 +21,8 @@ class LiveConnection {
         print("Active connections: \(websockets.count)")
     }
     func notifyClient(_ command: WebSocketCommand) {
-        websockets.forEach { $0.writeText(command.raw) }
+        queue.async { [unowned self] in
+            self.websockets.forEach { $0.writeText(command.raw) }
+        }
     }
 }
