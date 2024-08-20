@@ -90,6 +90,10 @@ do {
                 moveExecutor.revert()
             }
         }
+        if text.starts(with: "newGame") {
+            chessBoard.setupGame()
+            LiveConnection.shared.notifyClient(.reloadBoard)
+        }
         if text.starts(with: "move:") {
             let parts = text.split(separator: ":", maxSplits: 2).map{ "\($0)" }
             guard parts.count == 3 else {
