@@ -45,6 +45,19 @@ input, textarea {
     align-items: center;
 }
 
+.square img {
+    z-index: 1;
+}
+
+.fieldName {
+    position: relative;
+    top: 0px;
+    left: -{squareNameOffset}px;
+    width: 0px;
+    opacity: 0.6;
+    z-index: 0;
+}
+
 .piece {
     width: {squareSize}px;
     height: {squareSize}px;

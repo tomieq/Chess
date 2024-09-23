@@ -67,6 +67,7 @@ do {
     server.get["style.css"] = { _, _ in
         let template = Template.load(relativePath: "templates/style.tpl.css")
         template["squareSize"] = 65
+        template["squareNameOffset"] = 40
         return .ok(.css(template))
     }
     server["/websocket"] = websocket(text: { (session, text) in

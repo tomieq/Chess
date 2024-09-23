@@ -31,6 +31,10 @@ $( document ).ready(function() {
     webSocket.onerror = function(error) {
         console.log("'[webSocket] [error]" + error.message);
     };
+    
+    $('.square').each(function() {
+      $(this).after($('<span class="fieldName">').text($(this).attr("id")));
+    });
 });
 
 
@@ -118,4 +122,7 @@ function rotateBoard() {
         $(this).html(squares.get().reverse());
     });
     rotated = !rotated;
+    $('.square').each(function() {
+      $(this).after($('<span class="fieldName">').text($(this).attr("id")));
+    });
 }
