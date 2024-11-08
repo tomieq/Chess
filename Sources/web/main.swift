@@ -4,10 +4,7 @@ import Template
 import BootstrapTemplate
 import chess
 
-print("To load learning resources provide absolute path fo tmq files with tmq={path}")
-let folder = ArgumentParser.getValue("tmq") ?? FileManager.default.currentDirectoryPath
-let db = GameOpeningDatabase(folder: folder)
-let db2 = CommentDatabase()
+let db = CommentDatabase()
 let chessBoard = ChessBoard()
 chessBoard.setupGame()
 let fenGenerator = FenGenerator(chessboard: chessBoard)
@@ -43,7 +40,7 @@ do {
         guard let comment = request.formData.get("comment"), comment.isEmpty.not else {
             return .ok(.js(JSCode.showError("Missing comment")))
         }
-        db2.add(positionID: fenGenerator.fenPosition, colorOnMove: chessBoard.colorOnMove, comment: comment)
+        db.add(positionID: fenGenerator.fenPosition, colorOnMove: chessBoard.colorOnMove, comment: comment)
         return .ok(.js(""))
     }
     server.get["new"] = { _, _ in
@@ -133,8 +130,6 @@ do {
         LiveConnection.shared.notifyClient(.blackDump(chessBoard.dump(color: .black)))
         LiveConnection.shared.notifyClient(.pgn(PgnUIView.html(chessBoard: chessBoard)))
 
-        let tips = db.getTips(to: chessBoard.pgnFlat)
-        LiveConnection.shared.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
         LiveConnection.shared.notifyClient(.fen(fenGenerator.fen))
     }, disconnected: { socket in
         print("Websocket disconnected")

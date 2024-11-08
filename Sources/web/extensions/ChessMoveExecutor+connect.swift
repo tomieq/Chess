@@ -36,12 +36,10 @@ extension ChessMoveExecutor {
             liveConnection.notifyClient(.whiteDump(chessBoard.dump(color: .white)))
             liveConnection.notifyClient(.blackDump(chessBoard.dump(color: .black)))
             LiveConnection.shared.notifyClient(.pgn(PgnUIView.html(chessBoard: chessBoard)))
-            let tips = db.getTips(to: chessBoard.pgnFlat)
-            liveConnection.notifyClient(.tip(tips.joined(separator: "\n").replacingOccurrences(of: "\n", with: "<br>")))
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.100) {
                 liveConnection.notifyClient(.fen(fenGenerator.fen))
             }
-            if let (comment, color) = db2.get(fenPosition: fenGenerator.fenPosition) {
+            if let (comment, color) = db.get(fenPosition: fenGenerator.fenPosition) {
                 liveConnection.notifyClient(.comment(comment))
                 liveConnection.notifyClient(.debug("Kolej \(color.plName)"))
             } else {
