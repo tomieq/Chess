@@ -141,10 +141,10 @@ do {
     })
     server.notFoundHandler = { request, responseHeaders in
         if let filePath = BootstrapTemplate.absolutePath(for: request.path) {
-            try HttpFileResponse.with(absolutePath: filePath)
+            try HttpFileResponse.with(absolutePath: filePath, clientCache: .days(14))
         }
         let resourcePath = Resource().absolutePath(for: request.path)
-        try HttpFileResponse.with(absolutePath: resourcePath)
+        try HttpFileResponse.with(absolutePath: resourcePath, clientCache: .days(14))
         return .notFound()
     }
     try server.start(8080)

@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/tomieq/BootstrapStarter", from: "1.0.0"),
-        .package(url: "https://github.com/tomieq/swifter.git", .upToNextMajor(from: "2.0.0")),
+        .package(url: "https://github.com/tomieq/swifter.git", .upToNextMajor(from: "2.0.4")),
         .package(url: "https://github.com/tomieq/Template.swift.git", from: "1.5.0"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.3")
     ],
