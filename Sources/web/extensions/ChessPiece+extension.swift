@@ -5,6 +5,7 @@
 //  Created by Tomasz Kucharski on 05/08/2024.
 //
 import chess
+import ChessEngine
 
 extension ChessPiece {
     var letter: String {

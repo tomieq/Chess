@@ -7,6 +7,7 @@
 
 import Foundation
 import SQLite
+import ChessEngine
 
 enum ColorOnMove: Int {
     case white

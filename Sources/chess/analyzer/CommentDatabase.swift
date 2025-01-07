@@ -6,6 +6,7 @@
 //
 import SQLite
 import Template
+import ChessEngine
 
 public class CommentDatabase {
     let db: Connection

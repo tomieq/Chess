@@ -6,6 +6,7 @@
 //
 import chess
 import Foundation
+import ChessEngine
 
 extension ChessMoveExecutor {
     func connect(to liveConnection: LiveConnection) {
@@ -30,7 +31,7 @@ extension ChessMoveExecutor {
                     liveConnection.notifyClient(.addPiece(square, letter: letter))
                 }
             }
-            if event.status == .checkmate {
+            if event.status == .checkmate(winner: .white) || event.status == .checkmate(winner: .black) {
                 liveConnection.notifyClient(.checkMate)
             }
             liveConnection.notifyClient(.whiteDump(chessBoard.dump(color: .white)))

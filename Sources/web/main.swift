@@ -3,6 +3,7 @@ import Swifter
 import Template
 import BootstrapTemplate
 import chess
+import ChessEngine
 
 let db = CommentDatabase()
 let chessBoard = ChessBoard()

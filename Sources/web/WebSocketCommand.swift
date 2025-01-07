@@ -5,6 +5,7 @@
 //  Created by Tomasz Kucharski on 06/08/2024.
 //
 import chess
+import ChessEngine
 
 enum WebSocketCommand {
     case removePiece(BoardSquare)

@@ -6,6 +6,7 @@
 //
 import Template
 import chess
+import ChessEngine
 
 enum PgnUIView {
     static func html(chessBoard: ChessBoard) -> String {

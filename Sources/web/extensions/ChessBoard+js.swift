@@ -5,6 +5,7 @@
 //  Created by Tomasz Kucharski on 12/08/2024.
 //
 import chess
+import ChessEngine
 
 extension ChessBoard {
     var jsPosition: [String:String] {
